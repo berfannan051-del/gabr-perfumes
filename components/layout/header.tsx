@@ -87,14 +87,9 @@ export function Header({ onOpenSearch }: { onOpenSearch: () => void }) {
                   Admin
                 </Link>
               )}
-              <button
-                type="button"
-                onClick={() => signOut()}
-                aria-label={ta("logout")}
-                className="hover:text-primary transition-colors"
-              >
+              <Link href="/account" aria-label={ta("account")} className="hover:text-primary transition-colors">
                 <UserIcon className="h-5 w-5" />
-              </button>
+              </Link>
             </div>
           ) : (
             <Link href="/login" aria-label={ta("loginTitle")} className="hidden hover:text-primary transition-colors md:block">
@@ -146,6 +141,9 @@ export function Header({ onOpenSearch }: { onOpenSearch: () => void }) {
               ))}
               {session ? (
                 <>
+                  <Link href="/account" className="py-2.5 text-body hover:text-primary transition-colors">
+                    {ta("account")}
+                  </Link>
                   {session.user.role === "ADMIN" && (
                     <Link href="/admin" className="py-2.5 text-body hover:text-primary transition-colors">
                       Admin

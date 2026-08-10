@@ -18,13 +18,14 @@ export async function generateMetadata({
 export default async function ShopPage({
   searchParams,
 }: {
-  searchParams: Promise<{ collection?: string; gender?: string }>;
+  searchParams: Promise<{ collection?: string; gender?: string; brand?: string }>;
 }) {
   const params = await searchParams;
   const validGenders: Gender[] = ["men", "women", "unisex"];
   const gender = validGenders.includes(params.gender as Gender)
     ? (params.gender as Gender)
     : undefined;
+  const brand = params.brand === "GABR" || params.brand === "OTHER" ? params.brand : undefined;
 
   const [products, collections] = await Promise.all([getAllProducts(), getCollections()]);
 
@@ -34,6 +35,7 @@ export default async function ShopPage({
       collections={collections}
       initialCollection={params.collection}
       initialGender={gender}
+      initialBrand={brand}
     />
   );
 }

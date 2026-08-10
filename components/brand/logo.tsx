@@ -25,11 +25,11 @@ export function Logo({
 
 export function LogoMark({ className }: { className?: string }) {
   return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src="/brand/logo.png"
-      alt="GABR Perfumes"
-      className={cn("h-12 w-auto select-none object-contain", className)}
-    />
+    <span
+      className={cn("text-primary select-none", className)}
+      style={{ fontFamily: "var(--font-logo)", fontWeight: 700 }}
+    >
+      <span className="text-3xl leading-none">جبر</span>
+    </span>
   );
 }

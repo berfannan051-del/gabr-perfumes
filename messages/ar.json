@@ -49,6 +49,12 @@
     "eyebrow": "آراء عملائنا",
     "title": "ماذا يقول عملاؤنا"
   },
+  "GabrProducts": {
+    "eyebrow": "من جابر",
+    "title": "عطورنا الخاصة",
+    "subtitle": "تُصنع بأيدينا وتحمل اسمنا — قلب مجموعة جابر.",
+    "viewAll": "تسوّق كل منتجات جابر"
+  },
   "NotesStory": {
     "eyebrow": "هندسة العطر",
     "title": "طبقات من الإحساس",
@@ -150,6 +156,21 @@
       "credentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
       "unknown": "حدث خطأ ما، حاول مرة أخرى"
     }
+  },
+  "Account": {
+    "title": "حسابي",
+    "welcomeBack": "أهلاً بعودتك، {name}.",
+    "profileHeading": "البيانات الشخصية",
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+    "signOut": "تسجيل الخروج",
+    "ordersHeading": "سجل الطلبات",
+    "noOrders": "لم تقم بأي طلب حتى الآن.",
+    "statusPending": "قيد الانتظار",
+    "statusConfirmed": "مؤكد",
+    "statusShipped": "تم الشحن",
+    "statusDelivered": "تم التوصيل",
+    "statusCancelled": "ملغي"
   },
   "Admin": {
     "nav": {
@@ -325,7 +346,42 @@
       "save": "حفظ",
       "saving": "جارٍ الحفظ…",
       "saved": "تم الحفظ",
-      "uploadError": "فشل رفع الصورة"
+      "uploadError": "فشل رفع الصورة",
+      "groups": {
+        "hero": "البانر الرئيسي",
+        "story": "قسم \"قصتنا\"",
+        "notesStory": "قسم طبقات العطر",
+        "about": "صفحة من نحن",
+        "footer": "الفوتر",
+        "settings": "بيانات التواصل"
+      },
+      "fields": {
+        "hero_eyebrow": "الجملة التمهيدية (فوق العنوان)",
+        "hero_titleLine1": "العنوان الرئيسي — السطر الأول",
+        "hero_titleLine2": "العنوان الرئيسي — السطر الثاني",
+        "hero_subtitle": "الوصف الفرعي",
+        "hero_ctaPrimary": "زر الإجراء الأساسي",
+        "hero_ctaSecondary": "زر الإجراء الثانوي",
+        "story_eyebrow": "الجملة التمهيدية",
+        "story_title": "العنوان",
+        "story_body": "النص",
+        "story_cta": "رابط \"اقرأ المزيد\"",
+        "story_image": "صورة القسم",
+        "notesStory_eyebrow": "الجملة التمهيدية",
+        "notesStory_title": "العنوان",
+        "notesStory_body": "النص",
+        "about_title": "العنوان الرئيسي",
+        "about_intro": "المقدمة",
+        "about_paragraph1": "الفقرة الأولى",
+        "about_paragraph2": "الفقرة الثانية",
+        "about_paragraph3": "الفقرة الثالثة",
+        "about_quote": "الاقتباس",
+        "about_quoteAuthor": "توقيع الاقتباس",
+        "about_heroImage": "صورة الغلاف",
+        "footer_about": "نبذة في الفوتر",
+        "settings_contactEmail": "البريد الإلكتروني للتواصل",
+        "settings_contactPhone": "رقم الهاتف للتواصل"
+      }
     }
   },
   "Shop": {

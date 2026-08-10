@@ -1,5 +1,6 @@
 import { Hero } from "@/components/sections/hero";
 import { Story } from "@/components/sections/story";
+import { GabrProducts } from "@/components/sections/gabr-products";
 import { Collections } from "@/components/sections/collections";
 import { Bestsellers } from "@/components/sections/bestsellers";
 import { NotesStory } from "@/components/sections/notes-story";
@@ -53,6 +54,7 @@ export default async function HomePage({
     <>
       <Hero content={heroContent} />
       <Story content={storyContent} />
+      <GabrProducts products={products} />
       <Collections collections={collections} products={products} />
       <Bestsellers products={bestsellers} />
       <NotesStory content={notesStoryContent} />

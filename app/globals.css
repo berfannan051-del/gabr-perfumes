@@ -2,6 +2,7 @@
 @import "@fontsource-variable/cairo";
 @import "@fontsource-variable/cormorant-garamond";
 @import "@fontsource-variable/cormorant-garamond/wght-italic.css";
+@import "@fontsource/aref-ruqaa/arabic-700.css";
 
 /*
   Design tokens sourced from the GABR logo:
@@ -61,6 +62,7 @@
 
   --font-sans: "Cairo Variable", "Segoe UI", sans-serif;
   --font-display: "Cormorant Garamond Variable", "Cairo Variable", serif;
+  --font-logo: "Aref Ruqaa", "Cairo Variable", serif;
 
   --shadow-soft: var(--shadow-soft);
   --shadow-lifted: var(--shadow-lifted);

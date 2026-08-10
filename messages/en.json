@@ -49,6 +49,12 @@
     "eyebrow": "Testimonials",
     "title": "What Our Customers Say"
   },
+  "GabrProducts": {
+    "eyebrow": "By GABR",
+    "title": "Our Own Fragrances",
+    "subtitle": "Crafted in-house, bottled under our own name — the heart of the GABR collection.",
+    "viewAll": "Shop all GABR"
+  },
   "NotesStory": {
     "eyebrow": "The Architecture of Scent",
     "title": "Layers of Feeling",
@@ -150,6 +156,21 @@
       "credentials": "Invalid email or password",
       "unknown": "Something went wrong, please try again"
     }
+  },
+  "Account": {
+    "title": "My Account",
+    "welcomeBack": "Welcome back, {name}.",
+    "profileHeading": "Profile",
+    "name": "Name",
+    "email": "Email Address",
+    "signOut": "Sign Out",
+    "ordersHeading": "Order History",
+    "noOrders": "You haven't placed any orders yet.",
+    "statusPending": "Pending",
+    "statusConfirmed": "Confirmed",
+    "statusShipped": "Shipped",
+    "statusDelivered": "Delivered",
+    "statusCancelled": "Cancelled"
   },
   "Admin": {
     "nav": {
@@ -325,7 +346,42 @@
       "save": "Save",
       "saving": "Saving…",
       "saved": "Saved",
-      "uploadError": "Upload failed"
+      "uploadError": "Upload failed",
+      "groups": {
+        "hero": "Hero Banner",
+        "story": "\"Our Story\" Section",
+        "notesStory": "Fragrance Layers Section",
+        "about": "About Page",
+        "footer": "Footer",
+        "settings": "Contact Details"
+      },
+      "fields": {
+        "hero_eyebrow": "Eyebrow (above headline)",
+        "hero_titleLine1": "Headline — Line 1",
+        "hero_titleLine2": "Headline — Line 2",
+        "hero_subtitle": "Subtitle",
+        "hero_ctaPrimary": "Primary Button",
+        "hero_ctaSecondary": "Secondary Button",
+        "story_eyebrow": "Eyebrow",
+        "story_title": "Title",
+        "story_body": "Body Text",
+        "story_cta": "\"Read More\" Link",
+        "story_image": "Section Image",
+        "notesStory_eyebrow": "Eyebrow",
+        "notesStory_title": "Title",
+        "notesStory_body": "Body Text",
+        "about_title": "Main Title",
+        "about_intro": "Intro",
+        "about_paragraph1": "Paragraph 1",
+        "about_paragraph2": "Paragraph 2",
+        "about_paragraph3": "Paragraph 3",
+        "about_quote": "Quote",
+        "about_quoteAuthor": "Quote Author",
+        "about_heroImage": "Cover Image",
+        "footer_about": "About Blurb",
+        "settings_contactEmail": "Contact Email",
+        "settings_contactPhone": "Contact Phone"
+      }
     }
   },
   "Shop": {

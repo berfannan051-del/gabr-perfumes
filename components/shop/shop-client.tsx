@@ -17,11 +17,13 @@ export function ShopClient({
   collections,
   initialCollection,
   initialGender,
+  initialBrand,
 }: {
   products: Product[];
   collections: Collection[];
   initialCollection?: string;
   initialGender?: Gender;
+  initialBrand?: BrandType;
 }) {
   const t = useTranslations("Shop");
   const tf = useTranslations("Families");
@@ -30,7 +32,7 @@ export function ShopClient({
   const [gender, setGender] = useState<Gender | "all">(initialGender ?? "all");
   const [family, setFamily] = useState<FragranceFamily[]>([]);
   const [collection, setCollection] = useState<string | "all">(initialCollection ?? "all");
-  const [brand, setBrand] = useState<BrandType | "all">("all");
+  const [brand, setBrand] = useState<BrandType | "all">(initialBrand ?? "all");
   const [sort, setSort] = useState<Sort>("newest");
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 

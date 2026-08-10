@@ -60,8 +60,8 @@ export function AdminShell({
           {/* Sidebar */}
           <aside
             className={cn(
-              "fixed inset-y-0 start-0 z-40 w-64 shrink-0 border-e border-border bg-surface transition-transform duration-300 md:sticky md:top-0 md:h-screen md:translate-x-0",
-              mobileOpen ? "translate-x-0" : "rtl:translate-x-full -translate-x-full"
+              "fixed inset-y-0 start-0 z-40 w-64 shrink-0 border-e border-border bg-surface transition-transform duration-300 md:sticky md:top-0 md:h-screen",
+              !mobileOpen && "max-md:-translate-x-full max-md:rtl:translate-x-full"
             )}
           >
             <div className="flex h-20 items-center justify-between border-b border-border px-6">
