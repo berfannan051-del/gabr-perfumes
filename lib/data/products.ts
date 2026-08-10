@@ -57,8 +57,14 @@ function mapProduct(p: DbProduct): Product {
   };
 }
 
+// A product with no variants has no size/price to sell — treat it as
+// unpublished rather than letting it crash every page that assumes
+// variants[0] exists (starting price, sort-by-price, etc).
+const hasVariant = { variants: { some: {} } } satisfies Prisma.ProductWhereInput;
+
 export async function getAllProducts(): Promise<Product[]> {
   const rows = await prisma.product.findMany({
+    where: hasVariant,
     include: productInclude,
     orderBy: { createdAt: "desc" },
   });
@@ -67,7 +73,7 @@ export async function getAllProducts(): Promise<Product[]> {
 
 export async function getBestsellerProducts(limit = 4): Promise<Product[]> {
   const rows = await prisma.product.findMany({
-    where: { isBestseller: true },
+    where: { isBestseller: true, ...hasVariant },
     include: productInclude,
     orderBy: { createdAt: "desc" },
     take: limit,
@@ -76,19 +82,23 @@ export async function getBestsellerProducts(limit = 4): Promise<Product[]> {
 }
 
 export async function getAllProductSlugs(): Promise<string[]> {
-  const rows = await prisma.product.findMany({ select: { slug: true } });
+  const rows = await prisma.product.findMany({ where: hasVariant, select: { slug: true } });
   return rows.map((r) => r.slug);
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
-  const row = await prisma.product.findUnique({ where: { slug }, include: productInclude });
-  return row ? mapProduct(row) : null;
+  const row = await prisma.product.findUnique({
+    where: { slug },
+    include: productInclude,
+  });
+  return row && row.variants.length > 0 ? mapProduct(row) : null;
 }
 
 export async function getRelatedProducts(product: Product, limit = 4): Promise<Product[]> {
   const rows = await prisma.product.findMany({
     where: {
       id: { not: product.id },
+      ...hasVariant,
       OR: [
         { collection: { slug: product.collectionSlug } },
         { family: product.family.toUpperCase() as never },

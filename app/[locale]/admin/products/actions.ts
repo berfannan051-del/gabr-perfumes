@@ -78,6 +78,10 @@ export async function saveProduct(
     return { error: "invalid" };
   }
 
+  // A product with no sizes has nothing to sell and crashes every storefront
+  // page that assumes a starting price exists — never let this reach the DB.
+  if (variants.length === 0) return { error: "noVariants" };
+
   const existingImages: string[] = JSON.parse(String(formData.get("existingImages") ?? "[]"));
   const newImages: string[] = [];
   for (const file of formData.getAll("images")) {

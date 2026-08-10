@@ -135,7 +135,7 @@ export function ProductForm({
 
       const result = await saveProduct(product?.id ?? null, data);
       if ("error" in result) {
-        setError(result.error);
+        setError(result.error === "noVariants" ? t("errorNoVariants") : t("errorInvalid"));
         return;
       }
       router.push("/admin/products");
