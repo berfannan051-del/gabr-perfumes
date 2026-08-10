@@ -1,0 +1,356 @@
+{
+  "Brand": {
+    "name": "GABR",
+    "nameLatin": "GABR",
+    "label": "PERFUMES",
+    "labelLatin": "PERFUMES",
+    "tagline": "Luxury fragrance, crafted with heritage"
+  },
+  "Nav": {
+    "home": "Home",
+    "shop": "Shop",
+    "collections": "Collections",
+    "about": "Our Story",
+    "search": "Search",
+    "account": "Account",
+    "wishlist": "Wishlist",
+    "cart": "Cart",
+    "menu": "Menu",
+    "close": "Close",
+    "language": "العربية"
+  },
+  "Hero": {
+    "eyebrow": "GABR Perfumes",
+    "titleLine1": "A scent",
+    "titleLine2": "worth telling",
+    "subtitle": "Born from authentic Arabian craft, our fragrances carry the weight of history with a presence made for today.",
+    "ctaPrimary": "Discover the Collection",
+    "ctaSecondary": "Our Story",
+    "scrollHint": "Keep scrolling"
+  },
+  "Story": {
+    "eyebrow": "Our Story",
+    "title": "A craft passed through generations",
+    "body": "GABR was born from a deep passion for Arabian perfumery. Every ingredient is sourced with care from the world's finest origins, left to mature until it reaches its full character — fragrances that belong to no one else.",
+    "cta": "More about GABR"
+  },
+  "Collections": {
+    "eyebrow": "Collections",
+    "title": "Curated with intent",
+    "viewAll": "View all collections",
+    "exploreLabel": "Explore"
+  },
+  "Bestsellers": {
+    "eyebrow": "Most Loved",
+    "title": "Our Signature Edit",
+    "viewAll": "View all products"
+  },
+  "NotesStory": {
+    "eyebrow": "The Architecture of Scent",
+    "title": "Layers of Feeling",
+    "body": "Every GABR fragrance is built on three harmonious layers, unfolding in turn to tell their own story on your skin.",
+    "top": {
+      "label": "Top Notes",
+      "desc": "The first impression — light and bright, fading within minutes to open the way for the heart"
+    },
+    "heart": {
+      "label": "Heart Notes",
+      "desc": "The true character of the fragrance, emerging after the opening and lingering for hours"
+    },
+    "base": {
+      "label": "Base Notes",
+      "desc": "The final signature — deep and warm, staying on the skin long into the evening"
+    }
+  },
+  "Newsletter": {
+    "title": "Be the first to know",
+    "body": "Subscribe for news on limited releases and the stories behind our fragrances.",
+    "placeholder": "Your email address",
+    "cta": "Subscribe",
+    "success": "Thank you for joining us"
+  },
+  "Footer": {
+    "about": "GABR Perfumes — a contemporary Arabian fragrance house, shaping heritage craft in a modern voice.",
+    "shopHeading": "Shop",
+    "shopLinks": {
+      "all": "All Fragrances",
+      "men": "For Him",
+      "women": "For Her",
+      "unisex": "Unisex",
+      "collections": "Collections"
+    },
+    "companyHeading": "Company",
+    "companyLinks": {
+      "about": "Our Story",
+      "contact": "Contact Us",
+      "terms": "Terms & Conditions",
+      "privacy": "Privacy Policy"
+    },
+    "contactHeading": "Contact",
+    "rights": "All rights reserved",
+    "madeWith": "Made with passion"
+  },
+  "Families": {
+    "oriental": "Oriental",
+    "woody": "Woody",
+    "floral": "Floral",
+    "citrus": "Citrus",
+    "amber": "Amber",
+    "musk": "Musk"
+  },
+  "About": {
+    "eyebrow": "Our Story",
+    "title": "Where Heritage Meets the Present",
+    "intro": "GABR is not just a fragrance house — it's a journey that begins deep in the Arabian desert and ends on your skin.",
+    "paragraph1": "GABR was founded by a family steeped in the craft of perfumery, passing down the secrets of distillation and aging through generations. Every bottle carries decades of expertise and an obsession with detail.",
+    "paragraph2": "We travel to the world's finest sources — Cambodian oud, Taif rose, Indian Ocean amber — selecting only what is worthy of the GABR name.",
+    "paragraph3": "Today, we offer that legacy in a contemporary voice, for a generation seeking authenticity without giving up modernity.",
+    "valuesHeading": "What Sets Us Apart",
+    "value1Title": "Authentic Craft",
+    "value1Body": "Every fragrance is hand-composed under the guidance of perfumers with over two decades of expertise.",
+    "value2Title": "Sourced with Care",
+    "value2Body": "We import the finest raw materials from their original sources around the world.",
+    "value3Title": "Exceptional Longevity",
+    "value3Body": "High concentrations give our fragrances a presence that lasts from morning to evening.",
+    "quote": "A fragrance is not just a scent — it's a memory we craft to last.",
+    "quoteAuthor": "Founder, GABR Perfumes"
+  },
+  "Auth": {
+    "loginTitle": "Sign In",
+    "registerTitle": "Create Account",
+    "name": "Name",
+    "email": "Email Address",
+    "password": "Password",
+    "loginCta": "Sign In",
+    "registerCta": "Create Account",
+    "submitting": "Please wait...",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "createOne": "Create one",
+    "signInInstead": "Sign in",
+    "logout": "Logout",
+    "account": "My Account",
+    "errors": {
+      "invalid": "Please check your details",
+      "rateLimited": "Too many attempts, try again shortly",
+      "emailExists": "This email is already registered",
+      "credentials": "Invalid email or password",
+      "unknown": "Something went wrong, please try again"
+    }
+  },
+  "Admin": {
+    "nav": {
+      "dashboard": "Dashboard",
+      "products": "Products",
+      "collections": "Collections",
+      "orders": "Orders",
+      "backToSite": "Back to site"
+    },
+    "stats": {
+      "orders": "Total Orders",
+      "revenue": "Revenue",
+      "lowStock": "Low Stock"
+    },
+    "products": {
+      "title": "Products",
+      "new": "New Product",
+      "edit": "Edit",
+      "delete": "Delete",
+      "name": "Name",
+      "nameAr": "Name (Arabic)",
+      "nameEn": "Name (English)",
+      "slug": "Slug",
+      "shortDescriptionAr": "Short Description (Arabic)",
+      "shortDescriptionEn": "Short Description (English)",
+      "descriptionAr": "Description (Arabic)",
+      "descriptionEn": "Description (English)",
+      "concentrationAr": "Concentration (Arabic)",
+      "concentrationEn": "Concentration (English)",
+      "gender": "Audience",
+      "family": "Fragrance Family",
+      "collection": "Collection",
+      "bottleShape": "Bottle Shape",
+      "heroColor": "Liquid Color",
+      "images": "Images",
+      "uploadImage": "Upload Image",
+      "isBestseller": "Bestseller",
+      "isNew": "New",
+      "variants": "Sizes & Pricing",
+      "addVariant": "Add Size",
+      "sizeMl": "Size (ml)",
+      "price": "Price",
+      "stock": "Stock",
+      "sku": "SKU",
+      "notes": "Fragrance Notes",
+      "notesTop": "Top",
+      "notesHeart": "Heart",
+      "notesBase": "Base",
+      "save": "Save",
+      "saving": "Saving...",
+      "created": "Product created",
+      "updated": "Product updated",
+      "confirmDelete": "Are you sure you want to delete this product?"
+    },
+    "collections": {
+      "title": "Collections",
+      "new": "New Collection",
+      "name": "Name",
+      "descriptionAr": "Description (Arabic)",
+      "descriptionEn": "Description (English)",
+      "image": "Image key",
+      "save": "Save",
+      "delete": "Delete"
+    },
+    "orders": {
+      "title": "Orders",
+      "orderNumber": "Order #",
+      "customer": "Customer",
+      "date": "Date",
+      "status": "Status",
+      "total": "Total",
+      "filterAll": "All",
+      "items": "Items",
+      "shippingInfo": "Shipping Info",
+      "paymentInfo": "Payment Info",
+      "proofImage": "Payment Proof",
+      "noProof": "No proof uploaded",
+      "updateStatus": "Update Status",
+      "statusPending": "Pending",
+      "statusConfirmed": "Confirmed",
+      "statusShipped": "Shipped",
+      "statusDelivered": "Delivered",
+      "statusCancelled": "Cancelled"
+    }
+  },
+  "Shop": {
+    "title": "Shop",
+    "resultsCount": "{count, plural, =0 {No results} one {1 result} other {# results}}",
+    "filters": {
+      "title": "Filters",
+      "clear": "Clear all",
+      "apply": "Apply",
+      "category": "Category",
+      "gender": "Audience",
+      "genderOptions": {
+        "all": "All",
+        "men": "For Him",
+        "women": "For Her",
+        "unisex": "Unisex"
+      },
+      "family": "Fragrance Family",
+      "notes": "Notes",
+      "price": "Price",
+      "availability": "Availability",
+      "inStock": "In stock only"
+    },
+    "sort": {
+      "label": "Sort by",
+      "newest": "Newest",
+      "priceAsc": "Price: Low to High",
+      "priceDesc": "Price: High to Low",
+      "nameAsc": "Name: A-Z"
+    },
+    "empty": "No fragrances match your search",
+    "resetFilters": "Reset filters"
+  },
+  "Product": {
+    "sizeLabel": "Size",
+    "quantityLabel": "Quantity",
+    "addToCart": "Add to Cart",
+    "addedToCart": "Added to Cart",
+    "addToWishlist": "Add to Wishlist",
+    "removeFromWishlist": "Remove from Wishlist",
+    "newLabel": "New",
+    "bestsellerLabel": "Bestseller",
+    "outOfStock": "Currently Unavailable",
+    "inStock": "In Stock",
+    "sku": "SKU",
+    "tabs": {
+      "description": "Description",
+      "notes": "Fragrance Notes",
+      "howToWear": "How to Wear"
+    },
+    "notesTitle": "The Scent Journey",
+    "top": "Top Notes",
+    "heart": "Heart Notes",
+    "base": "Base Notes",
+    "related": "You May Also Like",
+    "family": "Fragrance Family",
+    "concentration": "Concentration",
+    "share": "Share"
+  },
+  "Cart": {
+    "title": "Shopping Cart",
+    "empty": "Your cart is empty",
+    "emptyHint": "Add your favorite fragrance to begin your journey with us",
+    "continueShopping": "Continue Shopping",
+    "subtotal": "Subtotal",
+    "shippingNote": "Shipping calculated at checkout",
+    "checkout": "Checkout",
+    "remove": "Remove",
+    "size": "Size",
+    "qty": "Qty",
+    "itemAdded": "Added to cart"
+  },
+  "Wishlist": {
+    "title": "Wishlist",
+    "empty": "Your wishlist is empty",
+    "emptyHint": "Save the fragrances that captivate you here",
+    "moveToCart": "Add to Cart",
+    "remove": "Remove"
+  },
+  "Search": {
+    "placeholder": "Search a fragrance, collection, or note...",
+    "recent": "Recent searches",
+    "suggestions": "Suggestions",
+    "noResults": "No results for",
+    "noResultsHint": "Try different keywords or browse our collections",
+    "viewAll": "View all results",
+    "clearRecent": "Clear history"
+  },
+  "Checkout": {
+    "title": "Checkout",
+    "contactHeading": "Contact Details",
+    "fullName": "Full Name",
+    "email": "Email Address",
+    "phone": "Phone Number",
+    "shippingHeading": "Shipping Address",
+    "address": "Address",
+    "city": "City",
+    "governorate": "Governorate",
+    "notes": "Additional Notes (optional)",
+    "paymentHeading": "Payment Method",
+    "paymentHint": "Payment is currently manual — complete the transfer, then attach proof of payment",
+    "instapay": "InstaPay",
+    "vodafoneCash": "Vodafone Cash",
+    "proofUpload": "Proof of Payment",
+    "proofUploadHint": "Attach a screenshot of the transfer (PNG or JPG)",
+    "orderSummary": "Order Summary",
+    "whatsappConfirm": "Confirm via WhatsApp",
+    "whatsappHint": "After submitting, we'll reach out on WhatsApp to confirm your order",
+    "submit": "Submit Order",
+    "submitting": "Submitting...",
+    "successTitle": "Order Received",
+    "successBody": "Thank you — we'll be in touch on WhatsApp shortly to confirm your order.",
+    "errorRequired": "This field is required",
+    "errorEmail": "Invalid email address",
+    "errorPhone": "Invalid phone number",
+    "submitErrors": {
+      "rateLimited": "Too many attempts, try again shortly",
+      "invalid": "Please check your details",
+      "invalidFile": "Invalid payment proof image",
+      "unknown": "Something went wrong, please try again"
+    }
+  },
+  "Common": {
+    "currency": "EGP",
+    "total": "Total",
+    "loading": "Loading...",
+    "error": "Something went wrong, please try again",
+    "viewDetails": "Details",
+    "back": "Back",
+    "notFoundTitle": "Page Not Found",
+    "notFoundBody": "This page doesn't seem to exist or has been moved",
+    "notFoundCta": "Back to Home"
+  }
+}
