@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { BottleArt } from "@/components/product/bottle-art";
 import type { Product } from "@/types/catalog";
@@ -30,11 +31,13 @@ export function ProductGallery({ product }: { product: Product }) {
             className="h-full w-full"
           >
             {hasPhotos ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              <Image
                 src={product.images[active]}
                 alt={product.name.ar}
-                className="h-full w-full object-cover"
+                fill
+                priority
+                sizes="(min-width: 640px) 50vw, 100vw"
+                className="object-cover"
               />
             ) : (
               <BottleArt shape={product.bottleShape} liquidColor={product.heroColor} className="h-full w-full" />
@@ -49,13 +52,12 @@ export function ProductGallery({ product }: { product: Product }) {
             key={i}
             type="button"
             onClick={() => setActive(i)}
-            className={`aspect-[3/4] w-16 shrink-0 overflow-hidden bg-surface-muted transition-opacity sm:w-20 ${
+            className={`relative aspect-[3/4] w-16 shrink-0 overflow-hidden bg-surface-muted transition-opacity sm:w-20 ${
               active === i ? "opacity-100 ring-1 ring-primary" : "opacity-50 hover:opacity-80"
             }`}
           >
             {hasPhotos ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={product.images[i]} alt="" className="h-full w-full object-cover" />
+              <Image src={product.images[i]} alt="" fill sizes="80px" className="object-cover" />
             ) : (
               <div style={{ transform: generatedViews[i].transform }} className="h-full w-full">
                 <BottleArt shape={product.bottleShape} liquidColor={product.heroColor} className="h-full w-full" />

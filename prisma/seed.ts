@@ -5,6 +5,8 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { notes as mockNotes } from "./fixtures/notes";
 import { collections as mockCollections } from "./fixtures/collections";
 import { products as mockProducts } from "./fixtures/products";
+import { siteContentDefaults } from "./fixtures/site-content";
+import { reviewDefaults } from "./fixtures/reviews";
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
@@ -127,7 +129,24 @@ async function main() {
     },
   });
 
+  for (const [key, value] of Object.entries(siteContentDefaults)) {
+    const type = key.endsWith("Image") || key.endsWith(".image") ? "IMAGE" : "TEXT";
+    await prisma.siteContent.upsert({
+      where: { key },
+      update: {},
+      create: { key, type, valueAr: value.ar, valueEn: value.en },
+    });
+  }
+
+  const existingReviewCount = await prisma.review.count();
+  if (existingReviewCount === 0) {
+    for (const review of reviewDefaults) {
+      await prisma.review.create({ data: review });
+    }
+  }
+
   console.log(`Seeded ${mockProducts.length} products, ${mockCollections.length} collections.`);
+  console.log(`Seeded ${Object.keys(siteContentDefaults).length} site content fields, ${reviewDefaults.length} reviews.`);
   console.log(`Admin login: ${adminEmail} / ${adminPassword}`);
 }
 

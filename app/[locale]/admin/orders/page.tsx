@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { prisma } from "@/lib/prisma";
+import { OrdersTable, type OrderRow } from "@/components/admin/orders-table";
 
 const statuses = ["PENDING", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED"] as const;
 
@@ -18,12 +19,24 @@ export default async function AdminOrdersPage({
     take: 100,
   });
 
+  const rows: OrderRow[] = orders.map((o) => ({
+    id: o.id,
+    orderNumber: o.orderNumber,
+    fullName: o.fullName,
+    createdAt: o.createdAt.toISOString(),
+    subtotal: Number(o.subtotal),
+    status: o.status,
+  }));
+
   return (
     <div>
       <h1 className="text-h2 mb-6">{t("title")}</h1>
 
       <div className="mb-6 flex flex-wrap gap-2">
-        <Link href="/admin/orders" className={`border px-3 py-1.5 text-caption ${!status ? "border-primary bg-primary text-background" : "border-border"}`}>
+        <Link
+          href="/admin/orders"
+          className={`border px-3 py-1.5 text-caption ${!status ? "border-primary bg-primary text-background" : "border-border"}`}
+        >
           {t("filterAll")}
         </Link>
         {statuses.map((s) => (
@@ -37,34 +50,9 @@ export default async function AdminOrdersPage({
         ))}
       </div>
 
-      <table className="w-full border-collapse text-start">
-        <thead>
-          <tr className="border-b border-border text-label text-muted-foreground">
-            <th className="py-3 text-start font-normal">{t("orderNumber")}</th>
-            <th className="py-3 text-start font-normal">{t("customer")}</th>
-            <th className="py-3 text-start font-normal">{t("date")}</th>
-            <th className="py-3 text-start font-normal">{t("total")}</th>
-            <th className="py-3 text-start font-normal">{t("status")}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orders.map((o) => (
-            <tr key={o.id} className="border-b border-border">
-              <td className="py-3 text-body">
-                <Link href={`/admin/orders/${o.id}`} className="text-primary">
-                  {o.orderNumber}
-                </Link>
-              </td>
-              <td className="py-3 text-caption">{o.fullName}</td>
-              <td className="py-3 text-caption text-muted-foreground">
-                {o.createdAt.toLocaleDateString()}
-              </td>
-              <td className="py-3 text-caption">{Number(o.subtotal).toLocaleString()}</td>
-              <td className="py-3 text-caption">{o.status}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="border border-border bg-surface p-5">
+        <OrdersTable orders={rows} />
+      </div>
     </div>
   );
 }

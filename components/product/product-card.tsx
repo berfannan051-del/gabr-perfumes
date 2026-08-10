@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { Link } from "@/i18n/navigation";
@@ -27,8 +28,13 @@ export function ProductCard({ product }: { product: Product }) {
             className="h-full w-full transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-110 group-hover:-rotate-2"
           >
             {image ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={image} alt={product.name[locale]} className="h-full w-full object-cover" />
+              <Image
+                src={image}
+                alt={product.name[locale]}
+                fill
+                sizes="(min-width: 1024px) 22vw, (min-width: 768px) 30vw, 45vw"
+                className="object-cover"
+              />
             ) : (
               <BottleArt shape={product.bottleShape} liquidColor={product.heroColor} className="h-full w-full" />
             )}
@@ -37,6 +43,14 @@ export function ProductCard({ product }: { product: Product }) {
           <div className="absolute start-3 top-3 flex flex-col gap-2">
             {product.isNew && <Badge variant="solid">{t("newLabel")}</Badge>}
           </div>
+
+          {product.brandType === "OTHER" && (
+            <div className="absolute end-3 bottom-3">
+              <Badge variant="outline" className="bg-surface/90">
+                {product.brandName || t("brandOther")}
+              </Badge>
+            </div>
+          )}
 
           <button
             type="button"

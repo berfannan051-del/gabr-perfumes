@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { ProductCard } from "@/components/product/product-card";
 import { Sheet, SheetClose, SheetTitle } from "@/components/ui/sheet";
 import { CloseIcon } from "@/components/ui/icons";
-import type { Collection, FragranceFamily, Gender, Locale, Product } from "@/types/catalog";
+import type { BrandType, Collection, FragranceFamily, Gender, Locale, Product } from "@/types/catalog";
 
 const genders: Gender[] = ["men", "women", "unisex"];
 const families: FragranceFamily[] = ["oriental", "woody", "floral", "citrus", "amber", "musk"];
@@ -30,6 +30,7 @@ export function ShopClient({
   const [gender, setGender] = useState<Gender | "all">(initialGender ?? "all");
   const [family, setFamily] = useState<FragranceFamily[]>([]);
   const [collection, setCollection] = useState<string | "all">(initialCollection ?? "all");
+  const [brand, setBrand] = useState<BrandType | "all">("all");
   const [sort, setSort] = useState<Sort>("newest");
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
@@ -38,6 +39,7 @@ export function ShopClient({
       if (gender !== "all" && p.gender !== gender) return false;
       if (family.length > 0 && !family.includes(p.family)) return false;
       if (collection !== "all" && p.collectionSlug !== collection) return false;
+      if (brand !== "all" && p.brandType !== brand) return false;
       return true;
     });
 
@@ -55,7 +57,7 @@ export function ShopClient({
         list = [...list].sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
     }
     return list;
-  }, [gender, family, collection, sort, locale, products]);
+  }, [gender, family, collection, brand, sort, locale, products]);
 
   function toggleFamily(f: FragranceFamily) {
     setFamily((prev) => (prev.includes(f) ? prev.filter((x) => x !== f) : [...prev, f]));
@@ -65,10 +67,26 @@ export function ShopClient({
     setGender("all");
     setFamily([]);
     setCollection("all");
+    setBrand("all");
   }
 
   const filterPanel = (
     <div className="flex flex-col gap-8">
+      <div>
+        <h3 className="text-label mb-4">{t("filters.brand")}</h3>
+        <div className="flex flex-wrap gap-2">
+          <FilterChip active={brand === "all"} onClick={() => setBrand("all")}>
+            {t("filters.brandOptions.all")}
+          </FilterChip>
+          <FilterChip active={brand === "GABR"} onClick={() => setBrand("GABR")}>
+            {t("filters.brandOptions.gabr")}
+          </FilterChip>
+          <FilterChip active={brand === "OTHER"} onClick={() => setBrand("OTHER")}>
+            {t("filters.brandOptions.other")}
+          </FilterChip>
+        </div>
+      </div>
+
       <div>
         <h3 className="text-label mb-4">{t("filters.gender")}</h3>
         <div className="flex flex-wrap gap-2">

@@ -31,6 +31,8 @@ type ProductFormData = {
   images: string[];
   isBestseller: boolean;
   isNew: boolean;
+  brandType: "GABR" | "OTHER";
+  brandName: string;
   variants: VariantRow[];
   notesByLayer: { top: string[]; heart: string[]; base: string[] };
 };
@@ -59,6 +61,8 @@ const emptyProduct: ProductFormData = {
   images: [],
   isBestseller: false,
   isNew: false,
+  brandType: "GABR",
+  brandName: "",
   variants: [],
   notesByLayer: { top: [], heart: [], base: [] },
 };
@@ -145,6 +149,8 @@ export function ProductForm({
       data.set("heroColor", form.heroColor);
       data.set("isBestseller", String(form.isBestseller));
       data.set("isNew", String(form.isNew));
+      data.set("brandType", form.brandType);
+      data.set("brandName", form.brandName);
       data.set("variants", JSON.stringify(form.variants));
       data.set("notes", JSON.stringify(form.notesByLayer));
       data.set("existingImages", JSON.stringify(form.images));
@@ -259,6 +265,38 @@ export function ProductForm({
           <input type="checkbox" checked={form.isNew} onChange={(e) => set("isNew", e.target.checked)} />
           {t("isNew")}
         </label>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div>
+          <Label htmlFor="brandType">{t("brand")}</Label>
+          <div className="mt-2 flex gap-2">
+            <button
+              type="button"
+              onClick={() => set("brandType", "GABR")}
+              className={`flex-1 border px-4 py-3 text-body transition-colors ${
+                form.brandType === "GABR" ? "border-primary bg-primary text-background" : "border-border"
+              }`}
+            >
+              {t("brandGabr")}
+            </button>
+            <button
+              type="button"
+              onClick={() => set("brandType", "OTHER")}
+              className={`flex-1 border px-4 py-3 text-body transition-colors ${
+                form.brandType === "OTHER" ? "border-primary bg-primary text-background" : "border-border"
+              }`}
+            >
+              {t("brandOther")}
+            </button>
+          </div>
+        </div>
+        {form.brandType === "OTHER" && (
+          <div>
+            <Label htmlFor="brandName">{t("brand")}</Label>
+            <Input id="brandName" value={form.brandName} onChange={(e) => set("brandName", e.target.value)} className="mt-2" />
+          </div>
+        )}
       </div>
 
       <div>

@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { Link } from "@/i18n/navigation";
 import { useCart } from "@/lib/cart/cart-context";
 import { checkoutSchema, type CheckoutErrors } from "@/lib/validation/checkout";
-import { submitOrderAction } from "@/app/[locale]/checkout/actions";
+import { submitOrderAction } from "@/app/[locale]/(site)/checkout/actions";
 import { Input, Textarea, Label } from "@/components/ui/input";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { BottleArt } from "@/components/product/bottle-art";

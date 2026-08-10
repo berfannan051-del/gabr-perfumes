@@ -17,6 +17,8 @@ export type FragranceFamily =
 
 export type BottleShape = "tall" | "round" | "faceted";
 
+export type BrandType = "GABR" | "OTHER";
+
 export type FragranceNote = {
   slug: string;
   name: LocalizedText;
@@ -44,6 +46,8 @@ export type Product = {
   bottleShape: BottleShape;
   heroColor: string;
   images: string[];
+  brandType: BrandType;
+  brandName?: string;
   variants: ProductVariant[];
   notes: {
     top: FragranceNote[];

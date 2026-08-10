@@ -5,10 +5,19 @@ import { DiamondDivider } from "@/components/brand/diamond-divider";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-export function Footer() {
+export type FooterContent = {
+  about: string;
+  contactEmail: string;
+  contactPhone: string;
+};
+
+export function Footer({ content }: { content?: Partial<FooterContent> }) {
   const t = useTranslations("Footer");
   const tn = useTranslations("Newsletter");
   const year = new Date().getFullYear();
+  const about = content?.about || t("about");
+  const contactEmail = content?.contactEmail || "hello@gabrperfumes.com";
+  const contactPhone = content?.contactPhone || "+20 100 000 0000";
 
   return (
     <footer className="border-t border-border bg-surface">
@@ -29,7 +38,7 @@ export function Footer() {
         <div className="grid grid-cols-2 gap-10 md:grid-cols-4">
           <div className="col-span-2 md:col-span-1">
             <Logo size="sm" className="mb-4 items-start text-start" />
-            <p className="text-caption max-w-56">{t("about")}</p>
+            <p className="text-caption max-w-56">{about}</p>
           </div>
 
           <div>
@@ -55,8 +64,8 @@ export function Footer() {
           <div>
             <h4 className="text-label mb-4">{t("contactHeading")}</h4>
             <ul className="flex flex-col gap-2.5 text-body">
-              <li>hello@gabrperfumes.com</li>
-              <li dir="ltr" className="text-end md:text-start">+20 100 000 0000</li>
+              <li>{contactEmail}</li>
+              <li dir="ltr" className="text-end md:text-start">{contactPhone}</li>
             </ul>
           </div>
         </div>

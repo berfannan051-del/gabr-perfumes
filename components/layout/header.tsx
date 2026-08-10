@@ -50,7 +50,7 @@ export function Header({ onOpenSearch }: { onOpenSearch: () => void }) {
     >
       <div
         className={cn(
-          "mx-auto flex h-20 max-w-7xl items-center justify-between px-5 transition-colors duration-500 md:px-10",
+          "mx-auto flex h-24 max-w-7xl items-center justify-between px-6 transition-colors duration-500 md:px-12",
           transparent ? "text-background" : "text-foreground"
         )}
       >
@@ -63,7 +63,7 @@ export function Header({ onOpenSearch }: { onOpenSearch: () => void }) {
           {mobileOpen ? <CloseIcon className="h-6 w-6" /> : <MenuIcon className="h-6 w-6" />}
         </button>
 
-        <nav className="hidden items-center gap-9 md:flex">
+        <nav className="hidden items-center gap-10 lg:gap-12 md:flex">
           {links.map((link) => (
             <Link key={link.href} href={link.href} className="text-label hover:text-primary transition-colors">
               {link.label}
@@ -75,13 +75,13 @@ export function Header({ onOpenSearch }: { onOpenSearch: () => void }) {
           <LogoMark className={cn(!transparent && "text-primary")} />
         </Link>
 
-        <div className="flex items-center gap-4 md:gap-5">
+        <div className="flex items-center gap-5 md:gap-7">
           <LanguageSwitcher className="hidden text-label hover:text-primary transition-colors md:block" />
           <button type="button" onClick={onOpenSearch} aria-label={t("search")} className="hover:text-primary transition-colors">
             <SearchIcon className="h-5 w-5" />
           </button>
           {session ? (
-            <div className="hidden items-center gap-4 md:flex">
+            <div className="hidden items-center gap-5 md:flex">
               {session.user.role === "ADMIN" && (
                 <Link href="/admin" className="text-label hover:text-primary transition-colors">
                   Admin

@@ -3,9 +3,8 @@ import { hasLocale } from "next-intl";
 import { NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
+import { SessionProvider } from "next-auth/react";
 import { routing } from "@/i18n/routing";
-import { SiteShell } from "@/components/layout/site-shell";
-import { getAllProducts } from "@/lib/data/products";
 import { auth } from "@/auth";
 import "../globals.css";
 
@@ -54,15 +53,13 @@ export default async function LocaleLayout({
 
   setRequestLocale(locale);
   const dir = locale === "ar" ? "rtl" : "ltr";
-  const [products, session] = await Promise.all([getAllProducts(), auth()]);
+  const session = await auth();
 
   return (
     <html lang={locale} dir={dir} className="h-full" data-scroll-behavior="smooth">
       <body className="flex min-h-full flex-col bg-background text-foreground antialiased">
         <NextIntlClientProvider>
-          <SiteShell products={products} session={session}>
-            {children}
-          </SiteShell>
+          <SessionProvider session={session}>{children}</SessionProvider>
         </NextIntlClientProvider>
       </body>
     </html>

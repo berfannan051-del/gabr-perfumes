@@ -52,6 +52,16 @@ enum OrderStatus {
   CANCELLED
 }
 
+enum BrandType {
+  GABR
+  OTHER
+}
+
+enum SiteContentType {
+  TEXT
+  IMAGE
+}
+
 model User {
   id           String    @id @default(cuid())
   name         String
@@ -138,6 +148,8 @@ model Product {
   images              String[]        @default([])
   isBestseller        Boolean         @default(false)
   isNew               Boolean         @default(false)
+  brandType           BrandType       @default(GABR)
+  brandName           String?
   createdAt           DateTime        @default(now())
 
   collection Collection        @relation(fields: [collectionId], references: [id])
@@ -205,4 +217,24 @@ model OrderItem {
   order   Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product Product?        @relation(fields: [productId], references: [id])
   variant ProductVariant? @relation(fields: [variantId], references: [id])
+}
+
+model SiteContent {
+  id        String          @id @default(cuid())
+  key       String          @unique
+  type      SiteContentType @default(TEXT)
+  valueAr   String          @db.Text
+  valueEn   String          @db.Text
+  updatedAt DateTime        @updatedAt
+}
+
+model Review {
+  id             String   @id @default(cuid())
+  customerName   String
+  rating         Int
+  textAr         String   @db.Text
+  textEn         String   @db.Text
+  customerImage  String?
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
 }

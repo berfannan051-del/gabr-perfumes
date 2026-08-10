@@ -4,6 +4,9 @@ import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { Input, Label, Textarea } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { DataTable, type DataTableColumn } from "@/components/admin/ui/data-table";
+import { ConfirmDialog } from "@/components/admin/ui/confirm-dialog";
+import { useToast } from "@/components/admin/ui/toast";
 import { upsertCollection, deleteCollection } from "@/app/[locale]/admin/collections/actions";
 import type { Collection } from "@/types/catalog";
 
@@ -29,8 +32,10 @@ const emptyForm: FormState = {
 
 export function CollectionsManager({ collections }: { collections: Collection[] }) {
   const t = useTranslations("Admin.collections");
+  const toast = useToast();
   const [form, setForm] = useState<FormState>(emptyForm);
   const [pending, startTransition] = useTransition();
+  const [deleteTarget, setDeleteTarget] = useState<Collection | null>(null);
 
   function edit(c: Collection) {
     setForm({
@@ -54,6 +59,7 @@ export function CollectionsManager({ collections }: { collections: Collection[] 
         descriptionEn: form.descriptionEn,
         image: form.image,
       });
+      toast.show(t("saved"));
       setForm(emptyForm);
     });
   }
@@ -61,36 +67,63 @@ export function CollectionsManager({ collections }: { collections: Collection[] 
   function remove(id: string) {
     startTransition(async () => {
       await deleteCollection(id);
+      toast.show(t("deleted"));
     });
   }
 
+  const columns: DataTableColumn<Collection>[] = [
+    {
+      key: "name",
+      label: t("name"),
+      render: (c) => (
+        <div>
+          <p className="text-body">{c.name.ar}</p>
+          <p className="text-caption text-muted-foreground">{c.slug}</p>
+        </div>
+      ),
+      sortValue: (c) => c.name.ar,
+    },
+    {
+      key: "actions",
+      label: "",
+      align: "end",
+      render: (c) => (
+        <div className="flex items-center justify-end gap-4">
+          <button type="button" onClick={() => edit(c)} className="text-caption text-primary">
+            {t("save")}
+          </button>
+          <button
+            type="button"
+            onClick={() => setDeleteTarget(c)}
+            className="text-caption text-primary-deep"
+          >
+            {t("delete")}
+          </button>
+        </div>
+      ),
+    },
+  ];
+
   return (
-    <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_360px]">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_360px]">
       <div>
         <h1 className="text-h2 mb-6">{t("title")}</h1>
-        <table className="w-full border-collapse text-start">
-          <tbody>
-            {collections.map((c) => (
-              <tr key={c.id} className="border-b border-border">
-                <td className="py-3 text-body">{c.name.ar}</td>
-                <td className="py-3 text-caption text-muted-foreground">{c.slug}</td>
-                <td className="py-3 text-end">
-                  <button type="button" onClick={() => edit(c)} className="text-caption text-primary me-4">
-                    ✎
-                  </button>
-                  <button type="button" onClick={() => remove(c.id)} className="text-caption text-primary-deep">
-                    ×
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="border border-border bg-surface p-5">
+          <DataTable
+            rows={collections}
+            columns={columns}
+            rowKey={(c) => c.id}
+            searchText={(c) => `${c.name.ar} ${c.name.en} ${c.slug}`}
+            searchPlaceholder={t("search")}
+            emptyLabel={t("noResults")}
+            pageSize={10}
+          />
+        </div>
       </div>
 
-      <div className="flex flex-col gap-3 border border-border p-6">
+      <div className="flex h-fit flex-col gap-3 border border-border bg-surface p-6">
         <h2 className="text-h3 mb-2">{form.id ? t("save") : t("new")}</h2>
-        <Label htmlFor="c-slug">Slug</Label>
+        <Label htmlFor="c-slug">{t("slug")}</Label>
         <Input id="c-slug" value={form.slug} onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))} />
         <Label htmlFor="c-nameAr">{t("name")} (AR)</Label>
         <Input id="c-nameAr" value={form.nameAr} onChange={(e) => setForm((f) => ({ ...f, nameAr: e.target.value }))} />
@@ -108,11 +141,24 @@ export function CollectionsManager({ collections }: { collections: Collection[] 
           </Button>
           {form.id && (
             <Button type="button" variant="outline" onClick={() => setForm(emptyForm)}>
-              Cancel
+              {t("cancel")}
             </Button>
           )}
         </div>
       </div>
+
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        onOpenChange={(open) => !open && setDeleteTarget(null)}
+        title={t("deleteTitle")}
+        description={t("confirmDelete")}
+        confirmLabel={t("delete")}
+        cancelLabel={t("cancel")}
+        onConfirm={() => {
+          if (deleteTarget) remove(deleteTarget.id);
+          setDeleteTarget(null);
+        }}
+      />
     </div>
   );
 }

@@ -45,6 +45,10 @@
     "title": "توقيعنا العطري",
     "viewAll": "عرض جميع المنتجات"
   },
+  "Reviews": {
+    "eyebrow": "آراء عملائنا",
+    "title": "ماذا يقول عملاؤنا"
+  },
   "NotesStory": {
     "eyebrow": "هندسة العطر",
     "title": "طبقات من الإحساس",
@@ -117,13 +121,22 @@
   },
   "Auth": {
     "loginTitle": "تسجيل الدخول",
+    "loginSubtitle": "أهلاً بعودتك — سجّل الدخول للمتابعة.",
     "registerTitle": "إنشاء حساب",
+    "registerSubtitle": "انضم إلى جابر لمتابعة طلباتك وحفظ مفضلاتك.",
+    "tagline": "حيث تلتقي الحرفة العريقة بحضور يليق باليوم.",
     "name": "الاسم",
     "email": "البريد الإلكتروني",
     "password": "كلمة المرور",
+    "showPassword": "إظهار كلمة المرور",
+    "hidePassword": "إخفاء كلمة المرور",
+    "rememberMe": "تذكرني",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "forgotPasswordHint": "تواصل معنا وسنساعدك على استعادة الوصول لحسابك.",
     "loginCta": "دخول",
     "registerCta": "إنشاء الحساب",
     "submitting": "جارٍ التنفيذ...",
+    "signedIn": "تم تسجيل الدخول — جارٍ التحويل…",
     "noAccount": "ليس لديك حساب؟",
     "haveAccount": "لديك حساب بالفعل؟",
     "createOne": "أنشئ واحدًا",
@@ -140,16 +153,40 @@
   },
   "Admin": {
     "nav": {
+      "groupOverview": "نظرة عامة",
+      "groupCatalog": "الكتالوج",
+      "groupSales": "المبيعات",
+      "groupContent": "المحتوى",
       "dashboard": "لوحة التحكم",
       "products": "المنتجات",
       "collections": "المجموعات",
       "orders": "الطلبات",
+      "customers": "العملاء",
+      "reviews": "التقييمات",
+      "content": "محتوى الموقع",
+      "settings": "الإعدادات",
+      "logout": "تسجيل الخروج",
       "backToSite": "العودة للموقع"
     },
     "stats": {
+      "products": "إجمالي المنتجات",
+      "customers": "إجمالي العملاء",
       "orders": "إجمالي الطلبات",
       "revenue": "الإيرادات",
-      "lowStock": "مخزون منخفض"
+      "lowStock": "مخزون منخفض",
+      "recentOrders": "أحدث الطلبات",
+      "recentCustomers": "أحدث العملاء",
+      "bestSellers": "الأكثر مبيعًا",
+      "lowStockProducts": "منتجات بمخزون منخفض",
+      "salesOverview": "نظرة على المبيعات",
+      "salesOverviewSubtitle": "الإيرادات خلال آخر 14 يومًا",
+      "orderStatus": "حالة الطلبات",
+      "topProducts": "المنتجات الأفضل مبيعًا",
+      "topProductsSubtitle": "حسب الإيرادات",
+      "viewAll": "عرض الكل",
+      "noOrdersYet": "لا توجد طلبات بعد",
+      "noCustomersYet": "لا يوجد عملاء بعد",
+      "inStock": "بالمخزون"
     },
     "products": {
       "title": "المنتجات",
@@ -191,17 +228,34 @@
       "updated": "تم تحديث المنتج",
       "confirmDelete": "هل أنت متأكد من حذف هذا المنتج؟",
       "errorNoVariants": "أضف حجمًا واحدًا على الأقل بسعره قبل الحفظ",
-      "errorInvalid": "تحقق من البيانات المُدخلة وحاول مرة أخرى"
+      "errorInvalid": "تحقق من البيانات المُدخلة وحاول مرة أخرى",
+      "search": "ابحث عن منتج…",
+      "noResults": "لا توجد منتجات",
+      "image": "الصورة",
+      "brand": "العلامة التجارية",
+      "brandGabr": "جابر",
+      "brandOther": "علامة أخرى",
+      "deleteTitle": "حذف المنتج",
+      "deleted": "تم حذف المنتج",
+      "cancel": "إلغاء"
     },
     "collections": {
       "title": "المجموعات",
       "new": "مجموعة جديدة",
       "name": "الاسم",
+      "slug": "الرابط المختصر",
       "descriptionAr": "الوصف (عربي)",
       "descriptionEn": "الوصف (إنجليزي)",
       "image": "معرّف الصورة",
       "save": "حفظ",
-      "delete": "حذف"
+      "delete": "حذف",
+      "cancel": "إلغاء",
+      "search": "ابحث عن مجموعة…",
+      "noResults": "لا توجد مجموعات",
+      "confirmDelete": "هل أنت متأكد من حذف هذه المجموعة؟",
+      "deleteTitle": "حذف المجموعة",
+      "saved": "تم حفظ المجموعة",
+      "deleted": "تم حذف المجموعة"
     },
     "orders": {
       "title": "الطلبات",
@@ -211,6 +265,8 @@
       "status": "الحالة",
       "total": "الإجمالي",
       "filterAll": "الكل",
+      "search": "ابحث عن طلب…",
+      "noResults": "لا توجد طلبات",
       "items": "المنتجات",
       "shippingInfo": "بيانات الشحن",
       "paymentInfo": "بيانات الدفع",
@@ -222,6 +278,54 @@
       "statusShipped": "تم الشحن",
       "statusDelivered": "تم التوصيل",
       "statusCancelled": "ملغي"
+    },
+    "customers": {
+      "title": "العملاء",
+      "name": "الاسم",
+      "email": "البريد الإلكتروني",
+      "orders": "الطلبات",
+      "joined": "تاريخ الانضمام",
+      "search": "ابحث عن عميل…",
+      "noResults": "لا يوجد عملاء"
+    },
+    "reviews": {
+      "title": "التقييمات",
+      "new": "تقييم جديد",
+      "customerName": "اسم العميل",
+      "rating": "التقييم",
+      "textAr": "نص التقييم (عربي)",
+      "textEn": "نص التقييم (إنجليزي)",
+      "image": "صورة العميل",
+      "status": "الحالة",
+      "active": "مفعّل",
+      "inactive": "غير مفعّل",
+      "save": "حفظ",
+      "saving": "جارٍ الحفظ…",
+      "cancel": "إلغاء",
+      "edit": "تعديل",
+      "delete": "حذف",
+      "search": "ابحث عن تقييم…",
+      "noResults": "لا توجد تقييمات",
+      "confirmDelete": "هل أنت متأكد من حذف هذا التقييم؟",
+      "deleteTitle": "حذف التقييم",
+      "saved": "تم حفظ التقييم",
+      "deleted": "تم حذف التقييم",
+      "activated": "تم تفعيل التقييم",
+      "deactivated": "تم إلغاء تفعيل التقييم",
+      "errorInvalid": "تحقق من البيانات المُدخلة وحاول مرة أخرى"
+    },
+    "content": {
+      "title": "محتوى الموقع",
+      "tabHomepage": "الرئيسية",
+      "tabAbout": "من نحن",
+      "tabFooter": "الفوتر",
+      "tabSettings": "الإعدادات العامة",
+      "arabic": "عربي",
+      "english": "إنجليزي",
+      "save": "حفظ",
+      "saving": "جارٍ الحفظ…",
+      "saved": "تم الحفظ",
+      "uploadError": "فشل رفع الصورة"
     }
   },
   "Shop": {
@@ -232,6 +336,12 @@
       "clear": "مسح الكل",
       "apply": "تطبيق",
       "category": "الفئة",
+      "brand": "العلامة التجارية",
+      "brandOptions": {
+        "all": "الكل",
+        "gabr": "جابر",
+        "other": "علامات أخرى"
+      },
       "gender": "الجمهور",
       "genderOptions": {
         "all": "الكل",
@@ -279,7 +389,9 @@
     "related": "قد يعجبك أيضًا",
     "family": "العائلة العطرية",
     "concentration": "التركيز",
-    "share": "مشاركة"
+    "share": "مشاركة",
+    "brandGabr": "جابر",
+    "brandOther": "علامة أخرى"
   },
   "Cart": {
     "title": "سلة المشتريات",

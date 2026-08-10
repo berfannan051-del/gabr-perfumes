@@ -71,7 +71,12 @@ export function ProductDetail({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
         >
-          <span className="text-label text-primary">{tf(product.family)}</span>
+          <div className="flex items-center gap-3">
+            <span className="text-label text-primary">{tf(product.family)}</span>
+            {product.brandType === "OTHER" && (
+              <Badge variant="muted">{product.brandName || t("brandOther")}</Badge>
+            )}
+          </div>
           <h1 className="text-h1 mt-3 mb-4">{product.name[locale]}</h1>
           <p className="text-body mb-6 text-muted-foreground">{product.shortDescription[locale]}</p>
 

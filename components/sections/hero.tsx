@@ -20,8 +20,23 @@ const item: Variants = {
   show: { opacity: 1, y: 0, transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] } },
 };
 
-export function Hero() {
+export type HeroContent = {
+  eyebrow: string;
+  titleLine1: string;
+  titleLine2: string;
+  subtitle: string;
+  ctaPrimary: string;
+  ctaSecondary: string;
+};
+
+export function Hero({ content }: { content?: Partial<HeroContent> }) {
   const t = useTranslations("Hero");
+  const eyebrow = content?.eyebrow || t("eyebrow");
+  const titleLine1 = content?.titleLine1 || t("titleLine1");
+  const titleLine2 = content?.titleLine2 || t("titleLine2");
+  const subtitle = content?.subtitle || t("subtitle");
+  const ctaPrimary = content?.ctaPrimary || t("ctaPrimary");
+  const ctaSecondary = content?.ctaSecondary || t("ctaSecondary");
   const ref = useRef<HTMLDivElement>(null);
   const reduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
@@ -55,31 +70,31 @@ export function Hero() {
         <div className="max-w-xl">
           <motion.div variants={item} className="mb-6 flex items-center gap-3">
             <DiamondDivider className="w-16" />
-            <span className="text-label text-primary-highlight">{t("eyebrow")}</span>
+            <span className="text-label text-primary-highlight">{eyebrow}</span>
           </motion.div>
 
           <h1 className="text-background">
             <motion.span variants={item} className="text-display block overflow-hidden">
-              {t("titleLine1")}
+              {titleLine1}
             </motion.span>
             <motion.span variants={item} className="text-display block overflow-hidden text-primary-highlight">
-              {t("titleLine2")}
+              {titleLine2}
             </motion.span>
           </h1>
 
           <motion.p variants={item} className="text-body mt-7 max-w-md text-background/80">
-            {t("subtitle")}
+            {subtitle}
           </motion.p>
 
           <motion.div variants={item} className="mt-10 flex flex-wrap items-center gap-4">
             <Link href="/shop">
               <Button size="lg" className="bg-primary text-foreground hover:bg-primary-highlight">
-                {t("ctaPrimary")}
+                {ctaPrimary}
               </Button>
             </Link>
             <Link href="/about">
               <Button variant="ghost" size="lg" className="text-background hover:text-primary-highlight">
-                {t("ctaSecondary")}
+                {ctaSecondary}
               </Button>
             </Link>
           </motion.div>

@@ -9,19 +9,28 @@ const layers = [
   { key: "base", opacity: 1 },
 ] as const;
 
-export function NotesStory() {
+export type NotesStoryContent = {
+  eyebrow: string;
+  title: string;
+  body: string;
+};
+
+export function NotesStory({ content }: { content?: Partial<NotesStoryContent> }) {
   const t = useTranslations("NotesStory");
+  const eyebrow = content?.eyebrow || t("eyebrow");
+  const title = content?.title || t("title");
+  const body = content?.body || t("body");
 
   return (
     <section className="py-24 md:py-36">
       <div className="mx-auto max-w-7xl px-5 md:px-10">
         <div className="mb-16 grid grid-cols-1 gap-8 md:grid-cols-2 md:items-end">
           <div>
-            <span className="text-label text-primary">{t("eyebrow")}</span>
-            <h2 className="text-h1 mt-4">{t("title")}</h2>
+            <span className="text-label text-primary">{eyebrow}</span>
+            <h2 className="text-h1 mt-4">{title}</h2>
           </div>
           <p className="text-body max-w-md text-muted-foreground md:justify-self-end md:text-end">
-            {t("body")}
+            {body}
           </p>
         </div>
 

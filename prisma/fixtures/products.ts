@@ -9,7 +9,7 @@ function variants(base: number) {
   ].map((v, i) => ({ ...v, id: `${v.id}-${i}`, sku: `GBR${v.sku}` }));
 }
 
-const rawProducts: Omit<Product, "images">[] = [
+const rawProducts: Omit<Product, "images" | "brandType" | "brandName">[] = [
   {
     id: "p-1",
     slug: "sultan-al-oud",
@@ -255,6 +255,7 @@ const rawProducts: Omit<Product, "images">[] = [
 export const products: Product[] = rawProducts.map((product) => ({
   ...product,
   images: [],
+  brandType: "GABR",
   variants: product.variants.map((variant) => ({
     ...variant,
     sku: `GBR-${product.slug.toUpperCase()}-${variant.sizeMl}`,
