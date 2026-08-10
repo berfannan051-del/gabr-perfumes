@@ -12,6 +12,14 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
   },
+  experimental: {
+    serverActions: {
+      // Admin product forms can upload several images per submit (each up to
+      // 5MB per lib/security/validate-upload.ts) — the 1MB Server Action
+      // default is too small for that.
+      bodySizeLimit: "20mb",
+    },
+  },
   async headers() {
     return [
       {
