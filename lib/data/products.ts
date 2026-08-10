@@ -45,6 +45,7 @@ function mapProduct(p: DbProduct): Product {
     concentration: { ar: p.concentrationAr, en: p.concentrationEn },
     bottleShape: p.bottleShape.toLowerCase() as BottleShape,
     heroColor: p.heroColor,
+    images: p.images,
     variants: p.variants.map(mapVariant),
     notes: {
       top: p.notes.filter((n) => n.layer === "TOP").map((n) => mapNote(n.note)),

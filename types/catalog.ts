@@ -43,6 +43,7 @@ export type Product = {
   concentration: LocalizedText;
   bottleShape: BottleShape;
   heroColor: string;
+  images: string[];
   variants: ProductVariant[];
   notes: {
     top: FragranceNote[];

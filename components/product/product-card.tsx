@@ -16,6 +16,7 @@ export function ProductCard({ product }: { product: Product }) {
   const wishlist = useWishlist();
   const inWishlist = wishlist.has(product.id);
   const startingPrice = product.variants[0].price;
+  const image = product.images[0];
 
   return (
     <div className="group relative">
@@ -25,7 +26,12 @@ export function ProductCard({ product }: { product: Product }) {
             initial={false}
             className="h-full w-full transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-110 group-hover:-rotate-2"
           >
-            <BottleArt shape={product.bottleShape} liquidColor={product.heroColor} className="h-full w-full" />
+            {image ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={image} alt={product.name[locale]} className="h-full w-full object-cover" />
+            ) : (
+              <BottleArt shape={product.bottleShape} liquidColor={product.heroColor} className="h-full w-full" />
+            )}
           </motion.div>
 
           <div className="absolute start-3 top-3 flex flex-col gap-2">
