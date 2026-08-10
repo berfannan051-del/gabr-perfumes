@@ -80,9 +80,26 @@ export function ProductForm({
   const [newImages, setNewImages] = useState<File[]>([]);
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [slugTouched, setSlugTouched] = useState(Boolean(product));
 
   function set<K extends keyof ProductFormData>(key: K, value: ProductFormData[K]) {
     setForm((f) => ({ ...f, [key]: value }));
+  }
+
+  function slugify(text: string) {
+    return text
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  }
+
+  function setNameEn(value: string) {
+    setForm((f) => ({
+      ...f,
+      nameEn: value,
+      slug: slugTouched ? f.slug : slugify(value),
+    }));
   }
 
   function addVariant() {
@@ -148,7 +165,19 @@ export function ProductForm({
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
           <Label htmlFor="slug">{t("slug")}</Label>
-          <Input id="slug" value={form.slug} onChange={(e) => set("slug", e.target.value)} className="mt-2" />
+          <Input
+            id="slug"
+            value={form.slug}
+            onChange={(e) => {
+              setSlugTouched(true);
+              set("slug", e.target.value);
+            }}
+            dir="ltr"
+            className="mt-2"
+          />
+          <p className="text-caption mt-1 text-muted-foreground" dir="ltr">
+            /shop/{form.slug || "..."}
+          </p>
         </div>
         <div>
           <Label htmlFor="heroColor">{t("heroColor")}</Label>
@@ -160,7 +189,7 @@ export function ProductForm({
         </div>
         <div>
           <Label htmlFor="nameEn">{t("nameEn")}</Label>
-          <Input id="nameEn" value={form.nameEn} onChange={(e) => set("nameEn", e.target.value)} className="mt-2" />
+          <Input id="nameEn" value={form.nameEn} onChange={(e) => setNameEn(e.target.value)} className="mt-2" />
         </div>
         <div>
           <Label htmlFor="shortAr">{t("shortDescriptionAr")}</Label>
