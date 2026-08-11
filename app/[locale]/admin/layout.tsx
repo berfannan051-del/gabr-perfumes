@@ -28,6 +28,7 @@ export default async function AdminLayout({
       items: [
         { href: "/admin/products", label: t("products") },
         { href: "/admin/collections", label: t("collections") },
+        { href: "/admin/brands", label: t("brands") },
       ],
     },
     {

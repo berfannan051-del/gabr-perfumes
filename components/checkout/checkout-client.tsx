@@ -11,14 +11,17 @@ import { Input, Textarea, Label } from "@/components/ui/input";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { BottleArt } from "@/components/product/bottle-art";
 import { PaymentMethodPicker, type PaymentMethod } from "@/components/checkout/payment-method-picker";
+import { WhatsAppIcon } from "@/components/ui/icons";
 import type { Locale } from "@/types/catalog";
 
 export function CheckoutClient({
   instapayNumber,
   vodafoneCashNumber,
+  whatsappNumber,
 }: {
   instapayNumber: string;
   vodafoneCashNumber: string;
+  whatsappNumber: string;
 }) {
   const t = useTranslations("Checkout");
   const tc = useTranslations("Common");
@@ -98,8 +101,16 @@ export function CheckoutClient({
     cart.clear();
   }
 
+  const waDigits = whatsappNumber.replace(/\D/g, "");
+  const waLink = waDigits
+    ? `https://wa.me/${waDigits}?text=${encodeURIComponent(t("whatsappMessage", { orderNumber: orderNumber ?? "" }))}`
+    : null;
+
   useEffect(() => {
-    if (orderNumber) window.scrollTo({ top: 0, behavior: "smooth" });
+    if (!orderNumber) return;
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (waLink) window.open(waLink, "_blank", "noopener,noreferrer");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderNumber]);
 
   if (orderNumber) {
@@ -109,9 +120,17 @@ export function CheckoutClient({
           <span className="text-label text-primary">{orderNumber}</span>
           <h1 className="text-h1 mt-4 mb-4">{t("successTitle")}</h1>
           <p className="text-body mb-8 text-muted-foreground">{t("successBody")}</p>
-          <Link href="/shop" className={buttonVariants()}>
-            {tc("back")}
-          </Link>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <Link href="/shop" className={buttonVariants({ variant: "outline" })}>
+              {tc("back")}
+            </Link>
+            {waLink && (
+              <a href={waLink} target="_blank" rel="noopener noreferrer" className={buttonVariants()}>
+                <WhatsAppIcon className="h-4 w-4" />
+                {t("whatsappConfirm")}
+              </a>
+            )}
+          </div>
         </motion.div>
       </div>
     );

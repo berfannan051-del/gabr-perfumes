@@ -9,6 +9,7 @@ export type FooterContent = {
   about: string;
   contactEmail: string;
   contactPhone: string;
+  visitCount: number;
 };
 
 export function Footer({ content }: { content?: Partial<FooterContent> }) {
@@ -72,6 +73,9 @@ export function Footer({ content }: { content?: Partial<FooterContent> }) {
 
         <div className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 text-caption sm:flex-row">
           <p>© {year} GABR Perfumes — {t("rights")}</p>
+          {typeof content?.visitCount === "number" && content.visitCount > 0 && (
+            <p>{t("visitCount", { count: content.visitCount })}</p>
+          )}
           <p>{t("madeWith")}</p>
         </div>
       </div>

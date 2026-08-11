@@ -15,6 +15,7 @@ import {
   MenuIcon,
   CloseIcon,
   LogoutIcon,
+  TagIcon,
 } from "@/components/ui/icons";
 import { cn } from "@/lib/cn";
 
@@ -25,6 +26,7 @@ const ICON_BY_HREF: Record<string, React.ComponentType<{ className?: string }>> 
   "/admin": GridIcon,
   "/admin/products": BoxIcon,
   "/admin/collections": GridIcon,
+  "/admin/brands": TagIcon,
   "/admin/orders": BagIcon,
   "/admin/customers": UsersIcon,
   "/admin/reviews": StarIcon,

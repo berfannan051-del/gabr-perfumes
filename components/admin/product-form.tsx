@@ -2,13 +2,14 @@
 
 import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
-import { useRouter } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { Input, Label, Textarea } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { saveProduct } from "@/app/[locale]/admin/products/actions";
 
 type NoteOption = { id: string; nameAr: string; nameEn: string };
 type CollectionOption = { id: string; nameAr: string };
+type BrandOption = { id: string; name: string };
 
 type VariantRow = { id?: string; sizeMl: number; price: number; stockQuantity: number; sku: string };
 
@@ -32,7 +33,7 @@ type ProductFormData = {
   isBestseller: boolean;
   isNew: boolean;
   brandType: "GABR" | "OTHER";
-  brandName: string;
+  brandId: string;
   variants: VariantRow[];
   notesByLayer: { top: string[]; heart: string[]; base: string[] };
 };
@@ -62,7 +63,7 @@ const emptyProduct: ProductFormData = {
   isBestseller: false,
   isNew: false,
   brandType: "GABR",
-  brandName: "",
+  brandId: "",
   variants: [],
   notesByLayer: { top: [], heart: [], base: [] },
 };
@@ -70,10 +71,12 @@ const emptyProduct: ProductFormData = {
 export function ProductForm({
   collections,
   notes,
+  brands,
   product,
 }: {
   collections: CollectionOption[];
   notes: NoteOption[];
+  brands: BrandOption[];
   product?: ProductFormData;
 }) {
   const t = useTranslations("Admin.products");
@@ -150,7 +153,7 @@ export function ProductForm({
       data.set("isBestseller", String(form.isBestseller));
       data.set("isNew", String(form.isNew));
       data.set("brandType", form.brandType);
-      data.set("brandName", form.brandName);
+      data.set("brandId", form.brandId);
       data.set("variants", JSON.stringify(form.variants));
       data.set("notes", JSON.stringify(form.notesByLayer));
       data.set("existingImages", JSON.stringify(form.images));
@@ -293,8 +296,29 @@ export function ProductForm({
         </div>
         {form.brandType === "OTHER" && (
           <div>
-            <Label htmlFor="brandName">{t("brand")}</Label>
-            <Input id="brandName" value={form.brandName} onChange={(e) => set("brandName", e.target.value)} className="mt-2" />
+            <Label htmlFor="brandId">{t("brand")}</Label>
+            {brands.length > 0 ? (
+              <select
+                id="brandId"
+                value={form.brandId}
+                onChange={(e) => set("brandId", e.target.value)}
+                className="mt-2 h-12 w-full border border-border bg-surface px-3"
+              >
+                <option value="">{t("selectBrand")}</option>
+                {brands.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <p className="text-caption mt-2 text-muted-foreground">
+                {t("noBrandsYet")}{" "}
+                <Link href="/admin/brands" className="text-primary underline-offset-4 hover:underline">
+                  {t("addBrandLink")}
+                </Link>
+              </p>
+            )}
           </div>
         )}
       </div>

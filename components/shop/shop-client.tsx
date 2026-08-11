@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { ProductCard } from "@/components/product/product-card";
 import { Sheet, SheetClose, SheetTitle } from "@/components/ui/sheet";
 import { CloseIcon } from "@/components/ui/icons";
-import type { BrandType, Collection, FragranceFamily, Gender, Locale, Product } from "@/types/catalog";
+import type { Brand, BrandType, Collection, FragranceFamily, Gender, Locale, Product } from "@/types/catalog";
 
 const genders: Gender[] = ["men", "women", "unisex"];
 const families: FragranceFamily[] = ["oriental", "woody", "floral", "citrus", "amber", "musk"];
@@ -15,12 +15,14 @@ type Sort = "newest" | "priceAsc" | "priceDesc" | "nameAsc";
 export function ShopClient({
   products,
   collections,
+  brands,
   initialCollection,
   initialGender,
   initialBrand,
 }: {
   products: Product[];
   collections: Collection[];
+  brands: Brand[];
   initialCollection?: string;
   initialGender?: Gender;
   initialBrand?: BrandType;
@@ -33,6 +35,7 @@ export function ShopClient({
   const [family, setFamily] = useState<FragranceFamily[]>([]);
   const [collection, setCollection] = useState<string | "all">(initialCollection ?? "all");
   const [brand, setBrand] = useState<BrandType | "all">(initialBrand ?? "all");
+  const [brandId, setBrandId] = useState<string | "all">("all");
   const [sort, setSort] = useState<Sort>("newest");
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
@@ -42,6 +45,7 @@ export function ShopClient({
       if (family.length > 0 && !family.includes(p.family)) return false;
       if (collection !== "all" && p.collectionSlug !== collection) return false;
       if (brand !== "all" && p.brandType !== brand) return false;
+      if (brand === "OTHER" && brandId !== "all" && p.brand?.id !== brandId) return false;
       return true;
     });
 
@@ -59,7 +63,7 @@ export function ShopClient({
         list = [...list].sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
     }
     return list;
-  }, [gender, family, collection, brand, sort, locale, products]);
+  }, [gender, family, collection, brand, brandId, sort, locale, products]);
 
   function toggleFamily(f: FragranceFamily) {
     setFamily((prev) => (prev.includes(f) ? prev.filter((x) => x !== f) : [...prev, f]));
@@ -70,6 +74,12 @@ export function ShopClient({
     setFamily([]);
     setCollection("all");
     setBrand("all");
+    setBrandId("all");
+  }
+
+  function selectBrandType(next: BrandType | "all") {
+    setBrand(next);
+    setBrandId("all");
   }
 
   const filterPanel = (
@@ -77,16 +87,48 @@ export function ShopClient({
       <div>
         <h3 className="text-label mb-4">{t("filters.brand")}</h3>
         <div className="flex flex-wrap gap-2">
-          <FilterChip active={brand === "all"} onClick={() => setBrand("all")}>
+          <FilterChip active={brand === "all"} onClick={() => selectBrandType("all")}>
             {t("filters.brandOptions.all")}
           </FilterChip>
-          <FilterChip active={brand === "GABR"} onClick={() => setBrand("GABR")}>
+          <FilterChip active={brand === "GABR"} onClick={() => selectBrandType("GABR")}>
             {t("filters.brandOptions.gabr")}
           </FilterChip>
-          <FilterChip active={brand === "OTHER"} onClick={() => setBrand("OTHER")}>
+          <FilterChip active={brand === "OTHER"} onClick={() => selectBrandType("OTHER")}>
             {t("filters.brandOptions.other")}
           </FilterChip>
         </div>
+
+        {brand === "OTHER" && brands.length > 0 && (
+          <div className="mt-3 flex flex-col gap-2 border-s-2 border-border ps-3">
+            <button
+              type="button"
+              onClick={() => setBrandId("all")}
+              className={`text-caption text-start transition-colors ${
+                brandId === "all" ? "text-primary" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {t("filters.brandOptions.all")}
+            </button>
+            {brands.map((b) => (
+              <button
+                key={b.id}
+                type="button"
+                onClick={() => setBrandId(b.id)}
+                className={`flex items-center gap-2 text-caption transition-colors ${
+                  brandId === b.id ? "text-primary" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {b.logo ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={b.logo} alt="" className="h-5 w-5 rounded-full object-cover" />
+                ) : (
+                  <span className="h-5 w-5 rounded-full bg-surface-muted" />
+                )}
+                {b.name}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       <div>

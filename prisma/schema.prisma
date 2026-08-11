@@ -150,13 +150,23 @@ model Product {
   isBestseller        Boolean         @default(false)
   isNew               Boolean         @default(false)
   brandType           BrandType       @default(GABR)
-  brandName           String?
+  brandId             String?
   createdAt           DateTime        @default(now())
 
   collection Collection        @relation(fields: [collectionId], references: [id])
+  brand      Brand?            @relation(fields: [brandId], references: [id])
   variants   ProductVariant[]
   notes      ProductNote[]
   orderItems OrderItem[]
+}
+
+model Brand {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  logo      String?
+  createdAt DateTime @default(now())
+
+  products Product[]
 }
 
 model ProductVariant {
@@ -238,4 +248,9 @@ model Review {
   customerImage  String?
   isActive       Boolean  @default(true)
   createdAt      DateTime @default(now())
+}
+
+model SiteStats {
+  id         Int @id @default(1)
+  visitCount Int @default(0)
 }

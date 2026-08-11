@@ -87,11 +87,14 @@ export function Hero({ content }: { content?: Partial<HeroContent> }) {
           </motion.div>
 
           <h1 className="text-background">
-            <motion.span variants={item} className="text-display block overflow-hidden">
-              {titleLine1}
+            <motion.span variants={item} className="text-display block overflow-hidden leading-[1.15]">
+              <span className="block pt-2">{titleLine1}</span>
             </motion.span>
-            <motion.span variants={item} className="text-display block overflow-hidden text-primary-highlight">
-              {titleLine2}
+            <motion.span
+              variants={item}
+              className="text-display block overflow-hidden leading-[1.15] text-primary-highlight"
+            >
+              <span className="block pb-1">{titleLine2}</span>
             </motion.span>
           </h1>
 

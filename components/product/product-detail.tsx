@@ -74,7 +74,13 @@ export function ProductDetail({
           <div className="flex items-center gap-3">
             <span className="text-label text-primary">{tf(product.family)}</span>
             {product.brandType === "OTHER" && (
-              <Badge variant="muted">{product.brandName || t("brandOther")}</Badge>
+              <Badge variant="muted" className="flex items-center gap-1.5">
+                {product.brand?.logo && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={product.brand.logo} alt="" className="h-4 w-4 rounded-full object-cover" />
+                )}
+                {product.brand?.name || t("brandOther")}
+              </Badge>
             )}
           </div>
           <h1 className="text-h1 mt-3 mb-4">{product.name[locale]}</h1>

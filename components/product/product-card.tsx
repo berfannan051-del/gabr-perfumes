@@ -46,8 +46,12 @@ export function ProductCard({ product }: { product: Product }) {
 
           {product.brandType === "OTHER" && (
             <div className="absolute end-3 bottom-3">
-              <Badge variant="outline" className="bg-surface/90">
-                {product.brandName || t("brandOther")}
+              <Badge variant="outline" className="flex items-center gap-1.5 bg-surface/90">
+                {product.brand?.logo && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={product.brand.logo} alt="" className="h-4 w-4 rounded-full object-cover" />
+                )}
+                {product.brand?.name || t("brandOther")}
               </Badge>
             </div>
           )}

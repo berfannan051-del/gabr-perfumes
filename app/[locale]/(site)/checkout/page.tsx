@@ -27,6 +27,7 @@ export default async function CheckoutPage({
     <CheckoutClient
       instapayNumber={pick(siteContent, "settings.instapayNumber", l)}
       vodafoneCashNumber={pick(siteContent, "settings.vodafoneCashNumber", l)}
+      whatsappNumber={pick(siteContent, "settings.whatsappNumber", l)}
     />
   );
 }

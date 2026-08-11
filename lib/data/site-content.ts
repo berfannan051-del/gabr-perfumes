@@ -30,6 +30,10 @@ export const SITE_CONTENT_FIELDS = [
   { key: "settings.contactPhone", type: "TEXT", section: "settings" },
   { key: "settings.instapayNumber", type: "TEXT", section: "settings" },
   { key: "settings.vodafoneCashNumber", type: "TEXT", section: "settings" },
+  { key: "settings.whatsappNumber", type: "TEXT", section: "settings" },
+  { key: "settings.instagramUrl", type: "TEXT", section: "settings" },
+  { key: "settings.facebookUrl", type: "TEXT", section: "settings" },
+  { key: "settings.tiktokUrl", type: "TEXT", section: "settings" },
 ] as const satisfies ReadonlyArray<{
   key: string;
   type: "TEXT" | "IMAGE";

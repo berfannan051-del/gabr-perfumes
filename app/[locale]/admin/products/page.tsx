@@ -8,7 +8,7 @@ import { PlusIcon } from "@/components/ui/icons";
 export default async function AdminProductsPage() {
   const t = await getTranslations("Admin.products");
   const products = await prisma.product.findMany({
-    include: { collection: true, variants: { orderBy: { sizeMl: "asc" } } },
+    include: { collection: true, brand: true, variants: { orderBy: { sizeMl: "asc" } } },
     orderBy: { createdAt: "desc" },
   });
 
@@ -19,7 +19,7 @@ export default async function AdminProductsPage() {
     collectionNameAr: p.collection.nameAr,
     image: p.images[0] ?? null,
     brandType: p.brandType,
-    brandName: p.brandName,
+    brandName: p.brand?.name ?? null,
     price: p.variants[0] ? Number(p.variants[0].price) : null,
     stock: p.variants.reduce((sum, v) => sum + v.stockQuantity, 0),
   }));

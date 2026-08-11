@@ -25,7 +25,7 @@ const productSchema = z.object({
   isBestseller: z.boolean(),
   isNew: z.boolean(),
   brandType: z.enum(["GABR", "OTHER"]),
-  brandName: z.string().optional(),
+  brandId: z.string().optional(),
 });
 
 type VariantInput = {
@@ -69,7 +69,7 @@ export async function saveProduct(
     isBestseller: formData.get("isBestseller") === "true",
     isNew: formData.get("isNew") === "true",
     brandType: formData.get("brandType"),
-    brandName: formData.get("brandName") || undefined,
+    brandId: formData.get("brandId") || undefined,
   });
   if (!parsed.success) return { error: "invalid" };
 
@@ -98,7 +98,7 @@ export async function saveProduct(
 
   const data = {
     ...parsed.data,
-    brandName: parsed.data.brandType === "OTHER" ? parsed.data.brandName ?? null : null,
+    brandId: parsed.data.brandType === "OTHER" ? parsed.data.brandId ?? null : null,
     images,
   };
 

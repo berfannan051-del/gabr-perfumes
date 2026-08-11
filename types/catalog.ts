@@ -19,6 +19,12 @@ export type BottleShape = "tall" | "round" | "faceted";
 
 export type BrandType = "GABR" | "OTHER";
 
+export type Brand = {
+  id: string;
+  name: string;
+  logo: string | null;
+};
+
 export type FragranceNote = {
   slug: string;
   name: LocalizedText;
@@ -47,7 +53,7 @@ export type Product = {
   heroColor: string;
   images: string[];
   brandType: BrandType;
-  brandName?: string;
+  brand?: Brand | null;
   variants: ProductVariant[];
   notes: {
     top: FragranceNote[];

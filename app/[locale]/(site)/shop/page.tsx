@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { ShopClient } from "@/components/shop/shop-client";
 import { getAllProducts } from "@/lib/data/products";
 import { getCollections } from "@/lib/data/collections";
+import { getAllBrands } from "@/lib/data/brands";
 import type { Gender } from "@/types/catalog";
 
 export async function generateMetadata({
@@ -27,12 +28,17 @@ export default async function ShopPage({
     : undefined;
   const brand = params.brand === "GABR" || params.brand === "OTHER" ? params.brand : undefined;
 
-  const [products, collections] = await Promise.all([getAllProducts(), getCollections()]);
+  const [products, collections, brands] = await Promise.all([
+    getAllProducts(),
+    getCollections(),
+    getAllBrands(),
+  ]);
 
   return (
     <ShopClient
       products={products}
       collections={collections}
+      brands={brands}
       initialCollection={params.collection}
       initialGender={gender}
       initialBrand={brand}

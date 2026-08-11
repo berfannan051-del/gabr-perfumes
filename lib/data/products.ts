@@ -11,6 +11,7 @@ import { Prisma } from "@/lib/generated/prisma/client";
 
 const productInclude = {
   collection: true,
+  brand: true,
   variants: { orderBy: { sizeMl: "asc" } },
   notes: { include: { note: true } },
 } satisfies Prisma.ProductInclude;
@@ -47,7 +48,7 @@ function mapProduct(p: DbProduct): Product {
     heroColor: p.heroColor,
     images: p.images,
     brandType: p.brandType,
-    brandName: p.brandName ?? undefined,
+    brand: p.brand ? { id: p.brand.id, name: p.brand.name, logo: p.brand.logo } : null,
     variants: p.variants.map(mapVariant),
     notes: {
       top: p.notes.filter((n) => n.layer === "TOP").map((n) => mapNote(n.note)),

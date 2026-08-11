@@ -113,6 +113,15 @@ export function BoxIcon(props: IconProps) {
   );
 }
 
+export function TagIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M12.6 3.5h5.4a1.5 1.5 0 0 1 1.5 1.5v5.4a1.5 1.5 0 0 1-.44 1.06l-8.5 8.5a1.5 1.5 0 0 1-2.12 0l-5.4-5.4a1.5 1.5 0 0 1 0-2.12l8.5-8.5A1.5 1.5 0 0 1 12.6 3.5Z" />
+      <circle cx="16" cy="8" r="1.2" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
 export function UsersIcon(props: IconProps) {
   return (
     <svg {...base} {...props}>
@@ -224,6 +233,43 @@ export function PrinterIcon(props: IconProps) {
       <rect x="3.5" y="8.5" width="17" height="8.5" rx="1.6" />
       <rect x="7" y="13.5" width="10" height="7" />
       <path d="M17 12h.01" />
+    </svg>
+  );
+}
+
+export function InstagramIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <rect x="3" y="3" width="18" height="18" rx="5" />
+      <circle cx="12" cy="12" r="4.2" />
+      <circle cx="17.2" cy="6.8" r="0.9" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+export function FacebookIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <circle cx="12" cy="12" r="9.5" />
+      <path d="M13.6 21v-7.1h2.2l.3-2.6h-2.5V9.6c0-.75.2-1.3 1.3-1.3h1.4V6c-.25-.03-1.1-.1-2-.1-2 0-3.4 1.2-3.4 3.5v1.8H8.6v2.6h2.3V21" />
+    </svg>
+  );
+}
+
+export function TikTokIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M14 3v10.3a3 3 0 1 1-2.2-2.9" />
+      <path d="M14 3c.3 2.5 2 4.3 4.4 4.6v2.3c-1.6 0-3.1-.5-4.4-1.4" />
+    </svg>
+  );
+}
+
+export function WhatsAppIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.7-1.2A9 9 0 1 0 12 3Z" />
+      <path d="M8.5 8.5c.3-.8 1.6-.8 1.9 0 .3.7 0 1.6-.4 2.1.5 1.4 1.7 2.6 3.1 3.1.5-.4 1.4-.7 2.1-.4.8.3.8 1.6 0 1.9-1.6.6-3.7-.1-5.3-1.7-1.6-1.6-2.3-3.7-1.4-5z" />
     </svg>
   );
 }

@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { ProductForm } from "@/components/admin/product-form";
+import { getAllBrands } from "@/lib/data/brands";
 
 export default async function EditProductPage({
   params,
@@ -9,13 +10,14 @@ export default async function EditProductPage({
 }) {
   const { id } = await params;
 
-  const [product, collections, notes] = await Promise.all([
+  const [product, collections, notes, brands] = await Promise.all([
     prisma.product.findUnique({
       where: { id },
       include: { variants: { orderBy: { sizeMl: "asc" } }, notes: true },
     }),
     prisma.collection.findMany({ select: { id: true, nameAr: true }, orderBy: { createdAt: "asc" } }),
     prisma.fragranceNote.findMany({ select: { id: true, nameAr: true, nameEn: true }, orderBy: { nameAr: "asc" } }),
+    getAllBrands(),
   ]);
 
   if (!product) notFound();
@@ -40,7 +42,7 @@ export default async function EditProductPage({
     isBestseller: product.isBestseller,
     isNew: product.isNew,
     brandType: product.brandType,
-    brandName: product.brandName ?? "",
+    brandId: product.brandId ?? "",
     variants: product.variants.map((v) => ({
       id: v.id,
       sizeMl: v.sizeMl,
@@ -55,5 +57,5 @@ export default async function EditProductPage({
     },
   };
 
-  return <ProductForm collections={collections} notes={notes} product={formData} />;
+  return <ProductForm collections={collections} notes={notes} brands={brands} product={formData} />;
 }

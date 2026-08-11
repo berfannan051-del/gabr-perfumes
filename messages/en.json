@@ -98,6 +98,7 @@
     },
     "contactHeading": "Contact",
     "rights": "All rights reserved",
+    "visitCount": "{count, plural, one {# visit} other {# visits}} and counting",
     "madeWith": "Made with passion"
   },
   "Families": {
@@ -181,6 +182,7 @@
       "dashboard": "Dashboard",
       "products": "Products",
       "collections": "Collections",
+      "brands": "Brands",
       "orders": "Orders",
       "customers": "Customers",
       "reviews": "Reviews",
@@ -194,6 +196,7 @@
       "customers": "Total Customers",
       "orders": "Total Orders",
       "revenue": "Revenue",
+      "visits": "Site Visits",
       "lowStock": "Low Stock",
       "recentOrders": "Recent Orders",
       "recentCustomers": "Recent Customers",
@@ -256,6 +259,9 @@
       "brand": "Brand",
       "brandGabr": "GABR",
       "brandOther": "Other Brand",
+      "selectBrand": "Select a brand…",
+      "noBrandsYet": "No brands added yet.",
+      "addBrandLink": "Add one in Brands",
       "deleteTitle": "Delete product",
       "deleted": "Product deleted",
       "cancel": "Cancel"
@@ -277,6 +283,24 @@
       "deleteTitle": "Delete collection",
       "saved": "Collection saved",
       "deleted": "Collection deleted"
+    },
+    "brands": {
+      "title": "Brands",
+      "new": "New Brand",
+      "edit": "Edit",
+      "delete": "Delete",
+      "cancel": "Cancel",
+      "name": "Brand Name",
+      "logo": "Logo",
+      "save": "Save",
+      "saving": "Saving…",
+      "search": "Search brands…",
+      "noResults": "No brands found",
+      "confirmDelete": "Are you sure you want to delete this brand? Products using it will keep their \"Other Brand\" type but lose the brand link.",
+      "deleteTitle": "Delete brand",
+      "saved": "Brand saved",
+      "deleted": "Brand deleted",
+      "errorInvalid": "Please check the form and try again"
     },
     "orders": {
       "title": "Orders",
@@ -404,7 +428,11 @@
         "settings_contactEmail": "Contact Email",
         "settings_contactPhone": "Contact Phone",
         "settings_instapayNumber": "InstaPay Number (shown to customers at checkout)",
-        "settings_vodafoneCashNumber": "Vodafone Cash Number (shown to customers at checkout)"
+        "settings_vodafoneCashNumber": "Vodafone Cash Number (shown to customers at checkout)",
+        "settings_whatsappNumber": "WhatsApp Number (customers are redirected here after ordering)",
+        "settings_instagramUrl": "Instagram URL",
+        "settings_facebookUrl": "Facebook URL",
+        "settings_tiktokUrl": "TikTok URL"
       }
     }
   },
@@ -527,12 +555,13 @@
     "proofUpload": "Proof of Payment",
     "proofUploadHint": "Attach a screenshot of the transfer (PNG or JPG)",
     "orderSummary": "Order Summary",
-    "whatsappConfirm": "Confirm via WhatsApp",
-    "whatsappHint": "After submitting, we'll reach out on WhatsApp to confirm your order",
+    "whatsappConfirm": "Continue on WhatsApp",
+    "whatsappHint": "Once you submit, we'll open WhatsApp so you can confirm the order with us directly",
+    "whatsappMessage": "Hello GABR Perfumes — I've just placed order {orderNumber} and would like to confirm the details.",
     "submit": "Submit Order",
     "submitting": "Submitting...",
-    "successTitle": "Order Received",
-    "successBody": "Thank you — we'll be in touch on WhatsApp shortly to confirm your order.",
+    "successTitle": "Your order has been received",
+    "successBody": "We're reviewing your order now and will confirm it shortly — our team will reach out to you directly to finalize the details.",
     "errorRequired": "This field is required",
     "errorEmail": "Invalid email address",
     "errorPhone": "Invalid phone number",

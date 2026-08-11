@@ -4,7 +4,8 @@ import { Link } from "@/i18n/navigation";
 import { AdminStatCard } from "@/components/admin/ui/stat-card";
 import { AdminChartCard } from "@/components/admin/ui/chart-card";
 import { SalesAreaChart, OrderStatusDonut, TopProductsBar } from "@/components/admin/ui/charts";
-import { BoxIcon, UsersIcon, BagIcon, TrendUpIcon, AlertIcon } from "@/components/ui/icons";
+import { BoxIcon, UsersIcon, BagIcon, TrendUpIcon, AlertIcon, EyeIcon } from "@/components/ui/icons";
+import { getVisitCount } from "@/lib/data/site-stats";
 
 const DAYS = 14;
 
@@ -31,6 +32,7 @@ export default async function AdminDashboardPage({
     statusGroups,
     itemsInRange,
     recentCustomers,
+    visitCount,
   ] = await Promise.all([
     prisma.product.count(),
     prisma.user.count({ where: { role: "CUSTOMER" } }),
@@ -57,6 +59,7 @@ export default async function AdminDashboardPage({
       orderBy: { createdAt: "desc" },
       take: 5,
     }),
+    getVisitCount(),
   ]);
 
   const salesByDay = new Map<string, number>();
@@ -107,11 +110,12 @@ export default async function AdminDashboardPage({
       icon: <TrendUpIcon className="h-5 w-5" />,
       accent: true,
     },
+    { label: t("visits"), value: visitCount.toLocaleString(), icon: <EyeIcon className="h-5 w-5" /> },
   ];
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {stats.map((s) => (
           <AdminStatCard key={s.label} {...s} />
         ))}
