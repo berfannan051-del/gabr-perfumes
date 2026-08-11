@@ -298,7 +298,27 @@
       "statusConfirmed": "Confirmed",
       "statusShipped": "Shipped",
       "statusDelivered": "Delivered",
-      "statusCancelled": "Cancelled"
+      "statusCancelled": "Cancelled",
+      "paymentInstapay": "InstaPay",
+      "paymentVodafoneCash": "Vodafone Cash",
+      "paymentCashOnDelivery": "Cash on Delivery",
+      "printLabel": "Print Shipping Label",
+      "label": {
+        "title": "Shipping Label",
+        "orderNumber": "Order #",
+        "date": "Date",
+        "shipTo": "Ship To",
+        "phone": "Phone",
+        "address": "Address",
+        "items": "Items",
+        "qty": "Qty",
+        "total": "Total",
+        "payment": "Payment",
+        "codDue": "Collect on delivery:",
+        "prepaid": "Prepaid — no collection needed",
+        "notes": "Notes",
+        "print": "Print"
+      }
     },
     "customers": {
       "title": "Customers",
@@ -382,7 +402,9 @@
         "about_heroImage": "Cover Image",
         "footer_about": "About Blurb",
         "settings_contactEmail": "Contact Email",
-        "settings_contactPhone": "Contact Phone"
+        "settings_contactPhone": "Contact Phone",
+        "settings_instapayNumber": "InstaPay Number (shown to customers at checkout)",
+        "settings_vodafoneCashNumber": "Vodafone Cash Number (shown to customers at checkout)"
       }
     }
   },
@@ -492,9 +514,16 @@
     "governorate": "Governorate",
     "notes": "Additional Notes (optional)",
     "paymentHeading": "Payment Method",
-    "paymentHint": "Payment is currently manual — complete the transfer, then attach proof of payment",
+    "paymentHint": "Choose how you'd like to pay",
     "instapay": "InstaPay",
+    "instapayDesc": "Instant transfer via InstaPay",
     "vodafoneCash": "Vodafone Cash",
+    "vodafoneCashDesc": "Pay from your Vodafone Cash wallet",
+    "cashOnDelivery": "Cash on Delivery",
+    "cashOnDeliveryDesc": "Pay in cash when your order arrives",
+    "transferToNumber": "Send the transfer to:",
+    "numberNotSetHint": "We'll reach out on WhatsApp to confirm the transfer number",
+    "codHint": "No proof needed — just have the amount ready in cash when the courier arrives",
     "proofUpload": "Proof of Payment",
     "proofUploadHint": "Attach a screenshot of the transfer (PNG or JPG)",
     "orderSummary": "Order Summary",

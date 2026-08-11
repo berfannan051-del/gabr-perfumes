@@ -298,7 +298,27 @@
       "statusConfirmed": "مؤكد",
       "statusShipped": "تم الشحن",
       "statusDelivered": "تم التوصيل",
-      "statusCancelled": "ملغي"
+      "statusCancelled": "ملغي",
+      "paymentInstapay": "إنستاباي",
+      "paymentVodafoneCash": "فودافون كاش",
+      "paymentCashOnDelivery": "الدفع عند الاستلام",
+      "printLabel": "طباعة بوليصة الشحن",
+      "label": {
+        "title": "بوليصة شحن",
+        "orderNumber": "رقم الطلب",
+        "date": "التاريخ",
+        "shipTo": "الشحن إلى",
+        "phone": "الهاتف",
+        "address": "العنوان",
+        "items": "المنتجات",
+        "qty": "الكمية",
+        "total": "الإجمالي",
+        "payment": "طريقة الدفع",
+        "codDue": "المبلغ المطلوب تحصيله:",
+        "prepaid": "مدفوع مسبقًا — لا حاجة للتحصيل",
+        "notes": "ملاحظات",
+        "print": "طباعة"
+      }
     },
     "customers": {
       "title": "العملاء",
@@ -382,7 +402,9 @@
         "about_heroImage": "صورة الغلاف",
         "footer_about": "نبذة في الفوتر",
         "settings_contactEmail": "البريد الإلكتروني للتواصل",
-        "settings_contactPhone": "رقم الهاتف للتواصل"
+        "settings_contactPhone": "رقم الهاتف للتواصل",
+        "settings_instapayNumber": "رقم إنستاباي (يظهر للعملاء عند الدفع)",
+        "settings_vodafoneCashNumber": "رقم فودافون كاش (يظهر للعملاء عند الدفع)"
       }
     }
   },
@@ -492,9 +514,16 @@
     "governorate": "المحافظة",
     "notes": "ملاحظات إضافية (اختياري)",
     "paymentHeading": "طريقة الدفع",
-    "paymentHint": "الدفع يدوي حاليًا — أكمل التحويل ثم أرفق إثبات الدفع",
-    "instapay": "InstaPay",
+    "paymentHint": "اختر طريقة الدفع اللي تناسبك",
+    "instapay": "إنستاباي",
+    "instapayDesc": "تحويل فوري عبر إنستاباي",
     "vodafoneCash": "فودافون كاش",
+    "vodafoneCashDesc": "ادفع من محفظة فودافون كاش",
+    "cashOnDelivery": "الدفع عند الاستلام",
+    "cashOnDeliveryDesc": "ادفع نقدًا عند وصول طلبك",
+    "transferToNumber": "حوّل المبلغ إلى الرقم:",
+    "numberNotSetHint": "سيتم التواصل معك عبر واتساب لتأكيد رقم التحويل",
+    "codHint": "من غير ما تحتاج إثبات دفع — جهّز المبلغ نقدًا عند وصول المندوب",
     "proofUpload": "إثبات الدفع",
     "proofUploadHint": "أرفق لقطة شاشة للتحويل (PNG أو JPG)",
     "orderSummary": "ملخص الطلب",

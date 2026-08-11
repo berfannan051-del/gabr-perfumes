@@ -28,6 +28,8 @@ export const SITE_CONTENT_FIELDS = [
   { key: "footer.about", type: "TEXT", section: "footer", multiline: true },
   { key: "settings.contactEmail", type: "TEXT", section: "settings" },
   { key: "settings.contactPhone", type: "TEXT", section: "settings" },
+  { key: "settings.instapayNumber", type: "TEXT", section: "settings" },
+  { key: "settings.vodafoneCashNumber", type: "TEXT", section: "settings" },
 ] as const satisfies ReadonlyArray<{
   key: string;
   type: "TEXT" | "IMAGE";

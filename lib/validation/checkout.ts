@@ -8,7 +8,7 @@ export const checkoutSchema = z.object({
   city: z.string().min(2),
   governorate: z.string().min(2),
   notes: z.string().optional(),
-  paymentMethod: z.enum(["instapay", "vodafone_cash"]),
+  paymentMethod: z.enum(["instapay", "vodafone_cash", "cash_on_delivery"]),
 });
 
 export type CheckoutInput = z.infer<typeof checkoutSchema>;

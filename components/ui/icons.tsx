@@ -180,6 +180,54 @@ export function LogoutIcon(props: IconProps) {
   );
 }
 
+export function PhoneIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <rect x="6.5" y="2.5" width="11" height="19" rx="2.2" />
+      <path d="M10.5 18h3" />
+    </svg>
+  );
+}
+
+export function WalletIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <rect x="2.5" y="6" width="19" height="13" rx="2" />
+      <path d="M2.5 10h19" />
+      <circle cx="17" cy="14.2" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+export function CashIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <rect x="2" y="6" width="20" height="12" rx="1.6" />
+      <circle cx="12" cy="12" r="2.6" />
+      <path d="M5.5 8.5v0M18.5 15.5v0" />
+    </svg>
+  );
+}
+
+export function CheckIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M4 12.5l5 5 11-11" />
+    </svg>
+  );
+}
+
+export function PrinterIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M6 8.5V3.5h12v5" />
+      <rect x="3.5" y="8.5" width="17" height="8.5" rx="1.6" />
+      <rect x="7" y="13.5" width="10" height="7" />
+      <path d="M17 12h.01" />
+    </svg>
+  );
+}
+
 export function EyeIcon(props: IconProps) {
   return (
     <svg {...base} {...props}>

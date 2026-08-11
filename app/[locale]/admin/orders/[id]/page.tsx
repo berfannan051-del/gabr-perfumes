@@ -1,7 +1,11 @@
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
+import { Link } from "@/i18n/navigation";
 import { OrderStatusSelect } from "@/components/admin/order-status-select";
+import { PAYMENT_LABEL_KEY } from "@/lib/data/order-payment-label";
+import { buttonVariants } from "@/components/ui/button";
+import { PrinterIcon } from "@/components/ui/icons";
 
 export default async function AdminOrderDetailPage({
   params,
@@ -24,7 +28,13 @@ export default async function AdminOrderDetailPage({
           <h1 className="text-h2">{order.orderNumber}</h1>
           <p className="text-caption text-muted-foreground">{order.createdAt.toLocaleString()}</p>
         </div>
-        <OrderStatusSelect orderId={order.id} status={order.status} />
+        <div className="flex items-center gap-3">
+          <Link href={`/admin/orders/${order.id}/label`} className={buttonVariants({ variant: "outline", size: "sm" })}>
+            <PrinterIcon className="h-4 w-4" />
+            {t("printLabel")}
+          </Link>
+          <OrderStatusSelect orderId={order.id} status={order.status} />
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_320px]">
@@ -58,7 +68,7 @@ export default async function AdminOrderDetailPage({
 
           <div>
             <h3 className="text-label mb-2 text-muted-foreground">{t("paymentInfo")}</h3>
-            <p className="text-body">{order.paymentMethod}</p>
+            <p className="text-body">{t(PAYMENT_LABEL_KEY[order.paymentMethod])}</p>
           </div>
 
           <div>

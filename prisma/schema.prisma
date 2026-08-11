@@ -42,6 +42,7 @@ enum NoteLayer {
 enum PaymentMethod {
   INSTAPAY
   VODAFONE_CASH
+  CASH_ON_DELIVERY
 }
 
 enum OrderStatus {

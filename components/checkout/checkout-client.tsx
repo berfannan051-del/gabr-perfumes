@@ -10,11 +10,16 @@ import { submitOrderAction } from "@/app/[locale]/(site)/checkout/actions";
 import { Input, Textarea, Label } from "@/components/ui/input";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { BottleArt } from "@/components/product/bottle-art";
+import { PaymentMethodPicker, type PaymentMethod } from "@/components/checkout/payment-method-picker";
 import type { Locale } from "@/types/catalog";
 
-type PaymentMethod = "instapay" | "vodafone_cash";
-
-export function CheckoutClient() {
+export function CheckoutClient({
+  instapayNumber,
+  vodafoneCashNumber,
+}: {
+  instapayNumber: string;
+  vodafoneCashNumber: string;
+}) {
   const t = useTranslations("Checkout");
   const tc = useTranslations("Common");
   const cart = useCart();
@@ -178,32 +183,15 @@ export function CheckoutClient() {
           <fieldset className="flex flex-col gap-4">
             <h2 className="text-h3">{t("paymentHeading")}</h2>
             <p className="text-caption">{t("paymentHint")}</p>
-            <div className="grid grid-cols-2 gap-3">
-              {(["instapay", "vodafone_cash"] as PaymentMethod[]).map((method) => (
-                <button
-                  key={method}
-                  type="button"
-                  onClick={() => setPaymentMethod(method)}
-                  className={`border px-4 py-4 text-start transition-colors ${
-                    paymentMethod === method ? "border-primary bg-primary/5" : "border-border hover:border-primary"
-                  }`}
-                >
-                  <span className="text-body block">{method === "instapay" ? t("instapay") : t("vodafoneCash")}</span>
-                </button>
-              ))}
-            </div>
 
-            <div className="mt-2 flex flex-col gap-2">
-              <Label htmlFor="proof">{t("proofUpload")}</Label>
-              <p className="text-caption">{t("proofUploadHint")}</p>
-              <input
-                id="proof"
-                type="file"
-                accept="image/png,image/jpeg"
-                onChange={(e) => setProofFile(e.target.files?.[0] ?? null)}
-                className="text-caption file:me-4 file:border-0 file:bg-primary file:px-4 file:py-2 file:text-background"
-              />
-            </div>
+            <PaymentMethodPicker
+              value={paymentMethod}
+              onChange={setPaymentMethod}
+              instapayNumber={instapayNumber}
+              vodafoneCashNumber={vodafoneCashNumber}
+              proofFile={proofFile}
+              onProofChange={setProofFile}
+            />
 
             <p className="text-caption mt-2 border-s-2 border-primary ps-3">{t("whatsappHint")}</p>
           </fieldset>

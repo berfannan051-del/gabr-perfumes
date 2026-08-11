@@ -55,12 +55,12 @@ export function AdminShell({
 
   return (
     <ToastProvider>
-      <div className="min-h-screen bg-surface-muted">
+      <div className="min-h-screen bg-surface-muted print:bg-white">
         <div className="mx-auto flex max-w-[1600px]">
           {/* Sidebar */}
           <aside
             className={cn(
-              "fixed inset-y-0 start-0 z-40 w-64 shrink-0 border-e border-border bg-surface transition-transform duration-300 md:sticky md:top-0 md:h-screen",
+              "fixed inset-y-0 start-0 z-40 w-64 shrink-0 border-e border-border bg-surface transition-transform duration-300 md:sticky md:top-0 md:h-screen print:hidden",
               !mobileOpen && "max-md:-translate-x-full max-md:rtl:translate-x-full"
             )}
           >
@@ -121,7 +121,7 @@ export function AdminShell({
 
           {/* Main */}
           <div className="min-w-0 flex-1">
-            <header className="sticky top-0 z-20 flex h-20 items-center justify-between border-b border-border bg-surface/95 px-5 backdrop-blur-sm md:px-8">
+            <header className="sticky top-0 z-20 flex h-20 items-center justify-between border-b border-border bg-surface/95 px-5 backdrop-blur-sm md:px-8 print:hidden">
               <div className="flex items-center gap-3">
                 <button
                   type="button"
@@ -149,7 +149,7 @@ export function AdminShell({
               </div>
             </header>
 
-            <main className="p-5 md:p-8">{children}</main>
+            <main className="p-5 md:p-8 print:p-0">{children}</main>
           </div>
         </div>
       </div>
