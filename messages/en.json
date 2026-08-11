@@ -347,6 +347,7 @@
       "saving": "Saving…",
       "saved": "Saved",
       "uploadError": "Upload failed",
+      "removeImage": "Remove image",
       "groups": {
         "hero": "Hero Banner",
         "story": "\"Our Story\" Section",
@@ -362,6 +363,7 @@
         "hero_subtitle": "Subtitle",
         "hero_ctaPrimary": "Primary Button",
         "hero_ctaSecondary": "Secondary Button",
+        "hero_image": "Top Hero Image",
         "story_eyebrow": "Eyebrow",
         "story_title": "Title",
         "story_body": "Body Text",

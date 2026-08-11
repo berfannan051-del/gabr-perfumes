@@ -43,3 +43,13 @@ export async function saveSiteContentImage(
   revalidatePath("/[locale]", "layout");
   return { url };
 }
+
+export async function clearSiteContentImage(key: string) {
+  await requireAdmin();
+  await prisma.siteContent.upsert({
+    where: { key },
+    update: { valueAr: "", valueEn: "", type: "IMAGE" },
+    create: { key, valueAr: "", valueEn: "", type: "IMAGE" },
+  });
+  revalidatePath("/[locale]", "layout");
+}

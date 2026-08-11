@@ -8,6 +8,7 @@ export const siteContentDefaults: Record<string, { ar: string; en: string }> = {
   },
   "hero.ctaPrimary": { ar: "اكتشف المجموعة", en: "Discover the Collection" },
   "hero.ctaSecondary": { ar: "قصة العلامة", en: "Our Story" },
+  "hero.image": { ar: "", en: "" },
 
   "story.eyebrow": { ar: "قصتنا", en: "Our Story" },
   "story.title": { ar: "حرفة تتوارثها الأجيال", en: "A craft passed through generations" },

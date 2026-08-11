@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import Image from "next/image";
 import { motion, useReducedMotion, useScroll, useTransform, type Variants } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -27,6 +28,7 @@ export type HeroContent = {
   subtitle: string;
   ctaPrimary: string;
   ctaSecondary: string;
+  image?: string;
 };
 
 export function Hero({ content }: { content?: Partial<HeroContent> }) {
@@ -55,9 +57,20 @@ export function Hero({ content }: { content?: Partial<HeroContent> }) {
           initial={{ opacity: 0, scale: 1.08 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
-          className="h-full w-full"
+          className="relative h-full w-full"
         >
-          <BottleArt shape="faceted" liquidColor="#c9a227" className="h-full w-full" />
+          {content?.image ? (
+            <Image
+              src={content.image}
+              alt=""
+              fill
+              priority
+              sizes="(min-width: 768px) 60vw, 0px"
+              className="object-cover"
+            />
+          ) : (
+            <BottleArt shape="faceted" liquidColor="#c9a227" className="h-full w-full" />
+          )}
         </motion.div>
       </motion.div>
 

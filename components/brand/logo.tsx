@@ -1,3 +1,4 @@
+import { useLocale } from "next-intl";
 import { cn } from "@/lib/cn";
 
 const sizeClasses = {
@@ -24,12 +25,21 @@ export function Logo({
 }
 
 export function LogoMark({ className }: { className?: string }) {
+  const locale = useLocale();
+  const isAr = locale === "ar";
+
   return (
     <span
       className={cn("text-primary select-none", className)}
-      style={{ fontFamily: "var(--font-logo)", fontWeight: 700 }}
+      style={
+        isAr
+          ? { fontFamily: "var(--font-logo)", fontWeight: 700 }
+          : { fontFamily: "var(--font-display)", fontWeight: 600, letterSpacing: "0.08em" }
+      }
     >
-      <span className="text-3xl leading-none">جبر</span>
+      <span className={isAr ? "text-5xl leading-none" : "text-3xl leading-none"}>
+        {isAr ? "جبر" : "GABR"}
+      </span>
     </span>
   );
 }

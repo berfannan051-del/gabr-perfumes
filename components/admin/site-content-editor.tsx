@@ -5,7 +5,11 @@ import { useTranslations } from "next-intl";
 import { Input, Label, Textarea } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/admin/ui/toast";
-import { saveSiteContentText, saveSiteContentImage } from "@/app/[locale]/admin/content/actions";
+import {
+  saveSiteContentText,
+  saveSiteContentImage,
+  clearSiteContentImage,
+} from "@/app/[locale]/admin/content/actions";
 import type { SiteContentMap } from "@/lib/data/site-content";
 
 export type SiteContentField = {
@@ -57,6 +61,16 @@ export function SiteContentEditor({
       toast.show(t("uploadError"), "error");
     }
     setPendingKey(null);
+  }
+
+  function removeImage(field: SiteContentField) {
+    setPendingKey(field.key);
+    startTransition(async () => {
+      await clearSiteContentImage(field.key);
+      setValues((v) => ({ ...v, [field.key]: { ar: "", en: "" } }));
+      toast.show(t("saved"));
+      setPendingKey(null);
+    });
   }
 
   return (
@@ -127,16 +141,28 @@ export function SiteContentEditor({
                       <img src={values[field.key].ar} alt="" className="h-full w-full object-cover" />
                     ) : null}
                   </div>
-                  <input
-                    type="file"
-                    accept="image/png,image/jpeg,image/webp"
-                    disabled={pendingKey === field.key}
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) saveImage(field, file);
-                    }}
-                    className="text-caption file:me-4 file:border-0 file:bg-primary file:px-4 file:py-2 file:text-background"
-                  />
+                  <div className="flex flex-col gap-2">
+                    <input
+                      type="file"
+                      accept="image/png,image/jpeg,image/webp"
+                      disabled={pendingKey === field.key}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) saveImage(field, file);
+                      }}
+                      className="text-caption file:me-4 file:border-0 file:bg-primary file:px-4 file:py-2 file:text-background"
+                    />
+                    {values[field.key]?.ar && (
+                      <button
+                        type="button"
+                        onClick={() => removeImage(field)}
+                        disabled={pendingKey === field.key}
+                        className="text-caption self-start text-primary-deep disabled:opacity-50"
+                      >
+                        {t("removeImage")}
+                      </button>
+                    )}
+                  </div>
                 </div>
               )}
             </div>

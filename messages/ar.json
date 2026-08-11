@@ -347,6 +347,7 @@
       "saving": "جارٍ الحفظ…",
       "saved": "تم الحفظ",
       "uploadError": "فشل رفع الصورة",
+      "removeImage": "حذف الصورة",
       "groups": {
         "hero": "البانر الرئيسي",
         "story": "قسم \"قصتنا\"",
@@ -362,6 +363,7 @@
         "hero_subtitle": "الوصف الفرعي",
         "hero_ctaPrimary": "زر الإجراء الأساسي",
         "hero_ctaSecondary": "زر الإجراء الثانوي",
+        "hero_image": "الصورة الرئيسية العلوية",
         "story_eyebrow": "الجملة التمهيدية",
         "story_title": "العنوان",
         "story_body": "النص",

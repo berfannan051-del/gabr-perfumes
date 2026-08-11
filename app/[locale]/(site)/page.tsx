@@ -34,6 +34,7 @@ export default async function HomePage({
     subtitle: pick(siteContent, "hero.subtitle", l),
     ctaPrimary: pick(siteContent, "hero.ctaPrimary", l),
     ctaSecondary: pick(siteContent, "hero.ctaSecondary", l),
+    image: pick(siteContent, "hero.image", l),
   };
 
   const storyContent = {

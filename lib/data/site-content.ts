@@ -8,6 +8,7 @@ export const SITE_CONTENT_FIELDS = [
   { key: "hero.subtitle", type: "TEXT", section: "homepage", multiline: true },
   { key: "hero.ctaPrimary", type: "TEXT", section: "homepage" },
   { key: "hero.ctaSecondary", type: "TEXT", section: "homepage" },
+  { key: "hero.image", type: "IMAGE", section: "homepage" },
   { key: "story.eyebrow", type: "TEXT", section: "homepage" },
   { key: "story.title", type: "TEXT", section: "homepage" },
   { key: "story.body", type: "TEXT", section: "homepage", multiline: true },
