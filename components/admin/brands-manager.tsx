@@ -9,7 +9,7 @@ import { DataTable, type DataTableColumn } from "@/components/admin/ui/data-tabl
 import { ConfirmDialog } from "@/components/admin/ui/confirm-dialog";
 import { useToast } from "@/components/admin/ui/toast";
 import { saveBrand, deleteBrand } from "@/app/[locale]/admin/brands/actions";
-import { stripBackground } from "@/lib/admin/strip-background";
+import { processUploadImage } from "@/lib/admin/strip-background";
 import type { Brand } from "@/types/catalog";
 
 type FormState = {
@@ -43,7 +43,7 @@ export function BrandsManager({ brands }: { brands: Brand[] }) {
 
   async function handleLogoFile(file: File) {
     setProcessingLogo(true);
-    setLogoFile(await stripBackground(file));
+    setLogoFile(await processUploadImage(file, { maxDimension: 800, square: true }));
     setProcessingLogo(false);
   }
 

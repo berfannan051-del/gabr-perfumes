@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { DataTable, type DataTableColumn } from "@/components/admin/ui/data-table";
 import { ConfirmDialog } from "@/components/admin/ui/confirm-dialog";
 import { useToast } from "@/components/admin/ui/toast";
-import { stripBackground } from "@/lib/admin/strip-background";
+import { processUploadImage } from "@/lib/admin/strip-background";
 import { upsertCollection, deleteCollection } from "@/app/[locale]/admin/collections/actions";
 import type { Collection } from "@/types/catalog";
 
@@ -42,6 +42,7 @@ export function CollectionsManager({ collections }: { collections: Collection[] 
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [processingLogo, setProcessingLogo] = useState(false);
   const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [processingCover, setProcessingCover] = useState(false);
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Collection | null>(null);
@@ -73,8 +74,14 @@ export function CollectionsManager({ collections }: { collections: Collection[] 
 
   async function handleLogoFile(file: File) {
     setProcessingLogo(true);
-    setLogoFile(await stripBackground(file));
+    setLogoFile(await processUploadImage(file, { maxDimension: 800, square: true }));
     setProcessingLogo(false);
+  }
+
+  async function handleCoverFile(file: File) {
+    setProcessingCover(true);
+    setCoverFile(await processUploadImage(file, { maxDimension: 1600 }));
+    setProcessingCover(false);
   }
 
   function save() {
@@ -215,7 +222,7 @@ export function CollectionsManager({ collections }: { collections: Collection[] 
 
         <Label htmlFor="c-cover">{t("coverImage")}</Label>
         <div className="flex items-center gap-3">
-          <div className="h-14 w-24 shrink-0 overflow-hidden rounded border border-border bg-surface-muted">
+          <div className="checkerboard-bg h-14 w-24 shrink-0 overflow-hidden rounded border border-border">
             {coverPreview ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={coverPreview} alt="" className="h-full w-full object-cover" />
@@ -225,19 +232,21 @@ export function CollectionsManager({ collections }: { collections: Collection[] 
             id="c-cover"
             type="file"
             accept="image/png,image/jpeg,image/webp"
+            disabled={processingCover}
             onChange={(e) => {
               const file = e.target.files?.[0];
-              if (file) setCoverFile(file);
+              if (file) handleCoverFile(file);
             }}
-            className="text-caption file:me-4 file:border-0 file:bg-primary file:px-4 file:py-2 file:text-background"
+            className="text-caption file:me-4 file:border-0 file:bg-primary file:px-4 file:py-2 file:text-background disabled:opacity-50"
           />
         </div>
+        {processingCover && <p className="text-caption text-muted-foreground">{t("processingImage")}</p>}
         <p className="text-caption text-muted-foreground">{t("coverImageHint")}</p>
 
         {error && <p className="text-caption text-primary-deep">{error}</p>}
 
         <div className="mt-2 flex gap-3">
-          <Button type="button" onClick={save} disabled={pending || processingLogo}>
+          <Button type="button" onClick={save} disabled={pending || processingLogo || processingCover}>
             {pending ? t("saving") : t("save")}
           </Button>
           {form.id && (
@@ -247,6 +256,7 @@ export function CollectionsManager({ collections }: { collections: Collection[] 
               onClick={() => {
                 setForm(emptyForm);
                 setLogoFile(null);
+                setCoverFile(null);
                 setError(null);
               }}
             >

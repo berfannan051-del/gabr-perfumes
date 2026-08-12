@@ -6,7 +6,7 @@ import { Link, useRouter } from "@/i18n/navigation";
 import { Input, Label, Textarea } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { saveProduct } from "@/app/[locale]/admin/products/actions";
-import { stripBackground } from "@/lib/admin/strip-background";
+import { processUploadImage } from "@/lib/admin/strip-background";
 
 type CollectionOption = { id: string; nameAr: string };
 type BrandOption = { id: string; name: string };
@@ -92,7 +92,7 @@ export function ProductForm({
   async function handleImageFiles(files: File[]) {
     if (files.length === 0) return;
     setProcessingImages(true);
-    const processed = await Promise.all(files.map(stripBackground));
+    const processed = await Promise.all(files.map((f) => processUploadImage(f, { maxDimension: 1600 })));
     setNewImages((prev) => [...prev, ...processed]);
     setNewImagePreviews((prev) => [...prev, ...processed.map((f) => URL.createObjectURL(f))]);
     setProcessingImages(false);
