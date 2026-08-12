@@ -38,7 +38,9 @@
     "eyebrow": "Collections",
     "title": "Curated with intent",
     "viewAll": "View all collections",
-    "exploreLabel": "Explore"
+    "exploreLabel": "Explore",
+    "prev": "Previous",
+    "next": "Next"
   },
   "Bestsellers": {
     "eyebrow": "Most Loved",

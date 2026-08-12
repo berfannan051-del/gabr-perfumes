@@ -38,7 +38,9 @@
     "eyebrow": "المجموعات",
     "title": "مجموعات مختارة بعناية",
     "viewAll": "عرض كل المجموعات",
-    "exploreLabel": "استكشف"
+    "exploreLabel": "استكشف",
+    "prev": "السابق",
+    "next": "التالي"
   },
   "Bestsellers": {
     "eyebrow": "الأكثر رواجًا",

@@ -37,7 +37,7 @@ export function ProductGallery({ product }: { product: Product }) {
                 fill
                 priority
                 sizes="(min-width: 640px) 50vw, 100vw"
-                className="object-cover"
+                className="object-contain p-10"
               />
             ) : (
               <BottleArt shape={product.bottleShape} liquidColor={product.heroColor} className="h-full w-full" />
@@ -57,7 +57,7 @@ export function ProductGallery({ product }: { product: Product }) {
             }`}
           >
             {hasPhotos ? (
-              <Image src={product.images[i]} alt="" fill sizes="80px" className="object-cover" />
+              <Image src={product.images[i]} alt="" fill sizes="80px" className="object-contain p-2" />
             ) : (
               <div style={{ transform: generatedViews[i].transform }} className="h-full w-full">
                 <BottleArt shape={product.bottleShape} liquidColor={product.heroColor} className="h-full w-full" />
