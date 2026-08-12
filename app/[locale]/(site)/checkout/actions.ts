@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import type { Prisma } from "@/lib/generated/prisma/client";
 import { auth } from "@/auth";
 import { checkoutSchema } from "@/lib/validation/checkout";
 import { uploadFile } from "@/lib/storage";
@@ -11,12 +12,7 @@ import { getClientIp } from "@/lib/security/get-client-ip";
 import { logger } from "@/lib/logger";
 
 export type CheckoutItemInput = {
-  productId: string;
   variantId: string;
-  nameAr: string;
-  nameEn: string;
-  sizeMl: number;
-  price: number;
   quantity: number;
 };
 
@@ -25,6 +21,10 @@ export type CheckoutResult =
   | { error: "rateLimited" | "invalid" | "invalidFile" | "insufficientStock" | "unknown" };
 
 class InsufficientStockError extends Error {}
+class InvalidItemError extends Error {}
+
+const MAX_LINE_ITEMS = 30;
+const MAX_QUANTITY_PER_ITEM = 20;
 
 export async function submitOrderAction(formData: FormData): Promise<CheckoutResult> {
   const ip = await getClientIp();
@@ -47,14 +47,33 @@ export async function submitOrderAction(formData: FormData): Promise<CheckoutRes
   const itemsRaw = formData.get("items");
   if (typeof itemsRaw !== "string") return { error: "invalid" };
 
-  let items: CheckoutItemInput[];
+  let rawItems: unknown;
   try {
-    items = JSON.parse(itemsRaw);
+    rawItems = JSON.parse(itemsRaw);
   } catch {
     return { error: "invalid" };
   }
-  if (!Array.isArray(items) || items.length === 0) return { error: "invalid" };
-  if (items.some((i) => !Number.isInteger(i.quantity) || i.quantity < 1)) return { error: "invalid" };
+  if (!Array.isArray(rawItems) || rawItems.length === 0 || rawItems.length > MAX_LINE_ITEMS) {
+    return { error: "invalid" };
+  }
+
+  const items: CheckoutItemInput[] = [];
+  for (const raw of rawItems) {
+    if (
+      !raw ||
+      typeof raw !== "object" ||
+      typeof (raw as Record<string, unknown>).variantId !== "string" ||
+      !Number.isInteger((raw as Record<string, unknown>).quantity) ||
+      (raw as Record<string, number>).quantity < 1 ||
+      (raw as Record<string, number>).quantity > MAX_QUANTITY_PER_ITEM
+    ) {
+      return { error: "invalid" };
+    }
+    items.push({
+      variantId: (raw as Record<string, string>).variantId,
+      quantity: (raw as Record<string, number>).quantity,
+    });
+  }
 
   let proofImageUrl: string | undefined;
   const proofFile = formData.get("proof");
@@ -65,20 +84,51 @@ export async function submitOrderAction(formData: FormData): Promise<CheckoutRes
   }
 
   const session = await auth();
-  const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
   const orderNumber = `GBR-${Date.now().toString().slice(-8)}`;
 
   try {
     const order = await prisma.$transaction(async (tx) => {
-      // Reserve stock atomically per variant — the WHERE clause's stockQuantity
-      // guard makes this a race-safe conditional decrement instead of a
-      // check-then-act that two simultaneous checkouts could both pass.
+      // Price, product names, and size are always re-derived from the current
+      // database record — the client only ever supplies which variant and how
+      // many. Trusting client-submitted prices would let anyone check out at
+      // whatever amount they choose.
+      let subtotal = 0;
+      const orderItemsData: {
+        productId: string;
+        variantId: string;
+        nameAr: string;
+        nameEn: string;
+        sizeMl: number;
+        price: Prisma.Decimal;
+        quantity: number;
+      }[] = [];
+
       for (const item of items) {
+        const variant = await tx.productVariant.findUnique({
+          where: { id: item.variantId },
+          include: { product: { select: { id: true, nameAr: true, nameEn: true } } },
+        });
+        if (!variant) throw new InvalidItemError();
+
+        // Reserve stock atomically — the WHERE clause's stockQuantity guard
+        // makes this a race-safe conditional decrement instead of a
+        // check-then-act that two simultaneous checkouts could both pass.
         const result = await tx.productVariant.updateMany({
           where: { id: item.variantId, stockQuantity: { gte: item.quantity } },
           data: { stockQuantity: { decrement: item.quantity } },
         });
         if (result.count === 0) throw new InsufficientStockError();
+
+        subtotal += Number(variant.price) * item.quantity;
+        orderItemsData.push({
+          productId: variant.product.id,
+          variantId: variant.id,
+          nameAr: variant.product.nameAr,
+          nameEn: variant.product.nameEn,
+          sizeMl: variant.sizeMl,
+          price: variant.price,
+          quantity: item.quantity,
+        });
       }
 
       return tx.order.create({
@@ -95,17 +145,7 @@ export async function submitOrderAction(formData: FormData): Promise<CheckoutRes
           paymentMethod: parsed.data.paymentMethod.toUpperCase() as never,
           proofImageUrl,
           subtotal,
-          items: {
-            create: items.map((i) => ({
-              productId: i.productId,
-              variantId: i.variantId,
-              nameAr: i.nameAr,
-              nameEn: i.nameEn,
-              sizeMl: i.sizeMl,
-              price: i.price,
-              quantity: i.quantity,
-            })),
-          },
+          items: { create: orderItemsData },
         },
       });
     });
@@ -116,13 +156,16 @@ export async function submitOrderAction(formData: FormData): Promise<CheckoutRes
       orderNumber,
       fullName: parsed.data.fullName,
       phone: parsed.data.phone,
-      subtotal,
+      subtotal: Number(order.subtotal),
     }).catch((err) => logger.error({ err }, "whatsapp notification failed"));
 
     return { orderId: order.id, orderNumber };
   } catch (err) {
     if (err instanceof InsufficientStockError) {
       return { error: "insufficientStock" };
+    }
+    if (err instanceof InvalidItemError) {
+      return { error: "invalid" };
     }
     logger.error({ err }, "order creation failed");
     return { error: "unknown" };

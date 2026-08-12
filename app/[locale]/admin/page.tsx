@@ -56,6 +56,7 @@ export default async function AdminDashboardPage({
     }),
     prisma.user.findMany({
       where: { role: "CUSTOMER" },
+      select: { id: true, name: true, email: true },
       orderBy: { createdAt: "desc" },
       take: 5,
     }),

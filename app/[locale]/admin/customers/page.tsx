@@ -6,7 +6,13 @@ export default async function AdminCustomersPage() {
   const t = await getTranslations("Admin.customers");
   const customers = await prisma.user.findMany({
     where: { role: "CUSTOMER" },
-    include: { _count: { select: { orders: true } } },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      createdAt: true,
+      _count: { select: { orders: true } },
+    },
     orderBy: { createdAt: "desc" },
   });
 

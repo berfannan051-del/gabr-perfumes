@@ -10,12 +10,13 @@ import { Button } from "@/components/ui/button";
 import { EyeIcon, EyeOffIcon } from "@/components/ui/icons";
 import { AuthLayout } from "@/components/auth/auth-layout";
 import { loginAction, type AuthActionState } from "@/app/[locale]/(auth)/actions";
+import { safeRedirectPath } from "@/lib/security/safe-redirect";
 
 export function LoginForm() {
   const t = useTranslations("Auth");
   const locale = useLocale();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") ?? undefined;
+  const callbackUrl = safeRedirectPath(searchParams.get("callbackUrl"), `/${locale}`);
   const [showPassword, setShowPassword] = useState(false);
 
   const action = loginAction.bind(null, locale, callbackUrl);
@@ -25,7 +26,7 @@ export function LoginForm() {
     if (state.success) {
       // Full navigation so next-auth's SessionProvider remounts with the fresh session
       // instead of staying stale (it only syncs its session state once, on mount).
-      window.location.href = callbackUrl || `/${locale}`;
+      window.location.href = callbackUrl;
     }
   }, [state.success, callbackUrl, locale]);
 

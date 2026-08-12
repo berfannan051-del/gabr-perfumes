@@ -41,7 +41,8 @@ export async function saveReview(
   const file = formData.get("image");
   if (file instanceof File && file.size > 0) {
     const validation = await validateUploadFile(file);
-    if (validation.ok) customerImage = await uploadFile(file, "reviews");
+    if (!validation.ok) return { error: "invalidFile" };
+    customerImage = await uploadFile(file, "reviews");
   }
 
   const data = { ...parsed.data, customerImage };

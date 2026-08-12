@@ -78,12 +78,7 @@ export function CheckoutClient({
       "items",
       JSON.stringify(
         cart.items.map((item) => ({
-          productId: item.productId,
           variantId: item.variantId,
-          nameAr: item.name.ar,
-          nameEn: item.name.en,
-          sizeMl: item.sizeMl,
-          price: item.price,
           quantity: item.quantity,
         }))
       )
