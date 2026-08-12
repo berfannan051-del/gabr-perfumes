@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { randomUUID } from "crypto";
 import { z } from "zod";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
@@ -56,10 +57,16 @@ async function findOrCreateNoteId(name: string): Promise<string> {
       .replace(/\s+/g, "-")
       .replace(/[^\p{L}\p{N}-]/gu, "")
       .slice(0, 60) || "note";
-  const created = await prisma.fragranceNote.create({
-    data: { nameAr, nameEn: nameAr, slug: `${slugBase}-${Date.now().toString(36)}` },
-  });
-  return created.id;
+  try {
+    const created = await prisma.fragranceNote.create({
+      data: { nameAr, nameEn: nameAr, slug: `${slugBase}-${randomUUID().slice(0, 8)}` },
+    });
+    return created.id;
+  } catch {
+    const retry = await prisma.fragranceNote.findFirst({ where: { nameAr } });
+    if (retry) return retry.id;
+    throw new Error(`Failed to create fragrance note "${nameAr}"`);
+  }
 }
 
 export async function saveProduct(

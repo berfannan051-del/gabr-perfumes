@@ -295,7 +295,8 @@
       "saved": "Collection saved",
       "deleted": "Collection deleted",
       "processingImage": "Removing background…",
-      "errorInvalid": "Please check the form and try again"
+      "errorInvalid": "Please check the form and try again",
+      "errorHasProducts": "Can't delete: this collection still has products assigned to it"
     },
     "brands": {
       "title": "Brands",

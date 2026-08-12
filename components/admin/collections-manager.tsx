@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 import { Input, Label, Textarea } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DataTable, type DataTableColumn } from "@/components/admin/ui/data-table";
@@ -34,6 +35,7 @@ const emptyForm: FormState = {
 export function CollectionsManager({ collections }: { collections: Collection[] }) {
   const t = useTranslations("Admin.collections");
   const toast = useToast();
+  const router = useRouter();
   const [form, setForm] = useState<FormState>(emptyForm);
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [processingLogo, setProcessingLogo] = useState(false);
@@ -86,13 +88,19 @@ export function CollectionsManager({ collections }: { collections: Collection[] 
       toast.show(t("saved"));
       setForm(emptyForm);
       setLogoFile(null);
+      router.refresh();
     });
   }
 
   function remove(id: string) {
     startTransition(async () => {
-      await deleteCollection(id);
+      const result = await deleteCollection(id);
+      if ("error" in result) {
+        toast.show(t("errorHasProducts"));
+        return;
+      }
       toast.show(t("deleted"));
+      router.refresh();
     });
   }
 

@@ -63,9 +63,19 @@ export async function upsertCollection(
   return { id: id ?? "" };
 }
 
-export async function deleteCollection(id: string) {
+export async function deleteCollection(id: string): Promise<{ success: true } | { error: string }> {
   await requireAdmin();
-  await prisma.collection.delete({ where: { id } });
+
+  const productCount = await prisma.product.count({ where: { collectionId: id } });
+  if (productCount > 0) return { error: "hasProducts" };
+
+  try {
+    await prisma.collection.delete({ where: { id } });
+  } catch {
+    return { error: "hasProducts" };
+  }
+
   revalidatePath("/[locale]/admin/collections", "page");
   revalidatePath("/[locale]", "layout");
+  return { success: true };
 }
