@@ -54,7 +54,9 @@
   "OtherBrands": {
     "eyebrow": "Curated For You",
     "title": "Shop by Brand",
-    "viewAll": "View all"
+    "viewAll": "View all",
+    "prev": "Previous",
+    "next": "Next"
   },
   "GabrProducts": {
     "eyebrow": "By GABR",

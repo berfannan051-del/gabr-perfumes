@@ -54,7 +54,9 @@
   "OtherBrands": {
     "eyebrow": "مختارة لك",
     "title": "تسوّق حسب العلامة التجارية",
-    "viewAll": "عرض الكل"
+    "viewAll": "عرض الكل",
+    "prev": "السابق",
+    "next": "التالي"
   },
   "GabrProducts": {
     "eyebrow": "من جبر",
