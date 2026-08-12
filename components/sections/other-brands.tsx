@@ -19,12 +19,24 @@ function BrandRow({ brand, items }: { brand: Brand; items: Product[] }) {
     const card = el.querySelector<HTMLElement>("[data-card]");
     const step = card ? card.offsetWidth + 24 : el.clientWidth * 0.8;
     const isRTL = locale === "ar";
+    const maxScroll = el.scrollWidth - el.clientWidth;
+    const current = Math.abs(el.scrollLeft);
+
+    if (dir === 1 && current >= maxScroll - 4) {
+      el.scrollTo({ left: 0, behavior: "smooth" });
+      return;
+    }
+    if (dir === -1 && current <= 4) {
+      el.scrollTo({ left: isRTL ? -maxScroll : maxScroll, behavior: "smooth" });
+      return;
+    }
+
     el.scrollBy({ left: (isRTL ? -1 : 1) * dir * step, behavior: "smooth" });
   }
 
   return (
     <div>
-      <div className="relative mb-10 overflow-hidden border border-primary/15 bg-gradient-to-br from-surface to-surface-muted px-6 py-6 sm:px-8">
+      <div className="relative mb-8 overflow-hidden border border-primary/15 bg-gradient-to-br from-surface to-surface-muted px-6 py-6 sm:px-8">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_0%_0%,color-mix(in_srgb,var(--color-primary)_10%,transparent),transparent_60%)]" />
 
         <div className="relative flex flex-wrap items-center justify-between gap-6">
@@ -46,52 +58,51 @@ function BrandRow({ brand, items }: { brand: Brand; items: Product[] }) {
             </div>
           </Link>
 
-          <div className="flex items-center gap-4">
-            <Link
-              href={`/shop?brand=OTHER&brandId=${brand.id}`}
-              className="text-label text-primary underline-offset-4 transition-opacity hover:opacity-70 hover:underline"
-            >
-              {t("viewAll")}
-            </Link>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                aria-label={t("prev")}
-                onClick={() => scroll(-1)}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-primary/40 text-foreground transition-all duration-300 hover:bg-primary hover:text-cta-foreground"
-              >
-                <ChevronIcon className="h-4 w-4 rotate-180 rtl:rotate-0" />
-              </button>
-              <button
-                type="button"
-                aria-label={t("next")}
-                onClick={() => scroll(1)}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-primary/40 text-foreground transition-all duration-300 hover:bg-primary hover:text-cta-foreground"
-              >
-                <ChevronIcon className="h-4 w-4 rtl:rotate-180" />
-              </button>
-            </div>
-          </div>
+          <Link
+            href={`/shop?brand=OTHER&brandId=${brand.id}`}
+            className="text-label text-primary underline-offset-4 transition-opacity hover:opacity-70 hover:underline"
+          >
+            {t("viewAll")}
+          </Link>
         </div>
       </div>
 
-      <div
-        ref={trackRef}
-        className="scrollbar-hide -mx-5 flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth px-5 pb-2 md:mx-0 md:px-0"
-      >
-        {items.map((product, i) => (
-          <motion.div
-            key={product.id}
-            data-card
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-10%" }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: i * 0.08 }}
-            className="w-[62vw] shrink-0 snap-start sm:w-[260px]"
-          >
-            <ProductCard product={product} />
-          </motion.div>
-        ))}
+      <div className="relative">
+        <button
+          type="button"
+          aria-label={t("prev")}
+          onClick={() => scroll(-1)}
+          className="absolute start-0 top-1/2 z-10 hidden h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-surface text-foreground shadow-lifted transition-all duration-300 hover:bg-primary hover:text-cta-foreground rtl:translate-x-1/2 md:flex"
+        >
+          <ChevronIcon className="h-5 w-5 rotate-180 rtl:rotate-0" />
+        </button>
+        <button
+          type="button"
+          aria-label={t("next")}
+          onClick={() => scroll(1)}
+          className="absolute end-0 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full border border-border bg-surface text-foreground shadow-lifted transition-all duration-300 hover:bg-primary hover:text-cta-foreground rtl:-translate-x-1/2 md:flex"
+        >
+          <ChevronIcon className="h-5 w-5 rtl:rotate-180" />
+        </button>
+
+        <div
+          ref={trackRef}
+          className="scrollbar-hide -mx-5 flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth px-5 pb-2 md:mx-0 md:px-0"
+        >
+          {items.map((product, i) => (
+            <motion.div
+              key={product.id}
+              data-card
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-10%" }}
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: i * 0.08 }}
+              className="w-[62vw] shrink-0 snap-start sm:w-[260px]"
+            >
+              <ProductCard product={product} />
+            </motion.div>
+          ))}
+        </div>
       </div>
     </div>
   );

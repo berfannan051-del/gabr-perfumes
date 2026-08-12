@@ -1,12 +1,10 @@
 "use client";
 
-import { useRef } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { BottleArt } from "@/components/product/bottle-art";
-import { ChevronIcon } from "@/components/ui/icons";
 import type { Collection, Locale, Product } from "@/types/catalog";
 
 export function Collections({
@@ -18,16 +16,6 @@ export function Collections({
 }) {
   const t = useTranslations("Collections");
   const locale = useLocale() as Locale;
-  const trackRef = useRef<HTMLDivElement>(null);
-
-  function scroll(dir: 1 | -1) {
-    const el = trackRef.current;
-    if (!el) return;
-    const card = el.querySelector<HTMLElement>("[data-card]");
-    const step = card ? card.offsetWidth + 24 : el.clientWidth * 0.8;
-    const isRTL = locale === "ar";
-    el.scrollBy({ left: (isRTL ? -1 : 1) * dir * step, behavior: "smooth" });
-  }
 
   return (
     <section className="py-24 md:py-36">
@@ -37,29 +25,8 @@ export function Collections({
           <h2 className="text-h1">{t("title")}</h2>
         </div>
 
-        <div className="relative">
-          <button
-            type="button"
-            aria-label={t("prev")}
-            onClick={() => scroll(-1)}
-            className="absolute start-0 top-1/2 z-10 hidden h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-surface text-foreground shadow-lifted transition-all duration-300 hover:bg-primary hover:text-cta-foreground rtl:translate-x-1/2 md:flex"
-          >
-            <ChevronIcon className="h-5 w-5 rotate-180 rtl:rotate-0" />
-          </button>
-          <button
-            type="button"
-            aria-label={t("next")}
-            onClick={() => scroll(1)}
-            className="absolute end-0 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full border border-border bg-surface text-foreground shadow-lifted transition-all duration-300 hover:bg-primary hover:text-cta-foreground rtl:-translate-x-1/2 md:flex"
-          >
-            <ChevronIcon className="h-5 w-5 rtl:rotate-180" />
-          </button>
-
-          <div
-            ref={trackRef}
-            className="scrollbar-hide -mx-5 flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth px-5 pb-2 md:mx-0 md:px-0"
-          >
-            {collections.map((collection, i) => {
+        <div className="scrollbar-hide -mx-5 flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth px-5 pb-2 md:mx-0 md:px-0">
+          {collections.map((collection, i) => {
               const rep = products.find((p) => p.collectionSlug === collection.slug);
               return (
                 <motion.div
@@ -106,8 +73,7 @@ export function Collections({
                   </Link>
                 </motion.div>
               );
-            })}
-          </div>
+          })}
         </div>
       </div>
     </section>
