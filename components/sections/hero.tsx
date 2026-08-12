@@ -59,18 +59,24 @@ export function Hero({ content }: { content?: Partial<HeroContent> }) {
           transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
           className="relative h-full w-full"
         >
-          {content?.image ? (
-            <Image
-              src={content.image}
-              alt=""
-              fill
-              priority
-              sizes="(min-width: 768px) 60vw, 100vw"
-              className="object-cover"
-            />
-          ) : (
-            <BottleArt shape="faceted" liquidColor="#c9a227" className="h-full w-full" />
-          )}
+          <motion.div
+            animate={reduceMotion ? {} : { y: [0, -16, 0] }}
+            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
+            className="relative h-full w-full"
+          >
+            {content?.image ? (
+              <Image
+                src={content.image}
+                alt=""
+                fill
+                priority
+                sizes="(min-width: 768px) 60vw, 100vw"
+                className="object-cover"
+              />
+            ) : (
+              <BottleArt shape="faceted" liquidColor="#c9a227" className="h-full w-full" />
+            )}
+          </motion.div>
         </motion.div>
       </motion.div>
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-foreground via-foreground/50 to-foreground/10 md:hidden" />
@@ -91,11 +97,8 @@ export function Hero({ content }: { content?: Partial<HeroContent> }) {
             <motion.span variants={item} className="text-display block overflow-hidden leading-[1.15]">
               <span className="block pt-2">{titleLine1}</span>
             </motion.span>
-            <motion.span
-              variants={item}
-              className="text-display block overflow-hidden leading-[1.15] text-primary-highlight"
-            >
-              <span className="block pb-1">{titleLine2}</span>
+            <motion.span variants={item} className="text-display block overflow-hidden leading-[1.15]">
+              <span className="gold-shimmer block pb-1">{titleLine2}</span>
             </motion.span>
           </h1>
 
@@ -105,7 +108,10 @@ export function Hero({ content }: { content?: Partial<HeroContent> }) {
 
           <motion.div variants={item} className="mt-10 flex flex-wrap items-center gap-4">
             <Link href="/shop">
-              <Button size="lg" className="bg-primary text-foreground hover:bg-primary-highlight">
+              <Button
+                size="lg"
+                className="bg-primary text-foreground shadow-[0_0_0_rgba(201,162,39,0)] transition-shadow duration-500 hover:bg-primary-highlight hover:shadow-[0_0_50px_-6px_rgba(201,162,39,0.65)]"
+              >
                 {ctaPrimary}
               </Button>
             </Link>

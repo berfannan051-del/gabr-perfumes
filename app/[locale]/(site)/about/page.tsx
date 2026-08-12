@@ -16,6 +16,44 @@ export async function generateMetadata({
   return { title: t("eyebrow") };
 }
 
+const iconBase = {
+  viewBox: "0 0 24 24",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: 1.2,
+  strokeLinecap: "round" as const,
+  strokeLinejoin: "round" as const,
+};
+
+function CraftIcon(props: React.SVGAttributes<SVGSVGElement>) {
+  return (
+    <svg {...iconBase} {...props}>
+      <path d="M4 13c0-1 .6-1.9 1.5-2.4L12 7l6.5 3.6c.9.5 1.5 1.4 1.5 2.4v2a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-2Z" />
+      <path d="M12 7V3M9 4.5 12 3l3 1.5" />
+    </svg>
+  );
+}
+
+function IngredientIcon(props: React.SVGAttributes<SVGSVGElement>) {
+  return (
+    <svg {...iconBase} {...props}>
+      <path d="M6 20C6 11 12 4 20 4c0 8-7 14-16 16Z" />
+      <path d="M6 20c2-4 5-7 9-9" />
+    </svg>
+  );
+}
+
+function LongevityIcon(props: React.SVGAttributes<SVGSVGElement>) {
+  return (
+    <svg {...iconBase} {...props}>
+      <path d="M7 3h10M7 21h10" />
+      <path d="M7 3c0 4 3.5 6 5 8-1.5 2-5 4-5 8M17 3c0 4-3.5 6-5 8 1.5 2 5 4 5 8" />
+    </svg>
+  );
+}
+
+const valueIcons = [CraftIcon, IngredientIcon, LongevityIcon];
+
 export default async function AboutPage({
   params,
 }: {
@@ -40,7 +78,7 @@ export default async function AboutPage({
   const values = [1, 2, 3].map((i) => ({
     title: t(`value${i}Title` as "value1Title"),
     body: t(`value${i}Body` as "value1Body"),
-    image: pick(siteContent, `about.value${i}Image` as "about.value1Image", l),
+    Icon: valueIcons[i - 1],
   }));
 
   return (
@@ -86,12 +124,8 @@ export default async function AboutPage({
           <div className="grid grid-cols-1 gap-10 md:grid-cols-3">
             {values.map((v, i) => (
               <div key={i} className="text-center">
-                <div className="relative mb-6 aspect-[4/5] overflow-hidden bg-surface">
-                  {v.image ? (
-                    <Image src={v.image} alt="" fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover" />
-                  ) : (
-                    <BottleArt shape={i === 0 ? "tall" : i === 1 ? "round" : "faceted"} liquidColor="#a9812e" className="h-full w-full" />
-                  )}
+                <div className="mx-auto mb-6 flex h-28 w-28 items-center justify-center rounded-full border border-primary/40 text-primary">
+                  <v.Icon className="h-14 w-14" />
                 </div>
                 <span className="text-label text-muted-foreground">0{i + 1}</span>
                 <h3 className="text-h3 mt-3 mb-3">{v.title}</h3>

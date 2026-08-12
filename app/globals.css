@@ -126,6 +126,26 @@
 }
 
 @layer components {
+  .gold-shimmer {
+    background: linear-gradient(
+      90deg,
+      var(--color-primary-highlight) 0%,
+      #fff3cf 50%,
+      var(--color-primary-highlight) 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: gold-shimmer 5s linear infinite;
+  }
+
+  @keyframes gold-shimmer {
+    to {
+      background-position: -200% center;
+    }
+  }
+
   .scrollbar-hide {
     scrollbar-width: none;
     -ms-overflow-style: none;

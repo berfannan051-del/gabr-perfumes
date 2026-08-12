@@ -46,7 +46,7 @@ export function Collections({
                 className={cn(
                   "group relative overflow-hidden bg-surface-muted",
                   evenLayout
-                    ? "aspect-[3/4] min-w-0 flex-1 basis-0 md:aspect-[16/10]"
+                    ? "aspect-[3/4] min-w-0 flex-1 basis-0 md:aspect-auto md:h-[380px]"
                     : "aspect-[3/4] w-[78vw] shrink-0 snap-start sm:w-[380px]"
                 )}
               >
