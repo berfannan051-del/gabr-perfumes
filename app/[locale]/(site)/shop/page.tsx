@@ -19,7 +19,7 @@ export async function generateMetadata({
 export default async function ShopPage({
   searchParams,
 }: {
-  searchParams: Promise<{ collection?: string; gender?: string; brand?: string }>;
+  searchParams: Promise<{ collection?: string; gender?: string; brand?: string; brandId?: string }>;
 }) {
   const params = await searchParams;
   const validGenders: Gender[] = ["men", "women", "unisex"];
@@ -42,6 +42,7 @@ export default async function ShopPage({
       initialCollection={params.collection}
       initialGender={gender}
       initialBrand={brand}
+      initialBrandId={params.brandId}
     />
   );
 }

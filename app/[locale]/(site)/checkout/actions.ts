@@ -22,7 +22,9 @@ export type CheckoutItemInput = {
 
 export type CheckoutResult =
   | { orderId: string; orderNumber: string }
-  | { error: "rateLimited" | "invalid" | "invalidFile" | "unknown" };
+  | { error: "rateLimited" | "invalid" | "invalidFile" | "insufficientStock" | "unknown" };
+
+class InsufficientStockError extends Error {}
 
 export async function submitOrderAction(formData: FormData): Promise<CheckoutResult> {
   const ip = await getClientIp();
@@ -52,6 +54,7 @@ export async function submitOrderAction(formData: FormData): Promise<CheckoutRes
     return { error: "invalid" };
   }
   if (!Array.isArray(items) || items.length === 0) return { error: "invalid" };
+  if (items.some((i) => !Number.isInteger(i.quantity) || i.quantity < 1)) return { error: "invalid" };
 
   let proofImageUrl: string | undefined;
   const proofFile = formData.get("proof");
@@ -66,32 +69,45 @@ export async function submitOrderAction(formData: FormData): Promise<CheckoutRes
   const orderNumber = `GBR-${Date.now().toString().slice(-8)}`;
 
   try {
-    const order = await prisma.order.create({
-      data: {
-        orderNumber,
-        userId: session?.user?.id,
-        fullName: parsed.data.fullName,
-        email: parsed.data.email,
-        phone: parsed.data.phone,
-        address: parsed.data.address,
-        city: parsed.data.city,
-        governorate: parsed.data.governorate,
-        notes: parsed.data.notes,
-        paymentMethod: parsed.data.paymentMethod.toUpperCase() as never,
-        proofImageUrl,
-        subtotal,
-        items: {
-          create: items.map((i) => ({
-            productId: i.productId,
-            variantId: i.variantId,
-            nameAr: i.nameAr,
-            nameEn: i.nameEn,
-            sizeMl: i.sizeMl,
-            price: i.price,
-            quantity: i.quantity,
-          })),
+    const order = await prisma.$transaction(async (tx) => {
+      // Reserve stock atomically per variant — the WHERE clause's stockQuantity
+      // guard makes this a race-safe conditional decrement instead of a
+      // check-then-act that two simultaneous checkouts could both pass.
+      for (const item of items) {
+        const result = await tx.productVariant.updateMany({
+          where: { id: item.variantId, stockQuantity: { gte: item.quantity } },
+          data: { stockQuantity: { decrement: item.quantity } },
+        });
+        if (result.count === 0) throw new InsufficientStockError();
+      }
+
+      return tx.order.create({
+        data: {
+          orderNumber,
+          userId: session?.user?.id,
+          fullName: parsed.data.fullName,
+          email: parsed.data.email,
+          phone: parsed.data.phone,
+          address: parsed.data.address,
+          city: parsed.data.city,
+          governorate: parsed.data.governorate,
+          notes: parsed.data.notes,
+          paymentMethod: parsed.data.paymentMethod.toUpperCase() as never,
+          proofImageUrl,
+          subtotal,
+          items: {
+            create: items.map((i) => ({
+              productId: i.productId,
+              variantId: i.variantId,
+              nameAr: i.nameAr,
+              nameEn: i.nameEn,
+              sizeMl: i.sizeMl,
+              price: i.price,
+              quantity: i.quantity,
+            })),
+          },
         },
-      },
+      });
     });
 
     logger.info({ orderNumber }, "order created");
@@ -105,6 +121,9 @@ export async function submitOrderAction(formData: FormData): Promise<CheckoutRes
 
     return { orderId: order.id, orderNumber };
   } catch (err) {
+    if (err instanceof InsufficientStockError) {
+      return { error: "insufficientStock" };
+    }
     logger.error({ err }, "order creation failed");
     return { error: "unknown" };
   }

@@ -2,10 +2,11 @@
 
 import { useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ProductCard } from "@/components/product/product-card";
 import { Sheet, SheetClose, SheetTitle } from "@/components/ui/sheet";
-import { CloseIcon } from "@/components/ui/icons";
+import { CloseIcon, ChevronIcon } from "@/components/ui/icons";
+import { cn } from "@/lib/cn";
 import type { Brand, BrandType, Collection, FragranceFamily, Gender, Locale, Product } from "@/types/catalog";
 
 const genders: Gender[] = ["men", "women", "unisex"];
@@ -19,6 +20,7 @@ export function ShopClient({
   initialCollection,
   initialGender,
   initialBrand,
+  initialBrandId,
 }: {
   products: Product[];
   collections: Collection[];
@@ -26,6 +28,7 @@ export function ShopClient({
   initialCollection?: string;
   initialGender?: Gender;
   initialBrand?: BrandType;
+  initialBrandId?: string;
 }) {
   const t = useTranslations("Shop");
   const tf = useTranslations("Families");
@@ -35,7 +38,8 @@ export function ShopClient({
   const [family, setFamily] = useState<FragranceFamily[]>([]);
   const [collection, setCollection] = useState<string | "all">(initialCollection ?? "all");
   const [brand, setBrand] = useState<BrandType | "all">(initialBrand ?? "all");
-  const [brandId, setBrandId] = useState<string | "all">("all");
+  const [brandId, setBrandId] = useState<string | "all">(initialBrandId ?? "all");
+  const [brandPanelOpen, setBrandPanelOpen] = useState(Boolean(initialBrand));
   const [sort, setSort] = useState<Sort>("newest");
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
@@ -82,53 +86,67 @@ export function ShopClient({
     setBrandId("all");
   }
 
+  const activeBrandLabel =
+    brand === "all"
+      ? t("filters.brandOptions.all")
+      : brand === "GABR"
+        ? t("filters.brandOptions.gabr")
+        : brandId !== "all"
+          ? (brands.find((b) => b.id === brandId)?.name ?? t("filters.brandOptions.other"))
+          : t("filters.brandOptions.other");
+
   const filterPanel = (
     <div className="flex flex-col gap-8">
       <div>
-        <h3 className="text-label mb-4">{t("filters.brand")}</h3>
-        <div className="flex flex-wrap gap-2">
-          <FilterChip active={brand === "all"} onClick={() => selectBrandType("all")}>
-            {t("filters.brandOptions.all")}
-          </FilterChip>
-          <FilterChip active={brand === "GABR"} onClick={() => selectBrandType("GABR")}>
-            {t("filters.brandOptions.gabr")}
-          </FilterChip>
-          <FilterChip active={brand === "OTHER"} onClick={() => selectBrandType("OTHER")}>
-            {t("filters.brandOptions.other")}
-          </FilterChip>
-        </div>
+        <button
+          type="button"
+          onClick={() => setBrandPanelOpen((v) => !v)}
+          className="flex w-full items-center justify-between border border-border bg-surface px-4 py-3 text-start transition-colors hover:border-primary"
+        >
+          <span>
+            <span className="text-label block text-muted-foreground">{t("filters.brand")}</span>
+            <span className="text-body mt-0.5 block">{activeBrandLabel}</span>
+          </span>
+          <ChevronIcon className={cn("h-4 w-4 shrink-0 transition-transform duration-300", brandPanelOpen && "rotate-180")} />
+        </button>
 
-        {brand === "OTHER" && brands.length > 0 && (
-          <div className="mt-3 flex flex-col gap-2 border-s-2 border-border ps-3">
-            <button
-              type="button"
-              onClick={() => setBrandId("all")}
-              className={`text-caption text-start transition-colors ${
-                brandId === "all" ? "text-primary" : "text-muted-foreground hover:text-foreground"
-              }`}
+        <AnimatePresence initial={false}>
+          {brandPanelOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              className="overflow-hidden"
             >
-              {t("filters.brandOptions.all")}
-            </button>
-            {brands.map((b) => (
-              <button
-                key={b.id}
-                type="button"
-                onClick={() => setBrandId(b.id)}
-                className={`flex items-center gap-2 text-caption transition-colors ${
-                  brandId === b.id ? "text-primary" : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {b.logo ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={b.logo} alt="" className="h-5 w-5 rounded-full object-cover" />
-                ) : (
-                  <span className="h-5 w-5 rounded-full bg-surface-muted" />
-                )}
-                {b.name}
-              </button>
-            ))}
-          </div>
-        )}
+              <div className="mt-3 grid grid-cols-3 gap-3 border border-border bg-surface p-3">
+                <BrandTile
+                  active={brand === "all"}
+                  onClick={() => selectBrandType("all")}
+                  label={t("filters.brandOptions.all")}
+                />
+                <BrandTile
+                  active={brand === "GABR"}
+                  onClick={() => selectBrandType("GABR")}
+                  label={t("filters.brandOptions.gabr")}
+                  logo="/brand/logo.png"
+                />
+                {brands.map((b) => (
+                  <BrandTile
+                    key={b.id}
+                    active={brand === "OTHER" && brandId === b.id}
+                    onClick={() => {
+                      setBrand("OTHER");
+                      setBrandId(b.id);
+                    }}
+                    label={b.name}
+                    logo={b.logo}
+                  />
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       <div>
@@ -287,6 +305,44 @@ function FilterChip({
       }`}
     >
       {children}
+    </button>
+  );
+}
+
+function BrandTile({
+  active,
+  onClick,
+  label,
+  logo,
+}: {
+  active: boolean;
+  onClick: () => void;
+  label: string;
+  logo?: string | null;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        "flex flex-col items-center gap-2 border p-3 text-center transition-all duration-300",
+        active ? "border-primary bg-primary/5 shadow-soft" : "border-border hover:border-primary/60"
+      )}
+    >
+      <span
+        className={cn(
+          "grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-full border bg-surface-muted transition-colors",
+          active ? "border-primary" : "border-border"
+        )}
+      >
+        {logo ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={logo} alt="" className="h-full w-full object-cover" />
+        ) : (
+          <span className="text-h3 text-muted-foreground">{label.charAt(0)}</span>
+        )}
+      </span>
+      <span className={cn("text-caption line-clamp-1", active ? "text-primary" : "text-foreground")}>{label}</span>
     </button>
   );
 }

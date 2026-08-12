@@ -74,7 +74,9 @@ export function CartDrawer() {
                           onClick={() =>
                             cart.setQuantity(item.productId, item.variantId, item.quantity + 1)
                           }
+                          disabled={item.quantity >= item.stockQuantity}
                           aria-label="plus"
+                          className="disabled:opacity-40"
                         >
                           <PlusIcon className="h-3.5 w-3.5" />
                         </button>

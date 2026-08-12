@@ -37,6 +37,7 @@ export type ProductVariant = {
   compareAtPrice?: number;
   sku: string;
   inStock: boolean;
+  stockQuantity: number;
 };
 
 export type Product = {

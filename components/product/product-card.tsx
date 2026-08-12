@@ -20,12 +20,23 @@ export function ProductCard({ product }: { product: Product }) {
   const image = product.images[0];
 
   return (
-    <div className="group relative">
+    <motion.div
+      className="group relative"
+      initial="rest"
+      whileHover="hover"
+      whileTap={{ scale: 0.97 }}
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+    >
       <Link href={`/shop/${product.slug}`} className="block">
-        <div className="relative aspect-[3/4] overflow-hidden bg-surface-muted">
+        <motion.div
+          variants={{ rest: { y: 0, boxShadow: "0 0 0 rgba(0,0,0,0)" }, hover: { y: -6 } }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          className="relative aspect-[3/4] overflow-hidden bg-surface-muted"
+        >
           <motion.div
-            initial={false}
-            className="h-full w-full transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-110 group-hover:-rotate-2"
+            variants={{ rest: { scale: 1, rotate: 0 }, hover: { scale: 1.12, rotate: -2 } }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="h-full w-full"
           >
             {image ? (
               <Image
@@ -39,20 +50,20 @@ export function ProductCard({ product }: { product: Product }) {
               <BottleArt shape={product.bottleShape} liquidColor={product.heroColor} className="h-full w-full" />
             )}
           </motion.div>
+          <motion.div
+            variants={{ rest: { opacity: 0 }, hover: { opacity: 1 } }}
+            transition={{ duration: 0.4 }}
+            className="pointer-events-none absolute inset-0 bg-gradient-to-t from-foreground/25 via-transparent to-transparent"
+          />
 
-          <div className="absolute start-3 top-3 flex flex-col gap-2">
+          <div className="absolute start-3 top-3 z-10 flex flex-col gap-2">
             {product.isNew && <Badge variant="solid">{t("newLabel")}</Badge>}
           </div>
 
-          {product.brandType === "OTHER" && (
-            <div className="absolute end-3 bottom-3">
-              <Badge variant="outline" className="flex items-center gap-1.5 bg-surface/90">
-                {product.brand?.logo && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={product.brand.logo} alt="" className="h-4 w-4 rounded-full object-cover" />
-                )}
-                {product.brand?.name || t("brandOther")}
-              </Badge>
+          {product.brandType === "OTHER" && product.brand?.logo && (
+            <div className="absolute end-3 bottom-3 z-10 h-12 w-12 overflow-hidden rounded-full border-2 border-surface bg-surface shadow-lifted">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={product.brand.logo} alt={product.brand.name} className="h-full w-full object-cover" />
             </div>
           )}
 
@@ -63,13 +74,22 @@ export function ProductCard({ product }: { product: Product }) {
               wishlist.toggle(product.id);
             }}
             aria-label={inWishlist ? t("removeFromWishlist") : t("addToWishlist")}
-            className="absolute end-3 top-3 grid h-9 w-9 place-items-center bg-surface/90 text-foreground opacity-0 transition-opacity duration-300 group-hover:opacity-100 hover:text-primary"
+            className="absolute end-3 top-3 z-10 grid h-9 w-9 place-items-center bg-surface/90 text-foreground opacity-0 transition-opacity duration-300 group-hover:opacity-100 hover:text-primary"
           >
             <HeartIcon filled={inWishlist} className="h-4 w-4" />
           </button>
-        </div>
+        </motion.div>
 
         <div className="mt-4">
+          {product.brandType === "OTHER" && (
+            <p className="text-label mb-1 flex items-center gap-1.5 text-primary">
+              {product.brand?.logo && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={product.brand.logo} alt="" className="h-4 w-4 rounded-full object-cover" />
+              )}
+              {product.brand?.name || t("brandOther")}
+            </p>
+          )}
           <p className="text-h3 text-base">{product.name[locale]}</p>
           <p className="text-caption mt-1 line-clamp-1">{product.shortDescription[locale]}</p>
           <p className="text-body mt-2">
@@ -77,6 +97,6 @@ export function ProductCard({ product }: { product: Product }) {
           </p>
         </div>
       </Link>
-    </div>
+    </motion.div>
   );
 }

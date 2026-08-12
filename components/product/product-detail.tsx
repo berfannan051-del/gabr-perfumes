@@ -36,8 +36,16 @@ export function ProductDetail({
 
   const variant = product.variants.find((v) => v.id === variantId) ?? product.variants[0];
   const inWishlist = wishlist.has(product.id);
+  const outOfStock = variant.stockQuantity === 0;
+  const lowStock = variant.stockQuantity > 0 && variant.stockQuantity <= 10;
+
+  function selectVariant(v: (typeof product.variants)[number]) {
+    setVariantId(v.id);
+    setQuantity((q) => Math.min(q, Math.max(1, v.stockQuantity)));
+  }
 
   function handleAddToCart() {
+    if (outOfStock) return;
     cart.addItem(
       {
         productId: product.id,
@@ -46,6 +54,7 @@ export function ProductDetail({
         name: product.name,
         sizeMl: variant.sizeMl,
         price: variant.price,
+        stockQuantity: variant.stockQuantity,
         heroColor: product.heroColor,
         bottleShape: product.bottleShape,
       },
@@ -71,18 +80,20 @@ export function ProductDetail({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
         >
-          <div className="flex items-center gap-3">
-            <span className="text-label text-primary">{tf(product.family)}</span>
-            {product.brandType === "OTHER" && (
-              <Badge variant="muted" className="flex items-center gap-1.5">
-                {product.brand?.logo && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={product.brand.logo} alt="" className="h-4 w-4 rounded-full object-cover" />
-                )}
-                {product.brand?.name || t("brandOther")}
-              </Badge>
-            )}
-          </div>
+          <span className="text-label text-primary">{tf(product.family)}</span>
+
+          {product.brandType === "OTHER" && (
+            <div className="mt-3 flex items-center gap-3">
+              {product.brand?.logo ? (
+                <div className="h-14 w-14 shrink-0 overflow-hidden rounded-full border border-border shadow-soft">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={product.brand.logo} alt={product.brand.name} className="h-full w-full object-cover" />
+                </div>
+              ) : null}
+              <span className="text-h3 text-base">{product.brand?.name || t("brandOther")}</span>
+            </div>
+          )}
+
           <h1 className="text-h1 mt-3 mb-4">{product.name[locale]}</h1>
           <p className="text-body mb-6 text-muted-foreground">{product.shortDescription[locale]}</p>
 
@@ -100,8 +111,9 @@ export function ProductDetail({
                 <button
                   key={v.id}
                   type="button"
-                  onClick={() => setVariantId(v.id)}
-                  className={`border px-4 py-2.5 text-caption transition-colors ${
+                  onClick={() => selectVariant(v)}
+                  disabled={v.stockQuantity === 0}
+                  className={`border px-4 py-2.5 text-caption transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
                     v.id === variant.id
                       ? "border-primary bg-primary text-background"
                       : "border-border hover:border-primary"
@@ -113,22 +125,44 @@ export function ProductDetail({
             </div>
           </div>
 
-          <div className="mb-8">
+          <div className="mb-4">
             <span className="text-label mb-3 block text-muted-foreground">{t("quantityLabel")}</span>
             <div className="flex w-fit items-center gap-4 border border-border px-3 py-2">
-              <button type="button" onClick={() => setQuantity((q) => Math.max(1, q - 1))} aria-label="minus">
+              <button
+                type="button"
+                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                disabled={outOfStock}
+                aria-label="minus"
+                className="disabled:opacity-40"
+              >
                 <MinusIcon className="h-4 w-4" />
               </button>
               <span className="w-4 text-center text-body">{quantity}</span>
-              <button type="button" onClick={() => setQuantity((q) => q + 1)} aria-label="plus">
+              <button
+                type="button"
+                onClick={() => setQuantity((q) => Math.min(variant.stockQuantity, q + 1))}
+                disabled={outOfStock || quantity >= variant.stockQuantity}
+                aria-label="plus"
+                className="disabled:opacity-40"
+              >
                 <PlusIcon className="h-4 w-4" />
               </button>
             </div>
           </div>
 
+          <div className="mb-6">
+            {outOfStock ? (
+              <p className="text-caption text-primary-deep">{t("outOfStock")}</p>
+            ) : lowStock ? (
+              <p className="text-caption text-primary-deep">{t("lowStock", { count: variant.stockQuantity })}</p>
+            ) : (
+              <p className="text-caption text-muted-foreground">{t("inStock")}</p>
+            )}
+          </div>
+
           <div className="mb-10 flex gap-3">
-            <Button size="lg" onClick={handleAddToCart} className="flex-1">
-              {justAdded ? t("addedToCart") : t("addToCart")}
+            <Button size="lg" onClick={handleAddToCart} disabled={outOfStock} className="flex-1">
+              {outOfStock ? t("outOfStock") : justAdded ? t("addedToCart") : t("addToCart")}
             </Button>
             <button
               type="button"

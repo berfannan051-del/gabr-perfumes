@@ -6,7 +6,7 @@ function variants(base: number) {
     { id: "v30", sizeMl: 30, price: Math.round(base * 0.62), sku: "-30", inStock: true },
     { id: "v50", sizeMl: 50, price: base, sku: "-50", inStock: true },
     { id: "v100", sizeMl: 100, price: Math.round(base * 1.65), sku: "-100", inStock: true },
-  ].map((v, i) => ({ ...v, id: `${v.id}-${i}`, sku: `GBR${v.sku}` }));
+  ].map((v, i) => ({ ...v, id: `${v.id}-${i}`, sku: `GBR${v.sku}`, stockQuantity: v.inStock ? 50 : 0 }));
 }
 
 const rawProducts: Omit<Product, "images" | "brandType" | "brand">[] = [

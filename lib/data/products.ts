@@ -26,6 +26,7 @@ function mapVariant(v: DbProduct["variants"][number]): ProductVariant {
     compareAtPrice: v.compareAtPrice ? Number(v.compareAtPrice) : undefined,
     sku: v.sku,
     inStock: v.stockQuantity > 0,
+    stockQuantity: v.stockQuantity,
   };
 }
 

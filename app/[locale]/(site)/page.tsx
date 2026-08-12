@@ -1,12 +1,14 @@
 import { Hero } from "@/components/sections/hero";
 import { Story } from "@/components/sections/story";
 import { GabrProducts } from "@/components/sections/gabr-products";
+import { OtherBrands } from "@/components/sections/other-brands";
 import { Collections } from "@/components/sections/collections";
 import { Bestsellers } from "@/components/sections/bestsellers";
 import { NotesStory } from "@/components/sections/notes-story";
 import { ReviewsSection } from "@/components/sections/reviews-section";
 import { getAllProducts, getBestsellerProducts } from "@/lib/data/products";
 import { getCollections } from "@/lib/data/collections";
+import { getAllBrands } from "@/lib/data/brands";
 import { getSiteContentMap, pick } from "@/lib/data/site-content";
 import { prisma } from "@/lib/prisma";
 import type { Locale } from "@/types/catalog";
@@ -19,10 +21,11 @@ export default async function HomePage({
   const { locale } = await params;
   const l = locale as Locale;
 
-  const [products, bestsellers, collections, siteContent, reviews] = await Promise.all([
+  const [products, bestsellers, collections, brands, siteContent, reviews] = await Promise.all([
     getAllProducts(),
     getBestsellerProducts(),
     getCollections(),
+    getAllBrands(),
     getSiteContentMap(),
     prisma.review.findMany({ where: { isActive: true }, orderBy: { createdAt: "desc" }, take: 9 }),
   ]);
@@ -56,6 +59,7 @@ export default async function HomePage({
       <Hero content={heroContent} />
       <Story content={storyContent} />
       <GabrProducts products={products} />
+      <OtherBrands brands={brands} products={products} />
       <Collections collections={collections} products={products} />
       <Bestsellers products={bestsellers} />
       <NotesStory content={notesStoryContent} />

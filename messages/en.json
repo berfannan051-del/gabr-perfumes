@@ -49,6 +49,11 @@
     "eyebrow": "Testimonials",
     "title": "What Our Customers Say"
   },
+  "OtherBrands": {
+    "eyebrow": "Curated For You",
+    "title": "Shop by Brand",
+    "viewAll": "View all"
+  },
   "GabrProducts": {
     "eyebrow": "By GABR",
     "title": "Our Own Fragrances",
@@ -234,6 +239,8 @@
       "heroColor": "Liquid Color",
       "images": "Images",
       "uploadImage": "Upload Image",
+      "imagesBgRemovalHint": "Backgrounds are removed automatically when you upload — this can take a few seconds per image.",
+      "processingImage": "Removing background…",
       "isBestseller": "Bestseller",
       "isNew": "New",
       "variants": "Sizes & Pricing",
@@ -483,6 +490,7 @@
     "newLabel": "New",
     "bestsellerLabel": "Bestseller",
     "outOfStock": "Currently Unavailable",
+    "lowStock": "Only {count} left in stock",
     "inStock": "In Stock",
     "sku": "SKU",
     "tabs": {
@@ -569,6 +577,7 @@
       "rateLimited": "Too many attempts, try again shortly",
       "invalid": "Please check your details",
       "invalidFile": "Invalid payment proof image",
+      "insufficientStock": "One of the items in your cart no longer has enough stock — please lower the quantity and try again",
       "unknown": "Something went wrong, please try again"
     }
   },

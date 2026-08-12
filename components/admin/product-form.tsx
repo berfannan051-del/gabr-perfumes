@@ -7,6 +7,18 @@ import { Input, Label, Textarea } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { saveProduct } from "@/app/[locale]/admin/products/actions";
 
+async function stripBackground(file: File): Promise<File> {
+  try {
+    const { removeBackground } = await import("@imgly/background-removal");
+    const blob = await removeBackground(file);
+    return new File([blob], file.name.replace(/\.\w+$/, ".png"), { type: "image/png" });
+  } catch {
+    // Background removal is a nice-to-have — never block the upload if it fails
+    // (e.g. offline, model download blocked, unsupported browser).
+    return file;
+  }
+}
+
 type NoteOption = { id: string; nameAr: string; nameEn: string };
 type CollectionOption = { id: string; nameAr: string };
 type BrandOption = { id: string; name: string };
@@ -85,9 +97,25 @@ export function ProductForm({
     product ?? { ...emptyProduct, collectionId: collections[0]?.id ?? "" }
   );
   const [newImages, setNewImages] = useState<File[]>([]);
+  const [newImagePreviews, setNewImagePreviews] = useState<string[]>([]);
+  const [processingImages, setProcessingImages] = useState(false);
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [slugTouched, setSlugTouched] = useState(Boolean(product));
+
+  async function handleImageFiles(files: File[]) {
+    if (files.length === 0) return;
+    setProcessingImages(true);
+    const processed = await Promise.all(files.map(stripBackground));
+    setNewImages((prev) => [...prev, ...processed]);
+    setNewImagePreviews((prev) => [...prev, ...processed.map((f) => URL.createObjectURL(f))]);
+    setProcessingImages(false);
+  }
+
+  function removeNewImage(index: number) {
+    setNewImages((prev) => prev.filter((_, i) => i !== index));
+    setNewImagePreviews((prev) => prev.filter((_, i) => i !== index));
+  }
 
   function set<K extends keyof ProductFormData>(key: K, value: ProductFormData[K]) {
     setForm((f) => ({ ...f, [key]: value }));
@@ -325,21 +353,39 @@ export function ProductForm({
 
       <div>
         <Label>{t("images")}</Label>
+        <p className="text-caption mt-1 text-muted-foreground">{t("imagesBgRemovalHint")}</p>
         <div className="mt-2 flex flex-wrap gap-3">
           {form.images.map((url) => (
-            <div key={url} className="relative h-20 w-20 border border-border">
+            <div key={url} className="checkerboard-bg relative h-20 w-20 border border-border">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={url} alt="" className="h-full w-full object-cover" />
               <button type="button" onClick={() => removeExistingImage(url)} className="absolute -end-2 -top-2 h-5 w-5 bg-primary-deep text-background">×</button>
             </div>
           ))}
+          {newImagePreviews.map((url, i) => (
+            <div key={url} className="checkerboard-bg relative h-20 w-20 border border-primary">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={url} alt="" className="h-full w-full object-cover" />
+              <button type="button" onClick={() => removeNewImage(i)} className="absolute -end-2 -top-2 h-5 w-5 bg-primary-deep text-background">×</button>
+            </div>
+          ))}
+          {processingImages && (
+            <div className="grid h-20 w-20 place-items-center border border-dashed border-border text-caption text-muted-foreground">
+              {t("processingImage")}
+            </div>
+          )}
         </div>
         <input
           type="file"
           multiple
           accept="image/png,image/jpeg,image/webp"
-          onChange={(e) => setNewImages(Array.from(e.target.files ?? []))}
-          className="mt-3 text-caption file:me-4 file:border-0 file:bg-primary file:px-4 file:py-2 file:text-background"
+          disabled={processingImages}
+          onChange={(e) => {
+            const files = Array.from(e.target.files ?? []);
+            e.target.value = "";
+            handleImageFiles(files);
+          }}
+          className="mt-3 text-caption file:me-4 file:border-0 file:bg-primary file:px-4 file:py-2 file:text-background disabled:opacity-50"
         />
       </div>
 

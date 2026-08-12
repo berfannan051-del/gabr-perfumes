@@ -19,6 +19,7 @@ export type CartItem = {
   sizeMl: number;
   price: number;
   quantity: number;
+  stockQuantity: number;
   heroColor: string;
   bottleShape: "tall" | "round" | "faceted";
 };
@@ -45,13 +46,17 @@ function cartReducer(state: CartState, action: CartAction): CartState {
         (i) => i.productId === action.item.productId && i.variantId === action.item.variantId
       );
       if (existing) {
+        const cap = action.item.stockQuantity;
         return {
           items: state.items.map((i) =>
-            i === existing ? { ...i, quantity: i.quantity + action.quantity } : i
+            i === existing
+              ? { ...i, quantity: Math.min(i.quantity + action.quantity, cap), stockQuantity: cap }
+              : i
           ),
         };
       }
-      return { items: [...state.items, { ...action.item, quantity: action.quantity }] };
+      const quantity = Math.min(action.quantity, action.item.stockQuantity);
+      return { items: [...state.items, { ...action.item, quantity }] };
     }
     case "remove":
       return {
@@ -64,7 +69,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
         items: state.items
           .map((i) =>
             i.productId === action.productId && i.variantId === action.variantId
-              ? { ...i, quantity: action.quantity }
+              ? { ...i, quantity: Math.min(action.quantity, i.stockQuantity) }
               : i
           )
           .filter((i) => i.quantity > 0),
