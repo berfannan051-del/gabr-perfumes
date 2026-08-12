@@ -118,6 +118,7 @@ model Collection {
   descriptionAr   String
   descriptionEn   String
   image           String
+  coverImage      String?
   createdAt       DateTime  @default(now())
   products        Product[]
 }

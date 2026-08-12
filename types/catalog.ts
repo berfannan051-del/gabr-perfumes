@@ -72,4 +72,5 @@ export type Collection = {
   name: LocalizedText;
   description: LocalizedText;
   image: string;
+  coverImage: string | null;
 };

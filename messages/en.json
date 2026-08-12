@@ -283,6 +283,8 @@
       "descriptionAr": "Description (Arabic)",
       "descriptionEn": "Description (English)",
       "image": "Logo",
+      "coverImage": "Cover Photo",
+      "coverImageHint": "Shown as the collection's background photo on the homepage",
       "save": "Save",
       "saving": "Saving…",
       "edit": "Edit",

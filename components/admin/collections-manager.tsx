@@ -20,6 +20,7 @@ type FormState = {
   descriptionAr: string;
   descriptionEn: string;
   existingImage: string;
+  existingCoverImage: string;
 };
 
 const emptyForm: FormState = {
@@ -30,6 +31,7 @@ const emptyForm: FormState = {
   descriptionAr: "",
   descriptionEn: "",
   existingImage: "",
+  existingCoverImage: "",
 };
 
 export function CollectionsManager({ collections }: { collections: Collection[] }) {
@@ -39,6 +41,7 @@ export function CollectionsManager({ collections }: { collections: Collection[] 
   const [form, setForm] = useState<FormState>(emptyForm);
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [processingLogo, setProcessingLogo] = useState(false);
+  const [coverFile, setCoverFile] = useState<File | null>(null);
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Collection | null>(null);
@@ -46,6 +49,10 @@ export function CollectionsManager({ collections }: { collections: Collection[] 
   const logoPreview = useMemo(
     () => (logoFile ? URL.createObjectURL(logoFile) : form.existingImage),
     [logoFile, form.existingImage]
+  );
+  const coverPreview = useMemo(
+    () => (coverFile ? URL.createObjectURL(coverFile) : form.existingCoverImage),
+    [coverFile, form.existingCoverImage]
   );
 
   function edit(c: Collection) {
@@ -57,8 +64,10 @@ export function CollectionsManager({ collections }: { collections: Collection[] 
       descriptionAr: c.description.ar,
       descriptionEn: c.description.en,
       existingImage: c.image,
+      existingCoverImage: c.coverImage ?? "",
     });
     setLogoFile(null);
+    setCoverFile(null);
     setError(null);
   }
 
@@ -78,7 +87,9 @@ export function CollectionsManager({ collections }: { collections: Collection[] 
       data.set("descriptionAr", form.descriptionAr);
       data.set("descriptionEn", form.descriptionEn);
       data.set("existingImage", form.existingImage);
+      data.set("existingCoverImage", form.existingCoverImage);
       if (logoFile) data.set("image", logoFile);
+      if (coverFile) data.set("coverImage", coverFile);
 
       const result = await upsertCollection(form.id, data);
       if ("error" in result) {
@@ -88,6 +99,7 @@ export function CollectionsManager({ collections }: { collections: Collection[] 
       toast.show(t("saved"));
       setForm(emptyForm);
       setLogoFile(null);
+      setCoverFile(null);
       router.refresh();
     });
   }
@@ -200,6 +212,27 @@ export function CollectionsManager({ collections }: { collections: Collection[] 
           />
         </div>
         {processingLogo && <p className="text-caption text-muted-foreground">{t("processingImage")}</p>}
+
+        <Label htmlFor="c-cover">{t("coverImage")}</Label>
+        <div className="flex items-center gap-3">
+          <div className="h-14 w-24 shrink-0 overflow-hidden rounded border border-border bg-surface-muted">
+            {coverPreview ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={coverPreview} alt="" className="h-full w-full object-cover" />
+            ) : null}
+          </div>
+          <input
+            id="c-cover"
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) setCoverFile(file);
+            }}
+            className="text-caption file:me-4 file:border-0 file:bg-primary file:px-4 file:py-2 file:text-background"
+          />
+        </div>
+        <p className="text-caption text-muted-foreground">{t("coverImageHint")}</p>
 
         {error && <p className="text-caption text-primary-deep">{error}</p>}
 

@@ -10,6 +10,7 @@ export const collections: Collection[] = [
       en: "Rich, regal oud compositions with a presence made for grand occasions.",
     },
     image: "royal-diwan",
+    coverImage: null,
   },
   {
     id: "col-2",
@@ -20,6 +21,7 @@ export const collections: Collection[] = [
       en: "Sheer floral compositions celebrating quiet femininity and quiet power.",
     },
     image: "jasmine-veil",
+    coverImage: null,
   },
   {
     id: "col-3",
@@ -30,6 +32,7 @@ export const collections: Collection[] = [
       en: "The warmth of amber and musk — a signature that lasts long into the night.",
     },
     image: "amber-signature",
+    coverImage: null,
   },
   {
     id: "col-4",
@@ -40,5 +43,6 @@ export const collections: Collection[] = [
       en: "A contemporary edit inspired by the pulse of the old city after sunset.",
     },
     image: "cairo-nights",
+    coverImage: null,
   },
 ];

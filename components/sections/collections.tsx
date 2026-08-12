@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { BottleArt } from "@/components/product/bottle-art";
@@ -45,8 +46,20 @@ export function Collections({
                 className={cn("group relative min-h-64 overflow-hidden bg-surface-muted", spans[i % spans.length])}
               >
                 <Link href={`/shop?collection=${collection.slug}`} className="block h-full w-full">
-                  <div className="absolute inset-0 opacity-70 transition-transform duration-700 group-hover:scale-110">
-                    {rep && <BottleArt shape={rep.bottleShape} liquidColor={rep.heroColor} className="h-full w-full" />}
+                  <div className="absolute inset-0 transition-transform duration-700 group-hover:scale-110">
+                    {collection.coverImage ? (
+                      <Image
+                        src={collection.coverImage}
+                        alt=""
+                        fill
+                        sizes="(min-width: 768px) 50vw, 100vw"
+                        className="object-cover"
+                      />
+                    ) : rep ? (
+                      <div className="opacity-70">
+                        <BottleArt shape={rep.bottleShape} liquidColor={rep.heroColor} className="h-full w-full" />
+                      </div>
+                    ) : null}
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 via-foreground/10 to-transparent" />
                   {collection.image && (

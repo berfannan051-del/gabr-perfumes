@@ -9,6 +9,7 @@ function mapCollection(c: DbCollection): Collection {
     name: { ar: c.nameAr, en: c.nameEn },
     description: { ar: c.descriptionAr, en: c.descriptionEn },
     image: c.image,
+    coverImage: c.coverImage,
   };
 }
 

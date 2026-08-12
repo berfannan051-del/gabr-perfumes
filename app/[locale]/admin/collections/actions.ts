@@ -46,7 +46,15 @@ export async function upsertCollection(
   }
   if (!image) return { error: "invalid" };
 
-  const data = { ...parsed.data, image };
+  let coverImage: string | null = (formData.get("existingCoverImage") as string) || null;
+  const coverFile = formData.get("coverImage");
+  if (coverFile instanceof File && coverFile.size > 0) {
+    const validation = await validateUploadFile(coverFile);
+    if (!validation.ok) return { error: "invalidFile" };
+    coverImage = await uploadFile(coverFile, "collections");
+  }
+
+  const data = { ...parsed.data, image, coverImage };
 
   try {
     if (id) {
