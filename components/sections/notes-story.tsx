@@ -78,18 +78,19 @@ export function NotesStory({ content }: { content?: Partial<NotesStoryContent> }
               viewport={{ once: true, margin: "-15%" }}
               transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: i * 0.15 }}
             >
-              <div className="mb-6 h-40 overflow-hidden bg-surface-muted">
+              <div className="mb-6 flex h-32 items-center justify-center bg-surface-muted sm:h-40">
                 <motion.div
-                  initial={{ scaleY: 0 }}
-                  whileInView={{ scaleY: 1 }}
+                  initial={{ scale: 0.5, opacity: 0 }}
+                  whileInView={{ scale: 1, opacity: 1 }}
                   viewport={{ once: true, margin: "-15%" }}
-                  transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.2 + i * 0.15 }}
-                  style={{ transformOrigin: "bottom", background: "var(--color-primary)", opacity: layer.opacity }}
-                  className="h-full w-full"
-                />
-              </div>
-              <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full border border-primary/40 text-primary">
-                <layer.Icon className="h-5 w-5" />
+                  transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.2 + i * 0.15 }}
+                  style={{ color: "var(--color-primary)" }}
+                >
+                  <layer.Icon
+                    className="h-14 w-14 sm:h-16 sm:w-16"
+                    style={{ opacity: 0.4 + layer.opacity * 0.6 }}
+                  />
+                </motion.div>
               </div>
               <span className="text-label text-muted-foreground">0{i + 1}</span>
               <h3 className="text-h3 mt-2 mb-3">{t(`${layer.key}.label`)}</h3>

@@ -34,7 +34,7 @@ export function ProductCard({ product }: { product: Product }) {
             hover: { y: -8, boxShadow: "0 4px 8px rgba(36,28,18,0.08), 0 24px 48px -16px rgba(36,28,18,0.28)" },
           }}
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="relative aspect-[3/4] overflow-hidden border border-border bg-surface-muted"
+          className="relative aspect-[3/4] overflow-hidden bg-surface-muted"
         >
           <motion.div
             variants={{ rest: { scale: 1, rotate: 0 }, hover: { scale: 1.12, rotate: -2 } }}
@@ -47,7 +47,7 @@ export function ProductCard({ product }: { product: Product }) {
                 alt={product.name[locale]}
                 fill
                 sizes="(min-width: 1024px) 22vw, (min-width: 768px) 30vw, 45vw"
-                className="object-contain p-3"
+                className="object-contain p-1.5"
               />
             ) : (
               <BottleArt shape={product.bottleShape} liquidColor={product.heroColor} className="h-full w-full" />

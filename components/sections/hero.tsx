@@ -51,7 +51,7 @@ export function Hero({ content }: { content?: Partial<HeroContent> }) {
 
       <motion.div
         style={{ y: reduceMotion ? 0 : y, opacity }}
-        className="pointer-events-none absolute inset-y-0 end-0 hidden w-[60vw] max-w-3xl opacity-90 md:block md:end-[-4vw]"
+        className="pointer-events-none absolute inset-0 opacity-[0.18] md:inset-y-0 md:start-auto md:end-[-4vw] md:w-[60vw] md:max-w-3xl md:opacity-90"
       >
         <motion.div
           initial={{ opacity: 0, scale: 1.08 }}
@@ -65,7 +65,7 @@ export function Hero({ content }: { content?: Partial<HeroContent> }) {
               alt=""
               fill
               priority
-              sizes="(min-width: 768px) 60vw, 0px"
+              sizes="(min-width: 768px) 60vw, 100vw"
               className="object-cover"
             />
           ) : (
@@ -73,6 +73,7 @@ export function Hero({ content }: { content?: Partial<HeroContent> }) {
           )}
         </motion.div>
       </motion.div>
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-foreground via-foreground/50 to-foreground/10 md:hidden" />
 
       <motion.div
         variants={container}
