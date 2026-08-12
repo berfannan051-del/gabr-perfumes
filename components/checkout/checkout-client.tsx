@@ -12,6 +12,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { BottleArt } from "@/components/product/bottle-art";
 import { PaymentMethodPicker, type PaymentMethod } from "@/components/checkout/payment-method-picker";
 import { WhatsAppIcon } from "@/components/ui/icons";
+import { toWhatsAppNumber } from "@/lib/phone";
 import type { Locale } from "@/types/catalog";
 
 export function CheckoutClient({
@@ -96,7 +97,7 @@ export function CheckoutClient({
     cart.clear();
   }
 
-  const waDigits = whatsappNumber.replace(/\D/g, "");
+  const waDigits = toWhatsAppNumber(whatsappNumber);
   const waLink = waDigits
     ? `https://wa.me/${waDigits}?text=${encodeURIComponent(t("whatsappMessage", { orderNumber: orderNumber ?? "" }))}`
     : null;

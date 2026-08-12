@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { Dialog } from "@base-ui/react/dialog";
+import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { BottleArt } from "@/components/product/bottle-art";
@@ -78,12 +79,22 @@ export function SearchOverlay({
                       nativeButton={false}
                       render={
                         <Link href={`/shop/${p.slug}`} className="group text-start">
-                          <div className="mb-3 aspect-[2/3] bg-surface-muted">
-                            <BottleArt
-                              shape={p.bottleShape}
-                              liquidColor={p.heroColor}
-                              className="h-full w-full transition-transform duration-500 group-hover:scale-105"
-                            />
+                          <div className="relative mb-3 aspect-[2/3] overflow-hidden bg-surface-muted">
+                            {p.images[0] ? (
+                              <Image
+                                src={p.images[0]}
+                                alt={p.name[locale]}
+                                fill
+                                sizes="(min-width: 640px) 30vw, 45vw"
+                                className="object-contain p-2 transition-transform duration-500 group-hover:scale-105"
+                              />
+                            ) : (
+                              <BottleArt
+                                shape={p.bottleShape}
+                                liquidColor={p.heroColor}
+                                className="h-full w-full transition-transform duration-500 group-hover:scale-105"
+                              />
+                            )}
                           </div>
                           <p className="text-body">{p.name[locale]}</p>
                           <p className="text-caption">

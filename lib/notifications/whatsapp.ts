@@ -1,5 +1,6 @@
 import "server-only";
 import { logger } from "@/lib/logger";
+import { toWhatsAppNumber } from "@/lib/phone";
 
 type OrderNotification = {
   orderNumber: string;
@@ -17,7 +18,7 @@ export async function sendOrderConfirmation(order: OrderNotification) {
     return;
   }
 
-  const to = order.phone.replace(/\D/g, "");
+  const to = toWhatsAppNumber(order.phone);
   const res = await fetch(`https://graph.facebook.com/v21.0/${phoneId}/messages`, {
     method: "POST",
     headers: {

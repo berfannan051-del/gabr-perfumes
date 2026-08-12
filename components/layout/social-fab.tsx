@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { InstagramIcon, FacebookIcon, TikTokIcon, WhatsAppIcon, PlusIcon } from "@/components/ui/icons";
+import { toWhatsAppNumber } from "@/lib/phone";
 
 export type SocialLinks = {
   instagram?: string;
@@ -21,7 +22,7 @@ export function SocialFab({ links }: { links: SocialLinks }) {
       { key: "tiktok", href: links.tiktok, icon: TikTokIcon },
       {
         key: "whatsapp",
-        href: links.whatsapp ? `https://wa.me/${links.whatsapp.replace(/\D/g, "")}` : undefined,
+        href: links.whatsapp ? `https://wa.me/${toWhatsAppNumber(links.whatsapp)}` : undefined,
         icon: WhatsAppIcon,
       },
     ] as const
