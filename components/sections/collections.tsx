@@ -18,6 +18,7 @@ export function Collections({
   const t = useTranslations("Collections");
   const locale = useLocale() as Locale;
   const evenLayout = collections.length <= 3;
+  const singleItem = collections.length === 1;
 
   return (
     <section className="py-24 md:py-36">
@@ -30,7 +31,8 @@ export function Collections({
         <div
           className={cn(
             "scrollbar-hide -mx-5 flex gap-6 overflow-x-auto scroll-smooth px-5 pb-2 md:mx-0 md:px-0",
-            !evenLayout && "snap-x snap-mandatory"
+            !evenLayout && "snap-x snap-mandatory",
+            singleItem && "md:justify-center"
           )}
         >
           {collections.map((collection, i) => {
@@ -45,9 +47,11 @@ export function Collections({
                 transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: (i % 4) * 0.08 }}
                 className={cn(
                   "group relative overflow-hidden bg-surface-muted",
-                  evenLayout
-                    ? "aspect-[3/4] min-w-0 flex-1 basis-0 md:aspect-auto md:h-[380px]"
-                    : "aspect-[3/4] w-[78vw] shrink-0 snap-start sm:w-[380px]"
+                  singleItem
+                    ? "aspect-[3/4] w-full sm:aspect-[16/9] md:max-w-3xl"
+                    : evenLayout
+                      ? "aspect-[3/4] min-w-0 flex-1 basis-0 md:aspect-[4/3]"
+                      : "aspect-[3/4] w-[78vw] shrink-0 snap-start sm:w-[380px]"
                 )}
               >
                 <Link href={`/shop?collection=${collection.slug}`} className="block h-full w-full">
@@ -57,7 +61,7 @@ export function Collections({
                         src={collection.coverImage}
                         alt=""
                         fill
-                        sizes="(min-width: 640px) 380px, 78vw"
+                        sizes="(min-width: 768px) 50vw, 100vw"
                         className="object-cover"
                       />
                     ) : rep ? (
