@@ -50,7 +50,7 @@ export default async function CollectionsPage({
                     alt=""
                     fill
                     sizes="(min-width: 768px) 50vw, 100vw"
-                    className="object-cover"
+                    className="object-contain"
                   />
                 ) : rep ? (
                   <div className="opacity-70">
