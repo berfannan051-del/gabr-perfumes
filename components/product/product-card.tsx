@@ -47,7 +47,7 @@ export function ProductCard({ product }: { product: Product }) {
                 alt={product.name[locale]}
                 fill
                 sizes="(min-width: 1024px) 22vw, (min-width: 768px) 30vw, 45vw"
-                className="object-contain p-1.5"
+                className="object-contain p-6"
               />
             ) : (
               <BottleArt shape={product.bottleShape} liquidColor={product.heroColor} className="h-full w-full" />
