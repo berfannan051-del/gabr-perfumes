@@ -78,7 +78,7 @@ export async function getAllProducts(): Promise<Product[]> {
 
 export async function getBestsellerProducts(limit = 4): Promise<Product[]> {
   const rows = await prisma.product.findMany({
-    where: { isBestseller: true, ...hasVariant },
+    where: { isBestseller: true, brandType: "GABR", ...hasVariant },
     include: productInclude,
     orderBy: { createdAt: "desc" },
     take: limit,

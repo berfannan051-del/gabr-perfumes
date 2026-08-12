@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Input, Label, Textarea } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/admin/ui/toast";
+import { processUploadImage } from "@/lib/admin/strip-background";
 import {
   saveSiteContentText,
   saveSiteContentImage,
@@ -50,9 +51,10 @@ export function SiteContentEditor({
 
   async function saveImage(field: SiteContentField, file: File) {
     setPendingKey(field.key);
+    const processed = await processUploadImage(file, { maxDimension: 1920 });
     const data = new FormData();
     data.set("key", field.key);
-    data.set("image", file);
+    data.set("image", processed);
     const result = await saveSiteContentImage(data);
     if ("url" in result) {
       setValues((v) => ({ ...v, [field.key]: { ar: result.url, en: result.url } }));

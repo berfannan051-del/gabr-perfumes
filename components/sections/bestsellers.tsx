@@ -10,6 +10,8 @@ export function Bestsellers({ products }: { products: Product[] }) {
   const t = useTranslations("Bestsellers");
   const items = products.slice(0, 4);
 
+  if (items.length === 0) return null;
+
   return (
     <section className="bg-surface-muted py-24 md:py-36">
       <div className="mx-auto max-w-7xl px-5 md:px-10">

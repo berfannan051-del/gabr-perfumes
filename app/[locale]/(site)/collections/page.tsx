@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { getCollections } from "@/lib/data/collections";
@@ -42,10 +43,28 @@ export default async function CollectionsPage({
               href={`/shop?collection=${collection.slug}`}
               className="group relative block aspect-[4/3] overflow-hidden bg-surface-muted"
             >
-              <div className="absolute inset-0 opacity-70 transition-transform duration-700 group-hover:scale-110">
-                {rep && <BottleArt shape={rep.bottleShape} liquidColor={rep.heroColor} className="h-full w-full" />}
+              <div className="absolute inset-0 transition-transform duration-700 group-hover:scale-110">
+                {collection.coverImage ? (
+                  <Image
+                    src={collection.coverImage}
+                    alt=""
+                    fill
+                    sizes="(min-width: 768px) 50vw, 100vw"
+                    className="object-cover"
+                  />
+                ) : rep ? (
+                  <div className="opacity-70">
+                    <BottleArt shape={rep.bottleShape} liquidColor={rep.heroColor} className="h-full w-full" />
+                  </div>
+                ) : null}
               </div>
               <div className="absolute inset-0 bg-gradient-to-t from-foreground/75 via-foreground/10 to-transparent" />
+              {collection.image && (
+                <div className="absolute start-4 top-4 h-12 w-12 overflow-hidden rounded-full border-2 border-background/80 bg-surface shadow-lifted">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={collection.image} alt="" className="h-full w-full object-cover" />
+                </div>
+              )}
               <div className="relative flex h-full flex-col justify-end p-8">
                 <h2 className="text-h2 text-background">{collection.name[l]}</h2>
                 <p className="text-body mt-2 max-w-sm text-background/80">{collection.description[l]}</p>
