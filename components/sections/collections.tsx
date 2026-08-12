@@ -66,7 +66,7 @@ export function Collections({
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 via-foreground/10 to-transparent" />
                   {collection.image && (
-                    <div className="absolute start-4 top-4 h-12 w-12 overflow-hidden rounded-full border-2 border-background/80 bg-surface shadow-lifted">
+                    <div className="absolute start-4 top-4 h-12 w-12 overflow-hidden rounded-full border-2 border-background/80 bg-surface shadow-lifted md:h-9 md:w-9">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={collection.image} alt="" className="h-full w-full object-cover" />
                     </div>

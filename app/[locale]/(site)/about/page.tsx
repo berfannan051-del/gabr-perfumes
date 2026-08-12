@@ -40,6 +40,7 @@ export default async function AboutPage({
   const values = [1, 2, 3].map((i) => ({
     title: t(`value${i}Title` as "value1Title"),
     body: t(`value${i}Body` as "value1Body"),
+    image: pick(siteContent, `about.value${i}Image` as "about.value1Image", l),
   }));
 
   return (
@@ -85,6 +86,13 @@ export default async function AboutPage({
           <div className="grid grid-cols-1 gap-10 md:grid-cols-3">
             {values.map((v, i) => (
               <div key={i} className="text-center">
+                <div className="relative mb-6 aspect-[4/5] overflow-hidden bg-surface">
+                  {v.image ? (
+                    <Image src={v.image} alt="" fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover" />
+                  ) : (
+                    <BottleArt shape={i === 0 ? "tall" : i === 1 ? "round" : "faceted"} liquidColor="#a9812e" className="h-full w-full" />
+                  )}
+                </div>
                 <span className="text-label text-muted-foreground">0{i + 1}</span>
                 <h3 className="text-h3 mt-3 mb-3">{v.title}</h3>
                 <p className="text-body text-muted-foreground">{v.body}</p>

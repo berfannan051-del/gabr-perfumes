@@ -95,59 +95,63 @@ export function ShopClient({
           ? (brands.find((b) => b.id === brandId)?.name ?? t("filters.brandOptions.other"))
           : t("filters.brandOptions.other");
 
+  const brandPicker = (
+    <div>
+      <button
+        type="button"
+        onClick={() => setBrandPanelOpen((v) => !v)}
+        className="flex w-full items-center justify-between border border-border bg-surface px-4 py-3 text-start transition-colors hover:border-primary"
+      >
+        <span>
+          <span className="text-label block text-muted-foreground">{t("filters.brand")}</span>
+          <span className="text-body mt-0.5 block">{activeBrandLabel}</span>
+        </span>
+        <ChevronIcon className={cn("h-4 w-4 shrink-0 transition-transform duration-300", brandPanelOpen && "rotate-180")} />
+      </button>
+
+      <AnimatePresence initial={false}>
+        {brandPanelOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            className="overflow-hidden"
+          >
+            <div className="mt-3 grid grid-cols-3 gap-3 border border-border bg-surface p-3">
+              <BrandTile
+                active={brand === "all"}
+                onClick={() => selectBrandType("all")}
+                label={t("filters.brandOptions.all")}
+              />
+              <BrandTile
+                active={brand === "GABR"}
+                onClick={() => selectBrandType("GABR")}
+                label={t("filters.brandOptions.gabr")}
+                logo="/brand/logo.png"
+              />
+              {brands.map((b) => (
+                <BrandTile
+                  key={b.id}
+                  active={brand === "OTHER" && brandId === b.id}
+                  onClick={() => {
+                    setBrand("OTHER");
+                    setBrandId(b.id);
+                  }}
+                  label={b.name}
+                  logo={b.logo}
+                />
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+
   const filterPanel = (
     <div className="flex flex-col gap-8">
-      <div>
-        <button
-          type="button"
-          onClick={() => setBrandPanelOpen((v) => !v)}
-          className="flex w-full items-center justify-between border border-border bg-surface px-4 py-3 text-start transition-colors hover:border-primary"
-        >
-          <span>
-            <span className="text-label block text-muted-foreground">{t("filters.brand")}</span>
-            <span className="text-body mt-0.5 block">{activeBrandLabel}</span>
-          </span>
-          <ChevronIcon className={cn("h-4 w-4 shrink-0 transition-transform duration-300", brandPanelOpen && "rotate-180")} />
-        </button>
-
-        <AnimatePresence initial={false}>
-          {brandPanelOpen && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-              className="overflow-hidden"
-            >
-              <div className="mt-3 grid grid-cols-3 gap-3 border border-border bg-surface p-3">
-                <BrandTile
-                  active={brand === "all"}
-                  onClick={() => selectBrandType("all")}
-                  label={t("filters.brandOptions.all")}
-                />
-                <BrandTile
-                  active={brand === "GABR"}
-                  onClick={() => selectBrandType("GABR")}
-                  label={t("filters.brandOptions.gabr")}
-                  logo="/brand/logo.png"
-                />
-                {brands.map((b) => (
-                  <BrandTile
-                    key={b.id}
-                    active={brand === "OTHER" && brandId === b.id}
-                    onClick={() => {
-                      setBrand("OTHER");
-                      setBrandId(b.id);
-                    }}
-                    label={b.name}
-                    logo={b.logo}
-                  />
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+      {brandPicker}
 
       <div>
         <h3 className="text-label mb-4">{t("filters.gender")}</h3>
@@ -241,6 +245,8 @@ export function ShopClient({
           <option value="nameAsc">{t("sort.nameAsc")}</option>
         </select>
       </div>
+
+      <div className="mb-8 lg:hidden">{brandPicker}</div>
 
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-[220px_1fr]">
         <aside className="hidden lg:block">{filterPanel}</aside>
