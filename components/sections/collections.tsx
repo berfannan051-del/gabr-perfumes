@@ -44,8 +44,10 @@ export function Collections({
                 viewport={{ once: true, margin: "-10%" }}
                 transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: (i % 4) * 0.08 }}
                 className={cn(
-                  "group relative aspect-[3/4] overflow-hidden bg-surface-muted",
-                  evenLayout ? "min-w-0 flex-1 basis-0" : "w-[78vw] shrink-0 snap-start sm:w-[380px]"
+                  "group relative overflow-hidden bg-surface-muted",
+                  evenLayout
+                    ? "aspect-[3/4] min-w-0 flex-1 basis-0 md:aspect-[16/10]"
+                    : "aspect-[3/4] w-[78vw] shrink-0 snap-start sm:w-[380px]"
                 )}
               >
                 <Link href={`/shop?collection=${collection.slug}`} className="block h-full w-full">
@@ -66,7 +68,7 @@ export function Collections({
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 via-foreground/10 to-transparent" />
                   {collection.image && (
-                    <div className="absolute start-4 top-4 h-12 w-12 overflow-hidden rounded-full border-2 border-background/80 bg-surface shadow-lifted md:h-9 md:w-9">
+                    <div className="absolute start-4 top-4 h-12 w-12 overflow-hidden rounded-full border-2 border-background/80 bg-surface shadow-lifted">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={collection.image} alt="" className="h-full w-full object-cover" />
                     </div>

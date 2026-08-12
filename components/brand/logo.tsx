@@ -37,7 +37,7 @@ export function LogoMark({ className }: { className?: string }) {
           : { fontFamily: "var(--font-display)", fontWeight: 600, letterSpacing: "0.08em" }
       }
     >
-      <span className={isAr ? "text-5xl leading-none" : "text-3xl leading-none"}>
+      <span className={isAr ? "text-7xl leading-none" : "text-4xl leading-none"}>
         {isAr ? "جبر" : "GABR"}
       </span>
     </span>

@@ -48,7 +48,7 @@ export default async function AboutPage({
       <section className="relative flex min-h-[70vh] items-center overflow-hidden bg-foreground">
         <div className="pointer-events-none absolute inset-y-0 end-0 w-[50vw] max-w-2xl opacity-80">
           {heroImage ? (
-            <Image src={heroImage} alt="" fill sizes="50vw" className="object-cover" />
+            <Image src={heroImage} alt="" fill sizes="50vw" className="object-contain" />
           ) : (
             <BottleArt shape="tall" liquidColor="#c9a227" className="h-full w-full" />
           )}
