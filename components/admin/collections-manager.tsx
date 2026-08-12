@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { Input, Label, Textarea } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DataTable, type DataTableColumn } from "@/components/admin/ui/data-table";
 import { ConfirmDialog } from "@/components/admin/ui/confirm-dialog";
 import { useToast } from "@/components/admin/ui/toast";
+import { stripBackground } from "@/lib/admin/strip-background";
 import { upsertCollection, deleteCollection } from "@/app/[locale]/admin/collections/actions";
 import type { Collection } from "@/types/catalog";
 
@@ -17,7 +18,7 @@ type FormState = {
   nameEn: string;
   descriptionAr: string;
   descriptionEn: string;
-  image: string;
+  existingImage: string;
 };
 
 const emptyForm: FormState = {
@@ -27,15 +28,23 @@ const emptyForm: FormState = {
   nameEn: "",
   descriptionAr: "",
   descriptionEn: "",
-  image: "",
+  existingImage: "",
 };
 
 export function CollectionsManager({ collections }: { collections: Collection[] }) {
   const t = useTranslations("Admin.collections");
   const toast = useToast();
   const [form, setForm] = useState<FormState>(emptyForm);
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [processingLogo, setProcessingLogo] = useState(false);
   const [pending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Collection | null>(null);
+
+  const logoPreview = useMemo(
+    () => (logoFile ? URL.createObjectURL(logoFile) : form.existingImage),
+    [logoFile, form.existingImage]
+  );
 
   function edit(c: Collection) {
     setForm({
@@ -45,22 +54,38 @@ export function CollectionsManager({ collections }: { collections: Collection[] 
       nameEn: c.name.en,
       descriptionAr: c.description.ar,
       descriptionEn: c.description.en,
-      image: c.image,
+      existingImage: c.image,
     });
+    setLogoFile(null);
+    setError(null);
+  }
+
+  async function handleLogoFile(file: File) {
+    setProcessingLogo(true);
+    setLogoFile(await stripBackground(file));
+    setProcessingLogo(false);
   }
 
   function save() {
+    setError(null);
     startTransition(async () => {
-      await upsertCollection(form.id, {
-        slug: form.slug,
-        nameAr: form.nameAr,
-        nameEn: form.nameEn,
-        descriptionAr: form.descriptionAr,
-        descriptionEn: form.descriptionEn,
-        image: form.image,
-      });
+      const data = new FormData();
+      data.set("slug", form.slug);
+      data.set("nameAr", form.nameAr);
+      data.set("nameEn", form.nameEn);
+      data.set("descriptionAr", form.descriptionAr);
+      data.set("descriptionEn", form.descriptionEn);
+      data.set("existingImage", form.existingImage);
+      if (logoFile) data.set("image", logoFile);
+
+      const result = await upsertCollection(form.id, data);
+      if ("error" in result) {
+        setError(t("errorInvalid"));
+        return;
+      }
       toast.show(t("saved"));
       setForm(emptyForm);
+      setLogoFile(null);
     });
   }
 
@@ -72,6 +97,18 @@ export function CollectionsManager({ collections }: { collections: Collection[] 
   }
 
   const columns: DataTableColumn<Collection>[] = [
+    {
+      key: "logo",
+      label: t("image"),
+      render: (c) => (
+        <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full bg-surface-muted">
+          {c.image ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={c.image} alt="" className="h-full w-full object-cover" />
+          ) : null}
+        </div>
+      ),
+    },
     {
       key: "name",
       label: t("name"),
@@ -90,7 +127,7 @@ export function CollectionsManager({ collections }: { collections: Collection[] 
       render: (c) => (
         <div className="flex items-center justify-end gap-4">
           <button type="button" onClick={() => edit(c)} className="text-caption text-primary">
-            {t("save")}
+            {t("edit")}
           </button>
           <button
             type="button"
@@ -122,7 +159,7 @@ export function CollectionsManager({ collections }: { collections: Collection[] 
       </div>
 
       <div className="flex h-fit flex-col gap-3 border border-border bg-surface p-6">
-        <h2 className="text-h3 mb-2">{form.id ? t("save") : t("new")}</h2>
+        <h2 className="text-h3 mb-2">{form.id ? t("edit") : t("new")}</h2>
         <Label htmlFor="c-slug">{t("slug")}</Label>
         <Input id="c-slug" value={form.slug} onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))} />
         <Label htmlFor="c-nameAr">{t("name")} (AR)</Label>
@@ -133,14 +170,45 @@ export function CollectionsManager({ collections }: { collections: Collection[] 
         <Textarea id="c-descAr" rows={2} value={form.descriptionAr} onChange={(e) => setForm((f) => ({ ...f, descriptionAr: e.target.value }))} />
         <Label htmlFor="c-descEn">{t("descriptionEn")}</Label>
         <Textarea id="c-descEn" rows={2} value={form.descriptionEn} onChange={(e) => setForm((f) => ({ ...f, descriptionEn: e.target.value }))} />
+
         <Label htmlFor="c-image">{t("image")}</Label>
-        <Input id="c-image" value={form.image} onChange={(e) => setForm((f) => ({ ...f, image: e.target.value }))} />
+        <div className="flex items-center gap-3">
+          <div className="checkerboard-bg h-14 w-14 shrink-0 overflow-hidden rounded-full border border-border">
+            {logoPreview ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={logoPreview} alt="" className="h-full w-full object-cover" />
+            ) : null}
+          </div>
+          <input
+            id="c-image"
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+            disabled={processingLogo}
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) handleLogoFile(file);
+            }}
+            className="text-caption file:me-4 file:border-0 file:bg-primary file:px-4 file:py-2 file:text-background disabled:opacity-50"
+          />
+        </div>
+        {processingLogo && <p className="text-caption text-muted-foreground">{t("processingImage")}</p>}
+
+        {error && <p className="text-caption text-primary-deep">{error}</p>}
+
         <div className="mt-2 flex gap-3">
-          <Button type="button" onClick={save} disabled={pending}>
-            {t("save")}
+          <Button type="button" onClick={save} disabled={pending || processingLogo}>
+            {pending ? t("saving") : t("save")}
           </Button>
           {form.id && (
-            <Button type="button" variant="outline" onClick={() => setForm(emptyForm)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setForm(emptyForm);
+                setLogoFile(null);
+                setError(null);
+              }}
+            >
               {t("cancel")}
             </Button>
           )}

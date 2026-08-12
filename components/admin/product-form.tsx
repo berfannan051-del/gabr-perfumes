@@ -6,20 +6,8 @@ import { Link, useRouter } from "@/i18n/navigation";
 import { Input, Label, Textarea } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { saveProduct } from "@/app/[locale]/admin/products/actions";
+import { stripBackground } from "@/lib/admin/strip-background";
 
-async function stripBackground(file: File): Promise<File> {
-  try {
-    const { removeBackground } = await import("@imgly/background-removal");
-    const blob = await removeBackground(file);
-    return new File([blob], file.name.replace(/\.\w+$/, ".png"), { type: "image/png" });
-  } catch {
-    // Background removal is a nice-to-have — never block the upload if it fails
-    // (e.g. offline, model download blocked, unsupported browser).
-    return file;
-  }
-}
-
-type NoteOption = { id: string; nameAr: string; nameEn: string };
 type CollectionOption = { id: string; nameAr: string };
 type BrandOption = { id: string; name: string };
 
@@ -47,7 +35,7 @@ type ProductFormData = {
   brandType: "GABR" | "OTHER";
   brandId: string;
   variants: VariantRow[];
-  notesByLayer: { top: string[]; heart: string[]; base: string[] };
+  notesByLayer: { top: string; heart: string; base: string };
 };
 
 const genders = ["MEN", "WOMEN", "UNISEX"] as const;
@@ -77,17 +65,15 @@ const emptyProduct: ProductFormData = {
   brandType: "GABR",
   brandId: "",
   variants: [],
-  notesByLayer: { top: [], heart: [], base: [] },
+  notesByLayer: { top: "", heart: "", base: "" },
 };
 
 export function ProductForm({
   collections,
-  notes,
   brands,
   product,
 }: {
   collections: CollectionOption[];
-  notes: NoteOption[];
   brands: BrandOption[];
   product?: ProductFormData;
 }) {
@@ -150,12 +136,6 @@ export function ProductForm({
     set("variants", form.variants.filter((_, i) => i !== index));
   }
 
-  function toggleNote(layer: (typeof layers)[number], noteId: string) {
-    const current = form.notesByLayer[layer];
-    const next = current.includes(noteId) ? current.filter((n) => n !== noteId) : [...current, noteId];
-    set("notesByLayer", { ...form.notesByLayer, [layer]: next });
-  }
-
   function removeExistingImage(url: string) {
     set("images", form.images.filter((i) => i !== url));
   }
@@ -183,7 +163,19 @@ export function ProductForm({
       data.set("brandType", form.brandType);
       data.set("brandId", form.brandId);
       data.set("variants", JSON.stringify(form.variants));
-      data.set("notes", JSON.stringify(form.notesByLayer));
+      const splitNames = (text: string) =>
+        text
+          .split(/[,،]/)
+          .map((n) => n.trim())
+          .filter(Boolean);
+      data.set(
+        "notes",
+        JSON.stringify({
+          top: splitNames(form.notesByLayer.top),
+          heart: splitNames(form.notesByLayer.heart),
+          base: splitNames(form.notesByLayer.base),
+        })
+      );
       data.set("existingImages", JSON.stringify(form.images));
       for (const file of newImages) data.append("images", file);
 
@@ -421,27 +413,23 @@ export function ProductForm({
 
       <div>
         <Label className="mb-3 block">{t("notes")}</Label>
-        {layers.map((layer) => (
-          <div key={layer} className="mb-4">
-            <p className="text-caption mb-2 text-muted-foreground">
-              {layer === "top" ? t("notesTop") : layer === "heart" ? t("notesHeart") : t("notesBase")}
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {notes.map((n) => (
-                <button
-                  key={n.id}
-                  type="button"
-                  onClick={() => toggleNote(layer, n.id)}
-                  className={`border px-3 py-1.5 text-caption transition-colors ${
-                    form.notesByLayer[layer].includes(n.id) ? "border-primary bg-primary text-background" : "border-border"
-                  }`}
-                >
-                  {n.nameAr}
-                </button>
-              ))}
+        <p className="text-caption mb-3 text-muted-foreground">{t("notesHint")}</p>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          {layers.map((layer) => (
+            <div key={layer}>
+              <Label htmlFor={`notes-${layer}`}>
+                {layer === "top" ? t("notesTop") : layer === "heart" ? t("notesHeart") : t("notesBase")}
+              </Label>
+              <Input
+                id={`notes-${layer}`}
+                value={form.notesByLayer[layer]}
+                onChange={(e) => set("notesByLayer", { ...form.notesByLayer, [layer]: e.target.value })}
+                placeholder={t("notesPlaceholder")}
+                className="mt-2"
+              />
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
       {error && <p className="text-caption text-primary-deep">{error}</p>}

@@ -45,6 +45,23 @@ async function requireAdmin() {
   }
 }
 
+async function findOrCreateNoteId(name: string): Promise<string> {
+  const nameAr = name.trim();
+  const existing = await prisma.fragranceNote.findFirst({ where: { nameAr } });
+  if (existing) return existing.id;
+
+  const slugBase =
+    nameAr
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^\p{L}\p{N}-]/gu, "")
+      .slice(0, 60) || "note";
+  const created = await prisma.fragranceNote.create({
+    data: { nameAr, nameEn: nameAr, slug: `${slugBase}-${Date.now().toString(36)}` },
+  });
+  return created.id;
+}
+
 export async function saveProduct(
   productId: string | null,
   formData: FormData
@@ -134,7 +151,8 @@ export async function saveProduct(
     ["base", "BASE"],
   ];
   for (const [key, layer] of layers) {
-    for (const noteId of notes[key]) {
+    for (const name of notes[key]) {
+      const noteId = await findOrCreateNoteId(name);
       await prisma.productNote.create({ data: { productId: id, noteId, layer } });
     }
   }

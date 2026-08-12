@@ -10,17 +10,22 @@ export default async function EditProductPage({
 }) {
   const { id } = await params;
 
-  const [product, collections, notes, brands] = await Promise.all([
+  const [product, collections, brands] = await Promise.all([
     prisma.product.findUnique({
       where: { id },
-      include: { variants: { orderBy: { sizeMl: "asc" } }, notes: true },
+      include: { variants: { orderBy: { sizeMl: "asc" } }, notes: { include: { note: true } } },
     }),
     prisma.collection.findMany({ select: { id: true, nameAr: true }, orderBy: { createdAt: "asc" } }),
-    prisma.fragranceNote.findMany({ select: { id: true, nameAr: true, nameEn: true }, orderBy: { nameAr: "asc" } }),
     getAllBrands(),
   ]);
 
   if (!product) notFound();
+
+  const joinNotes = (layer: "TOP" | "HEART" | "BASE") =>
+    product.notes
+      .filter((n) => n.layer === layer)
+      .map((n) => n.note.nameAr)
+      .join("، ");
 
   const formData = {
     id: product.id,
@@ -51,11 +56,11 @@ export default async function EditProductPage({
       sku: v.sku,
     })),
     notesByLayer: {
-      top: product.notes.filter((n) => n.layer === "TOP").map((n) => n.noteId),
-      heart: product.notes.filter((n) => n.layer === "HEART").map((n) => n.noteId),
-      base: product.notes.filter((n) => n.layer === "BASE").map((n) => n.noteId),
+      top: joinNotes("TOP"),
+      heart: joinNotes("HEART"),
+      base: joinNotes("BASE"),
     },
   };
 
-  return <ProductForm collections={collections} notes={notes} brands={brands} product={formData} />;
+  return <ProductForm collections={collections} brands={brands} product={formData} />;
 }

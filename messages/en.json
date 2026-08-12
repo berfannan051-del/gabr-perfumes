@@ -253,6 +253,8 @@
       "notesTop": "Top",
       "notesHeart": "Heart",
       "notesBase": "Base",
+      "notesHint": "Type note names separated by commas, e.g. \"Bergamot, Jasmine\"",
+      "notesPlaceholder": "e.g. Bergamot, Amber",
       "save": "Save",
       "saving": "Saving...",
       "created": "Product created",
@@ -280,8 +282,10 @@
       "slug": "Slug",
       "descriptionAr": "Description (Arabic)",
       "descriptionEn": "Description (English)",
-      "image": "Image key",
+      "image": "Logo",
       "save": "Save",
+      "saving": "Saving…",
+      "edit": "Edit",
       "delete": "Delete",
       "cancel": "Cancel",
       "search": "Search collections…",
@@ -289,7 +293,9 @@
       "confirmDelete": "Are you sure you want to delete this collection?",
       "deleteTitle": "Delete collection",
       "saved": "Collection saved",
-      "deleted": "Collection deleted"
+      "deleted": "Collection deleted",
+      "processingImage": "Removing background…",
+      "errorInvalid": "Please check the form and try again"
     },
     "brands": {
       "title": "Brands",
@@ -307,6 +313,7 @@
       "deleteTitle": "Delete brand",
       "saved": "Brand saved",
       "deleted": "Brand deleted",
+      "processingImage": "Removing background…",
       "errorInvalid": "Please check the form and try again"
     },
     "orders": {

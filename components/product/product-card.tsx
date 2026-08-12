@@ -29,9 +29,12 @@ export function ProductCard({ product }: { product: Product }) {
     >
       <Link href={`/shop/${product.slug}`} className="block">
         <motion.div
-          variants={{ rest: { y: 0, boxShadow: "0 0 0 rgba(0,0,0,0)" }, hover: { y: -6 } }}
+          variants={{
+            rest: { y: 0, boxShadow: "0 1px 2px rgba(36,28,18,0.06), 0 8px 24px -12px rgba(36,28,18,0.18)" },
+            hover: { y: -8, boxShadow: "0 4px 8px rgba(36,28,18,0.08), 0 24px 48px -16px rgba(36,28,18,0.28)" },
+          }}
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="relative aspect-[3/4] overflow-hidden bg-surface-muted"
+          className="relative aspect-[3/4] overflow-hidden border border-border bg-surface-muted"
         >
           <motion.div
             variants={{ rest: { scale: 1, rotate: 0 }, hover: { scale: 1.12, rotate: -2 } }}
@@ -90,9 +93,11 @@ export function ProductCard({ product }: { product: Product }) {
               {product.brand?.name || t("brandOther")}
             </p>
           )}
-          <p className="text-h3 text-base">{product.name[locale]}</p>
+          <p className="text-h3 text-base transition-colors duration-300 group-hover:text-primary-deep">
+            {product.name[locale]}
+          </p>
           <p className="text-caption mt-1 line-clamp-1">{product.shortDescription[locale]}</p>
-          <p className="text-body mt-2">
+          <p className="text-body mt-2 font-medium text-primary-deep">
             {startingPrice.toLocaleString(locale)} {tc("currency")}
           </p>
         </div>

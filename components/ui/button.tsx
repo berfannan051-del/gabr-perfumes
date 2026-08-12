@@ -2,13 +2,14 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/cn";
 
 export const buttonVariants = cva(
-  "group relative inline-flex items-center justify-center gap-2 text-label whitespace-nowrap transition-colors duration-300 disabled:pointer-events-none disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary)]",
+  "group relative inline-flex items-center justify-center gap-2 text-label whitespace-nowrap transition-all duration-300 ease-out disabled:pointer-events-none disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary)] active:scale-[0.97]",
   {
     variants: {
       variant: {
-        primary: "bg-cta text-cta-foreground hover:bg-primary-deep",
+        primary:
+          "bg-cta text-cta-foreground shadow-soft hover:bg-primary-deep hover:shadow-lifted hover:-translate-y-0.5",
         outline:
-          "border border-primary text-foreground hover:bg-primary hover:text-cta-foreground",
+          "border border-primary text-foreground hover:bg-primary hover:text-cta-foreground hover:shadow-soft hover:-translate-y-0.5",
         ghost: "text-foreground hover:text-primary",
         link: "text-primary underline-offset-4 hover:underline",
       },

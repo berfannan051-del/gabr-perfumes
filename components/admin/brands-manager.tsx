@@ -9,6 +9,7 @@ import { DataTable, type DataTableColumn } from "@/components/admin/ui/data-tabl
 import { ConfirmDialog } from "@/components/admin/ui/confirm-dialog";
 import { useToast } from "@/components/admin/ui/toast";
 import { saveBrand, deleteBrand } from "@/app/[locale]/admin/brands/actions";
+import { stripBackground } from "@/lib/admin/strip-background";
 import type { Brand } from "@/types/catalog";
 
 type FormState = {
@@ -25,6 +26,7 @@ export function BrandsManager({ brands }: { brands: Brand[] }) {
   const router = useRouter();
   const [form, setForm] = useState<FormState>(emptyForm);
   const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [processingLogo, setProcessingLogo] = useState(false);
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Brand | null>(null);
@@ -37,6 +39,12 @@ export function BrandsManager({ brands }: { brands: Brand[] }) {
     setForm({ id: b.id, name: b.name, existingLogo: b.logo ?? "" });
     setLogoFile(null);
     setError(null);
+  }
+
+  async function handleLogoFile(file: File) {
+    setProcessingLogo(true);
+    setLogoFile(await stripBackground(file));
+    setProcessingLogo(false);
   }
 
   function save() {
@@ -128,7 +136,7 @@ export function BrandsManager({ brands }: { brands: Brand[] }) {
 
         <Label htmlFor="b-logo">{t("logo")}</Label>
         <div className="flex items-center gap-3">
-          <div className="h-14 w-14 shrink-0 overflow-hidden rounded-full bg-surface-muted">
+          <div className="checkerboard-bg h-14 w-14 shrink-0 overflow-hidden rounded-full">
             {logoPreview ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={logoPreview} alt="" className="h-full w-full object-cover" />
@@ -138,15 +146,20 @@ export function BrandsManager({ brands }: { brands: Brand[] }) {
             id="b-logo"
             type="file"
             accept="image/png,image/jpeg,image/webp"
-            onChange={(e) => setLogoFile(e.target.files?.[0] ?? null)}
-            className="text-caption file:me-4 file:border-0 file:bg-primary file:px-4 file:py-2 file:text-background"
+            disabled={processingLogo}
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) handleLogoFile(file);
+            }}
+            className="text-caption file:me-4 file:border-0 file:bg-primary file:px-4 file:py-2 file:text-background disabled:opacity-50"
           />
         </div>
+        {processingLogo && <p className="text-caption text-muted-foreground">{t("processingImage")}</p>}
 
         {error && <p className="text-caption text-primary-deep">{error}</p>}
 
         <div className="mt-2 flex gap-3">
-          <Button type="button" onClick={save} disabled={pending}>
+          <Button type="button" onClick={save} disabled={pending || processingLogo}>
             {pending ? t("saving") : t("save")}
           </Button>
           {form.id && (

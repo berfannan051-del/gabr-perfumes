@@ -36,7 +36,8 @@ export function ReviewsSection({ reviews }: { reviews: ReviewItem[] }) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-10%" }}
               transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: (i % 3) * 0.1 }}
-              className="w-[85vw] max-w-sm shrink-0 snap-start border border-border bg-surface p-8 md:w-auto"
+              whileHover={{ y: -6 }}
+              className="shadow-soft w-[85vw] max-w-sm shrink-0 snap-start border border-border bg-surface p-8 transition-shadow duration-300 hover:shadow-lifted md:w-auto"
             >
               <div className="mb-5 flex gap-1">
                 {Array.from({ length: 5 }).map((_, s) => (
