@@ -37,7 +37,10 @@ export default async function AdminDashboardPage({
     prisma.product.count(),
     prisma.user.count({ where: { role: "CUSTOMER" } }),
     prisma.order.count(),
-    prisma.order.aggregate({ _sum: { subtotal: true }, where: { status: { not: "CANCELLED" } } }),
+    prisma.order.aggregate({
+      _sum: { subtotal: true, shippingCost: true },
+      where: { status: { not: "CANCELLED" } },
+    }),
     prisma.order.findMany({ orderBy: { createdAt: "desc" }, take: 5 }),
     prisma.productVariant.findMany({
       where: { stockQuantity: { lt: 10 } },
@@ -47,7 +50,7 @@ export default async function AdminDashboardPage({
     }),
     prisma.order.findMany({
       where: { createdAt: { gte: since } },
-      select: { subtotal: true, createdAt: true },
+      select: { subtotal: true, shippingCost: true, createdAt: true },
     }),
     prisma.order.groupBy({ by: ["status"], _count: { status: true } }),
     prisma.orderItem.findMany({
@@ -72,7 +75,7 @@ export default async function AdminDashboardPage({
   for (const order of ordersInRange) {
     const key = order.createdAt.toISOString().slice(0, 10);
     if (salesByDay.has(key)) {
-      salesByDay.set(key, (salesByDay.get(key) ?? 0) + Number(order.subtotal));
+      salesByDay.set(key, (salesByDay.get(key) ?? 0) + Number(order.subtotal) + Number(order.shippingCost));
     }
   }
   const salesData = Array.from(salesByDay.entries()).map(([date, revenue]) => ({
@@ -107,7 +110,7 @@ export default async function AdminDashboardPage({
     { label: t("orders"), value: orderCount.toLocaleString(), icon: <BagIcon className="h-5 w-5" /> },
     {
       label: t("revenue"),
-      value: `${Number(revenueAgg._sum.subtotal ?? 0).toLocaleString()} EGP`,
+      value: `${(Number(revenueAgg._sum.subtotal ?? 0) + Number(revenueAgg._sum.shippingCost ?? 0)).toLocaleString()} EGP`,
       icon: <TrendUpIcon className="h-5 w-5" />,
       accent: true,
     },
@@ -158,7 +161,9 @@ export default async function AdminDashboardPage({
               {recentOrders.map((o) => (
                 <Link key={o.id} href={`/admin/orders/${o.id}`} className="flex items-center justify-between text-body hover:text-primary">
                   <span>{o.orderNumber}</span>
-                  <span className="text-caption">{Number(o.subtotal).toLocaleString()} EGP</span>
+                  <span className="text-caption">
+                    {(Number(o.subtotal) + Number(o.shippingCost)).toLocaleString()} EGP
+                  </span>
                 </Link>
               ))}
             </div>

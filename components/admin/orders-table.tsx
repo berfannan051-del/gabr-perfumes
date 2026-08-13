@@ -9,7 +9,7 @@ export type OrderRow = {
   orderNumber: string;
   fullName: string;
   createdAt: string;
-  subtotal: number;
+  total: number;
   status: "PENDING" | "CONFIRMED" | "SHIPPED" | "DELIVERED" | "CANCELLED";
 };
 
@@ -50,8 +50,8 @@ export function OrdersTable({ orders }: { orders: OrderRow[] }) {
     {
       key: "total",
       label: t("total"),
-      render: (o) => o.subtotal.toLocaleString(),
-      sortValue: (o) => o.subtotal,
+      render: (o) => o.total.toLocaleString(),
+      sortValue: (o) => o.total,
       align: "end",
     },
     {

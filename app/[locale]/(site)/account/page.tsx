@@ -73,7 +73,9 @@ export default async function AccountPage({
                   <span className="text-caption border border-border px-2 py-0.5">
                     {t(`status${o.status.charAt(0)}${o.status.slice(1).toLowerCase()}` as never)}
                   </span>
-                  <span className="text-body">{Number(o.subtotal).toLocaleString(locale)}</span>
+                  <span className="text-body">
+                    {(Number(o.subtotal) + Number(o.shippingCost)).toLocaleString(locale)}
+                  </span>
                 </div>
               </div>
             ))}

@@ -9,12 +9,14 @@ import { useCart } from "@/lib/cart/cart-context";
 import { checkoutSchema, type CheckoutErrors } from "@/lib/validation/checkout";
 import { submitOrderAction } from "@/app/[locale]/(site)/checkout/actions";
 import { Input, Textarea, Label } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { BottleArt } from "@/components/product/bottle-art";
 import { PaymentMethodPicker, type PaymentMethod } from "@/components/checkout/payment-method-picker";
+import { OrderInvoice, type InvoiceItem } from "@/components/checkout/order-invoice";
 import { WhatsAppIcon, UserIcon, MailIcon, PhoneIcon, MapPinIcon, NoteTextIcon } from "@/components/ui/icons";
 import { toWhatsAppNumber } from "@/lib/phone";
-import { cn } from "@/lib/cn";
+import { EGYPT_GOVERNORATES, governorateLabel } from "@/lib/data/governorates";
 import type { Locale } from "@/types/catalog";
 
 const container = {
@@ -63,14 +65,30 @@ function SectionCard({
   );
 }
 
+type CompletedOrder = {
+  orderNumber: string;
+  fullName: string;
+  phone: string;
+  email: string;
+  address: string;
+  governorateSlug: string;
+  paymentMethod: PaymentMethod;
+  items: InvoiceItem[];
+  subtotal: number;
+  shippingCost: number;
+  total: number;
+};
+
 export function CheckoutClient({
   instapayNumber,
   vodafoneCashNumber,
   whatsappNumber,
+  shippingRates,
 }: {
   instapayNumber: string;
   vodafoneCashNumber: string;
   whatsappNumber: string;
+  shippingRates: Record<string, number>;
 }) {
   const t = useTranslations("Checkout");
   const tc = useTranslations("Common");
@@ -82,7 +100,6 @@ export function CheckoutClient({
     email: "",
     phone: "",
     address: "",
-    city: "",
     governorate: "",
     notes: "",
   });
@@ -91,11 +108,13 @@ export function CheckoutClient({
   const [errors, setErrors] = useState<CheckoutErrors>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const [orderNumber, setOrderNumber] = useState<string | null>(null);
+  const [completedOrder, setCompletedOrder] = useState<CompletedOrder | null>(null);
 
   function update<K extends keyof typeof form>(key: K, value: string) {
     setForm((f) => ({ ...f, [key]: value }));
   }
+
+  const shippingCost = form.governorate ? (shippingRates[form.governorate] ?? 0) : 0;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -118,7 +137,6 @@ export function CheckoutClient({
     data.set("email", result.data.email);
     data.set("phone", result.data.phone);
     data.set("address", result.data.address);
-    data.set("city", result.data.city);
     data.set("governorate", result.data.governorate);
     if (result.data.notes) data.set("notes", result.data.notes);
     data.set("paymentMethod", result.data.paymentMethod);
@@ -133,6 +151,13 @@ export function CheckoutClient({
       )
     );
 
+    const invoiceItems: InvoiceItem[] = cart.items.map((item) => ({
+      name: item.name,
+      sizeMl: item.sizeMl,
+      quantity: item.quantity,
+      price: item.price,
+    }));
+
     const response = await submitOrderAction(data);
     setSubmitting(false);
 
@@ -141,41 +166,76 @@ export function CheckoutClient({
       return;
     }
 
-    setOrderNumber(response.orderNumber);
+    setCompletedOrder({
+      orderNumber: response.orderNumber,
+      fullName: result.data.fullName,
+      phone: result.data.phone,
+      email: result.data.email,
+      address: result.data.address,
+      governorateSlug: result.data.governorate,
+      paymentMethod: result.data.paymentMethod,
+      items: invoiceItems,
+      subtotal: response.subtotal,
+      shippingCost: response.shippingCost,
+      total: response.total,
+    });
     cart.clear();
   }
 
   const waDigits = toWhatsAppNumber(whatsappNumber);
   const waLink = waDigits
-    ? `https://wa.me/${waDigits}?text=${encodeURIComponent(t("whatsappMessage", { orderNumber: orderNumber ?? "" }))}`
+    ? `https://wa.me/${waDigits}?text=${encodeURIComponent(
+        t("whatsappMessage", { orderNumber: completedOrder?.orderNumber ?? "" })
+      )}`
     : null;
 
   useEffect(() => {
-    if (!orderNumber) return;
+    if (!completedOrder) return;
     window.scrollTo({ top: 0, behavior: "smooth" });
     if (waLink) window.open(waLink, "_blank", "noopener,noreferrer");
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orderNumber]);
+  }, [completedOrder]);
 
-  if (orderNumber) {
+  if (completedOrder) {
+    const paymentLabel = t(
+      completedOrder.paymentMethod === "instapay"
+        ? "instapay"
+        : completedOrder.paymentMethod === "vodafone_cash"
+          ? "vodafoneCash"
+          : "cashOnDelivery"
+    );
+
     return (
-      <div className="mx-auto flex max-w-lg flex-col items-center px-5 py-32 text-center md:px-10">
-        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6 }}>
-          <span className="text-label text-primary">{orderNumber}</span>
-          <h1 className="text-h1 mt-4 mb-4">{t("successTitle")}</h1>
-          <p className="text-body mb-8 text-muted-foreground">{t("successBody")}</p>
-          <div className="flex flex-wrap items-center justify-center gap-3">
-            <Link href="/shop" className={buttonVariants({ variant: "outline" })}>
-              {tc("back")}
-            </Link>
-            {waLink && (
-              <a href={waLink} target="_blank" rel="noopener noreferrer" className={buttonVariants()}>
-                <WhatsAppIcon className="h-4 w-4" />
-                {t("whatsappConfirm")}
-              </a>
-            )}
-          </div>
-        </motion.div>
+      <div className="mx-auto flex max-w-2xl flex-col items-center px-5 py-32 text-center md:px-10">
+        <span className="text-label text-primary">{completedOrder.orderNumber}</span>
+        <h1 className="text-h1 mt-4 mb-4">{t("successTitle")}</h1>
+        <p className="text-body mb-10 text-muted-foreground">{t("successBody")}</p>
+
+        <OrderInvoice
+          orderNumber={completedOrder.orderNumber}
+          fullName={completedOrder.fullName}
+          phone={completedOrder.phone}
+          email={completedOrder.email}
+          address={completedOrder.address}
+          governorateLabel={governorateLabel(completedOrder.governorateSlug, locale)}
+          items={completedOrder.items}
+          subtotal={completedOrder.subtotal}
+          shippingCost={completedOrder.shippingCost}
+          total={completedOrder.total}
+          paymentMethodLabel={paymentLabel}
+        />
+
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+          <Link href="/shop" className={buttonVariants({ variant: "outline" })}>
+            {tc("back")}
+          </Link>
+          {waLink && (
+            <a href={waLink} target="_blank" rel="noopener noreferrer" className={buttonVariants()}>
+              <WhatsAppIcon className="h-4 w-4" />
+              {t("whatsappConfirm")}
+            </a>
+          )}
+        </div>
       </div>
     );
   }
@@ -190,6 +250,12 @@ export function CheckoutClient({
       </div>
     );
   }
+
+  const governorateOptions = EGYPT_GOVERNORATES.map((g) => ({
+    value: g.slug,
+    label: g[locale],
+    hint: shippingRates[g.slug] > 0 ? `${shippingRates[g.slug].toLocaleString(locale)} ${tc("currency")}` : undefined,
+  }));
 
   return (
     <div className="mx-auto max-w-7xl px-5 pt-32 pb-24 md:px-10">
@@ -251,8 +317,8 @@ export function CheckoutClient({
           </SectionCard>
 
           <SectionCard index={2} title={t("shippingHeading")} hint={t("shippingHint")}>
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-              <div className="flex flex-col gap-2 sm:col-span-2">
+            <div className="grid grid-cols-1 gap-5">
+              <div className="flex flex-col gap-2">
                 <Label htmlFor="address">{t("address")}</Label>
                 <div className="relative">
                   <FieldIcon icon={MapPinIcon} />
@@ -266,20 +332,28 @@ export function CheckoutClient({
                 {errors.address && <p className="text-caption text-primary-deep">{errors.address}</p>}
               </div>
               <div className="flex flex-col gap-2">
-                <Label htmlFor="city">{t("city")}</Label>
-                <Input id="city" value={form.city} onChange={(e) => update("city", e.target.value)} />
-                {errors.city && <p className="text-caption text-primary-deep">{errors.city}</p>}
-              </div>
-              <div className="flex flex-col gap-2">
                 <Label htmlFor="governorate">{t("governorate")}</Label>
-                <Input
+                <Select
                   id="governorate"
-                  value={form.governorate}
-                  onChange={(e) => update("governorate", e.target.value)}
+                  value={form.governorate || null}
+                  onValueChange={(v) => update("governorate", v)}
+                  options={governorateOptions}
+                  placeholder={t("governoratePlaceholder")}
+                  icon={MapPinIcon}
                 />
                 {errors.governorate && <p className="text-caption text-primary-deep">{errors.governorate}</p>}
+                {form.governorate && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-caption text-primary-deep"
+                  >
+                    {t("shippingCost")}:{" "}
+                    {shippingCost > 0 ? `${shippingCost.toLocaleString(locale)} ${tc("currency")}` : t("shippingFree")}
+                  </motion.p>
+                )}
               </div>
-              <div className="flex flex-col gap-2 sm:col-span-2">
+              <div className="flex flex-col gap-2">
                 <Label htmlFor="notes">{t("notes")}</Label>
                 <div className="relative">
                   <NoteTextIcon className="pointer-events-none absolute start-4 top-4 h-4 w-4 text-muted-foreground" />
@@ -353,11 +427,29 @@ export function CheckoutClient({
               </div>
             ))}
           </div>
-          <div className="mt-6 flex items-center justify-between border-t border-border pt-4">
-            <span className="text-h3 text-base">{tc("total")}</span>
-            <span className={cn("text-h3 text-base font-medium text-primary-deep")}>
-              {cart.subtotal.toLocaleString(locale)} {tc("currency")}
-            </span>
+          <div className="mt-6 flex flex-col gap-2 border-t border-border pt-4">
+            <div className="flex items-center justify-between text-caption text-muted-foreground">
+              <span>{tc("subtotal")}</span>
+              <span>
+                {cart.subtotal.toLocaleString(locale)} {tc("currency")}
+              </span>
+            </div>
+            <div className="flex items-center justify-between text-caption text-muted-foreground">
+              <span>{t("shippingLabel")}</span>
+              <span>
+                {form.governorate
+                  ? shippingCost > 0
+                    ? `${shippingCost.toLocaleString(locale)} ${tc("currency")}`
+                    : t("shippingFree")
+                  : "—"}
+              </span>
+            </div>
+            <div className="mt-1 flex items-center justify-between border-t border-border pt-3">
+              <span className="text-h3 text-base">{tc("total")}</span>
+              <span className="text-h3 text-base font-medium text-primary-deep">
+                {(cart.subtotal + shippingCost).toLocaleString(locale)} {tc("currency")}
+              </span>
+            </div>
           </div>
         </motion.aside>
       </div>

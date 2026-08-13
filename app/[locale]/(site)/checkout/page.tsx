@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { CheckoutClient } from "@/components/checkout/checkout-client";
 import { getSiteContentMap, pick } from "@/lib/data/site-content";
+import { getShippingRates } from "@/lib/data/shipping";
 import type { Locale } from "@/types/catalog";
 
 export async function generateMetadata({
@@ -21,13 +22,14 @@ export default async function CheckoutPage({
 }) {
   const { locale } = await params;
   const l = locale as Locale;
-  const siteContent = await getSiteContentMap();
+  const [siteContent, shippingRates] = await Promise.all([getSiteContentMap(), getShippingRates()]);
 
   return (
     <CheckoutClient
       instapayNumber={pick(siteContent, "settings.instapayNumber", l)}
       vodafoneCashNumber={pick(siteContent, "settings.vodafoneCashNumber", l)}
       whatsappNumber={pick(siteContent, "settings.whatsappNumber", l)}
+      shippingRates={shippingRates}
     />
   );
 }

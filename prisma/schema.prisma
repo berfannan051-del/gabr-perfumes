@@ -202,12 +202,13 @@ model Order {
   email         String
   phone         String
   address       String
-  city          String
+  city          String?
   governorate   String
   notes         String?
   paymentMethod PaymentMethod
   proofImageUrl String?
   subtotal      Decimal       @db.Decimal(10, 2)
+  shippingCost  Decimal       @db.Decimal(10, 2) @default(0)
   status        OrderStatus   @default(PENDING)
   createdAt     DateTime      @default(now())
 
@@ -229,6 +230,13 @@ model OrderItem {
   order   Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product Product?        @relation(fields: [productId], references: [id])
   variant ProductVariant? @relation(fields: [variantId], references: [id])
+}
+
+model ShippingRate {
+  id          String   @id @default(cuid())
+  governorate String   @unique
+  price       Decimal  @db.Decimal(10, 2) @default(0)
+  updatedAt   DateTime @updatedAt
 }
 
 model SiteContent {

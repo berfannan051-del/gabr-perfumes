@@ -194,6 +194,7 @@
       "brands": "Brands",
       "orders": "Orders",
       "customers": "Customers",
+      "shipping": "Shipping Rates",
       "reviews": "Reviews",
       "content": "Website Content",
       "settings": "Settings",
@@ -335,6 +336,8 @@
       "noResults": "No orders found",
       "items": "Items",
       "shippingInfo": "Shipping Info",
+      "itemsSubtotal": "Items Subtotal",
+      "shippingCost": "Shipping Cost",
       "paymentInfo": "Payment Info",
       "proofImage": "Payment Proof",
       "noProof": "No proof uploaded",
@@ -377,6 +380,14 @@
       "joined": "Joined",
       "search": "Search customers…",
       "noResults": "No customers found"
+    },
+    "shipping": {
+      "title": "Shipping Rates",
+      "subtitle": "Set the shipping price for each governorate — this is what customers see at checkout",
+      "save": "Save Rates",
+      "saving": "Saving…",
+      "saved": "Shipping rates saved",
+      "errorInvalid": "Please check the values and try again"
     },
     "reviews": {
       "title": "Reviews",
@@ -565,7 +576,6 @@
     "shippingHeading": "Shipping Address",
     "shippingHint": "We'll use this to print your shipping label and get in touch",
     "address": "Address",
-    "city": "City",
     "governorate": "Governorate",
     "notes": "Additional Notes (optional)",
     "paymentHeading": "Payment Method",
@@ -598,10 +608,27 @@
       "invalidFile": "Invalid payment proof image",
       "insufficientStock": "One of the items in your cart no longer has enough stock — please lower the quantity and try again",
       "unknown": "Something went wrong, please try again"
+    },
+    "governorate": "Governorate",
+    "governoratePlaceholder": "Select your governorate",
+    "shippingCost": "Shipping cost to this governorate",
+    "shippingFree": "Free shipping",
+    "shippingLabel": "Shipping",
+    "invoice": {
+      "title": "Invoice",
+      "billTo": "Bill To",
+      "shipTo": "Ship To",
+      "item": "Item",
+      "qty": "Qty",
+      "price": "Price",
+      "shipping": "Shipping",
+      "free": "Free",
+      "paymentMethod": "Payment Method"
     }
   },
   "Common": {
     "currency": "EGP",
+    "subtotal": "Items Subtotal",
     "total": "Total",
     "loading": "Loading...",
     "error": "Something went wrong, please try again",

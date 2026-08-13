@@ -24,7 +24,7 @@ export default async function AdminOrdersPage({
     orderNumber: o.orderNumber,
     fullName: o.fullName,
     createdAt: o.createdAt.toISOString(),
-    subtotal: Number(o.subtotal),
+    total: Number(o.subtotal) + Number(o.shippingCost),
     status: o.status,
   }));
 

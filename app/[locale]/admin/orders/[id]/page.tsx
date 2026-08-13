@@ -4,15 +4,18 @@ import { prisma } from "@/lib/prisma";
 import { Link } from "@/i18n/navigation";
 import { OrderStatusSelect } from "@/components/admin/order-status-select";
 import { PAYMENT_LABEL_KEY } from "@/lib/data/order-payment-label";
+import { governorateLabel } from "@/lib/data/governorates";
 import { buttonVariants } from "@/components/ui/button";
 import { PrinterIcon } from "@/components/ui/icons";
+import type { Locale } from "@/types/catalog";
 
 export default async function AdminOrderDetailPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string; locale: string }>;
 }) {
-  const { id } = await params;
+  const { id, locale } = await params;
+  const l = locale as Locale;
   const t = await getTranslations("Admin.orders");
 
   const order = await prisma.order.findUnique({
@@ -51,8 +54,19 @@ export default async function AdminOrderDetailPage({
               ))}
             </tbody>
           </table>
-          <div className="mt-4 flex justify-end text-h3 text-base">
-            {t("total")}: {Number(order.subtotal).toLocaleString()} EGP
+          <div className="mt-4 flex flex-col items-end gap-1.5">
+            <div className="flex items-center gap-3 text-caption text-muted-foreground">
+              <span>{t("itemsSubtotal")}</span>
+              <span>{Number(order.subtotal).toLocaleString()} EGP</span>
+            </div>
+            <div className="flex items-center gap-3 text-caption text-muted-foreground">
+              <span>{t("shippingCost")}</span>
+              <span>{Number(order.shippingCost).toLocaleString()} EGP</span>
+            </div>
+            <div className="flex items-center gap-3 text-h3 text-base">
+              <span>{t("total")}</span>
+              <span>{(Number(order.subtotal) + Number(order.shippingCost)).toLocaleString()} EGP</span>
+            </div>
           </div>
         </div>
 
@@ -62,7 +76,10 @@ export default async function AdminOrderDetailPage({
             <p className="text-body">{order.fullName}</p>
             <p className="text-caption">{order.email}</p>
             <p className="text-caption" dir="ltr">{order.phone}</p>
-            <p className="text-caption mt-2">{order.address}, {order.city}, {order.governorate}</p>
+            <p className="text-caption mt-2">
+              {order.address}, {order.city ? `${order.city}, ` : ""}
+              {governorateLabel(order.governorate, l)}
+            </p>
             {order.notes && <p className="text-caption mt-2 text-muted-foreground">{order.notes}</p>}
           </div>
 

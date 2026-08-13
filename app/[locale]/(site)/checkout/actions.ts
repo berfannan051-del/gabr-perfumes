@@ -10,6 +10,7 @@ import { sendOrderConfirmation } from "@/lib/notifications/whatsapp";
 import { rateLimit } from "@/lib/security/rate-limit";
 import { getClientIp } from "@/lib/security/get-client-ip";
 import { logger } from "@/lib/logger";
+import { getShippingRate } from "@/lib/data/shipping";
 
 export type CheckoutItemInput = {
   variantId: string;
@@ -17,7 +18,13 @@ export type CheckoutItemInput = {
 };
 
 export type CheckoutResult =
-  | { orderId: string; orderNumber: string }
+  | {
+      orderId: string;
+      orderNumber: string;
+      subtotal: number;
+      shippingCost: number;
+      total: number;
+    }
   | { error: "rateLimited" | "invalid" | "invalidFile" | "insufficientStock" | "unknown" };
 
 class InsufficientStockError extends Error {}
@@ -37,7 +44,6 @@ export async function submitOrderAction(formData: FormData): Promise<CheckoutRes
     email: formData.get("email"),
     phone: formData.get("phone"),
     address: formData.get("address"),
-    city: formData.get("city"),
     governorate: formData.get("governorate"),
     notes: formData.get("notes") || undefined,
     paymentMethod: formData.get("paymentMethod"),
@@ -85,6 +91,9 @@ export async function submitOrderAction(formData: FormData): Promise<CheckoutRes
 
   const session = await auth();
   const orderNumber = `GBR-${Date.now().toString().slice(-8)}`;
+  // Shipping cost is always looked up from the admin-configured rate table —
+  // never trusted from the client, same principle as item pricing below.
+  const shippingCost = await getShippingRate(parsed.data.governorate);
 
   try {
     const order = await prisma.$transaction(async (tx) => {
@@ -139,12 +148,12 @@ export async function submitOrderAction(formData: FormData): Promise<CheckoutRes
           email: parsed.data.email,
           phone: parsed.data.phone,
           address: parsed.data.address,
-          city: parsed.data.city,
           governorate: parsed.data.governorate,
           notes: parsed.data.notes,
           paymentMethod: parsed.data.paymentMethod.toUpperCase() as never,
           proofImageUrl,
           subtotal,
+          shippingCost,
           items: { create: orderItemsData },
         },
       });
@@ -152,14 +161,23 @@ export async function submitOrderAction(formData: FormData): Promise<CheckoutRes
 
     logger.info({ orderNumber }, "order created");
 
+    const orderSubtotal = Number(order.subtotal);
+    const orderShippingCost = Number(order.shippingCost);
+
     await sendOrderConfirmation({
       orderNumber,
       fullName: parsed.data.fullName,
       phone: parsed.data.phone,
-      subtotal: Number(order.subtotal),
+      subtotal: orderSubtotal + orderShippingCost,
     }).catch((err) => logger.error({ err }, "whatsapp notification failed"));
 
-    return { orderId: order.id, orderNumber };
+    return {
+      orderId: order.id,
+      orderNumber,
+      subtotal: orderSubtotal,
+      shippingCost: orderShippingCost,
+      total: orderSubtotal + orderShippingCost,
+    };
   } catch (err) {
     if (err instanceof InsufficientStockError) {
       return { error: "insufficientStock" };

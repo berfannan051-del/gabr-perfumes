@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { PrintButton } from "@/components/admin/print-button";
 import { PAYMENT_LABEL_KEY } from "@/lib/data/order-payment-label";
+import { governorateLabel } from "@/lib/data/governorates";
 import type { Locale } from "@/types/catalog";
 
 export default async function OrderLabelPage({
@@ -52,7 +53,8 @@ export default async function OrderLabelPage({
             {tl("phone")}: {order.phone}
           </p>
           <p className="text-body mt-1">
-            {tl("address")}: {order.address}, {order.city}, {order.governorate}
+            {tl("address")}: {order.address}, {order.city ? `${order.city}, ` : ""}
+            {governorateLabel(order.governorate, l)}
           </p>
         </div>
 
@@ -76,8 +78,13 @@ export default async function OrderLabelPage({
               ))}
             </tbody>
           </table>
-          <div className="mt-3 flex justify-end text-h3 text-base">
-            {tl("total")}: {Number(order.subtotal).toLocaleString(locale)} EGP
+          <div className="mt-3 flex flex-col items-end gap-1">
+            <p className="text-caption text-muted-foreground print:text-black">
+              {t("shippingCost")}: {Number(order.shippingCost).toLocaleString(locale)} EGP
+            </p>
+            <p className="text-h3 text-base">
+              {tl("total")}: {(Number(order.subtotal) + Number(order.shippingCost)).toLocaleString(locale)} EGP
+            </p>
           </div>
         </div>
 
@@ -86,7 +93,7 @@ export default async function OrderLabelPage({
           <p className="text-body">{t(PAYMENT_LABEL_KEY[order.paymentMethod])}</p>
           {isCod ? (
             <p className="text-h3 mt-2 text-base">
-              {tl("codDue")} {Number(order.subtotal).toLocaleString(locale)} EGP
+              {tl("codDue")} {(Number(order.subtotal) + Number(order.shippingCost)).toLocaleString(locale)} EGP
             </p>
           ) : (
             <p className="text-caption mt-2 text-muted-foreground print:text-black">{tl("prepaid")}</p>

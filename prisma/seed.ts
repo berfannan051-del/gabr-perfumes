@@ -7,6 +7,7 @@ import { collections as mockCollections } from "./fixtures/collections";
 import { products as mockProducts } from "./fixtures/products";
 import { siteContentDefaults } from "./fixtures/site-content";
 import { reviewDefaults } from "./fixtures/reviews";
+import { EGYPT_GOVERNORATES } from "../lib/data/governorates";
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
@@ -135,6 +136,14 @@ async function main() {
       where: { key },
       update: {},
       create: { key, type, valueAr: value.ar, valueEn: value.en },
+    });
+  }
+
+  for (const g of EGYPT_GOVERNORATES) {
+    await prisma.shippingRate.upsert({
+      where: { governorate: g.slug },
+      update: {},
+      create: { governorate: g.slug, price: 0 },
     });
   }
 
