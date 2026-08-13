@@ -4,9 +4,12 @@ export async function stripBackground(file: File): Promise<File> {
     const blob = await removeBackground(file);
     const cutout = new File([blob], file.name.replace(/\.\w+$/, ".png"), { type: "image/png" });
     return await trimTransparentMargin(cutout);
-  } catch {
+  } catch (err) {
     // Background removal is a nice-to-have — never block the upload if it fails
-    // (e.g. offline, model download blocked, unsupported browser).
+    // (e.g. offline, model download blocked, unsupported browser). Logged
+    // (not swallowed silently) so a real failure is visible in devtools
+    // instead of just looking like "nothing happened".
+    console.error("Background removal failed, keeping original image:", err);
     return file;
   }
 }
