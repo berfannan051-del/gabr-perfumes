@@ -1,8 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
-import { LogoMark } from "@/components/brand/logo";
 import { DiamondDivider } from "@/components/brand/diamond-divider";
 import type { Locale, LocalizedText } from "@/types/catalog";
 
@@ -52,13 +52,18 @@ export function OrderInvoice({
     >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_100%_0%,color-mix(in_srgb,var(--color-primary)_10%,transparent),transparent_55%)]" />
 
-      <div className="relative flex items-center justify-between border-b border-border bg-foreground px-8 py-7 md:px-10">
-        <LogoMark className="text-primary-highlight" />
-        <div className="text-end text-background">
-          <span className="text-label text-primary-highlight">{t("title")}</span>
-          <p className="text-h3 mt-1 text-base text-background">{orderNumber}</p>
-          <p className="text-caption mt-0.5 text-background/70">{date}</p>
-        </div>
+      <div className="relative flex flex-col items-center border-b border-border px-8 py-8 text-center md:px-10">
+        <Image
+          src="/brand/logo.png"
+          alt="GABR Perfumes"
+          width={112}
+          height={112}
+          priority
+          className="h-24 w-24 object-contain md:h-28 md:w-28"
+        />
+        <span className="text-label mt-5 text-primary">{t("title")}</span>
+        <p className="text-h3 mt-1 text-base">{orderNumber}</p>
+        <p className="text-caption mt-0.5 text-muted-foreground">{date}</p>
       </div>
 
       <div className="relative px-8 py-8 md:px-10">

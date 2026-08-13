@@ -45,7 +45,7 @@ export function LoginForm() {
           <div className="flex items-center justify-between">
             <Label htmlFor="password">{t("password")}</Label>
             <a
-              href={`mailto:hello@gabrperfumes.com?subject=${encodeURIComponent(t("forgotPassword"))}`}
+              href={`mailto:gabrparfum@gmail.com?subject=${encodeURIComponent(t("forgotPassword"))}`}
               className="text-caption text-primary transition-opacity hover:opacity-70"
               title={t("forgotPasswordHint")}
             >

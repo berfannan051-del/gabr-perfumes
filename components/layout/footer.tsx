@@ -17,7 +17,7 @@ export function Footer({ content }: { content?: Partial<FooterContent> }) {
   const tn = useTranslations("Newsletter");
   const year = new Date().getFullYear();
   const about = content?.about || t("about");
-  const contactEmail = content?.contactEmail || "hello@gabrperfumes.com";
+  const contactEmail = content?.contactEmail || "gabrparfum@gmail.com";
   const contactPhone = content?.contactPhone || "+20 100 000 0000";
 
   return (

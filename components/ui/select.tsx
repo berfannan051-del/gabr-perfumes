@@ -34,6 +34,12 @@ export function Select({
         if (typeof v === "string") onValueChange(v);
       }}
       items={options}
+      // With a 27-item list, letting the mouse drive "highlighted" state
+      // fights with manual scrolling — the popup keeps auto-scrolling the
+      // highlighted item back into view as the pointer crosses rows,
+      // which reads as the list "jumping back up" while you scroll it.
+      // Hover feedback below is plain CSS instead.
+      highlightItemOnHover={false}
     >
       <BaseSelect.Trigger
         id={id}
@@ -57,28 +63,38 @@ export function Select({
       </BaseSelect.Trigger>
 
       <BaseSelect.Portal>
-        <BaseSelect.Positioner className="z-[70] outline-none" sideOffset={6}>
+        <BaseSelect.Positioner
+          className="z-[70] outline-none"
+          sideOffset={6}
+          // Default "overlay the trigger, keep re-aligning the selected item"
+          // positioning fights any manual scroll in a long list (27
+          // governorates) — anchor it as a plain dropdown below the field
+          // instead, which scrolls normally.
+          alignItemWithTrigger={false}
+        >
           <BaseSelect.Popup
             className={cn(
-              "max-h-80 w-[var(--anchor-width)] overflow-y-auto border border-border bg-surface shadow-lifted",
+              "w-[var(--anchor-width)] border border-border bg-surface shadow-lifted",
               "origin-[var(--transform-origin)] transition-[transform,opacity] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]",
               "data-[starting-style]:scale-95 data-[starting-style]:opacity-0",
               "data-[ending-style]:scale-95 data-[ending-style]:opacity-0"
             )}
           >
-            {options.map((opt) => (
-              <BaseSelect.Item
-                key={opt.value}
-                value={opt.value}
-                className="group flex cursor-pointer items-center justify-between gap-3 px-4 py-3 text-body text-foreground outline-none transition-colors data-[highlighted]:bg-primary/10 data-[selected]:text-primary-deep"
-              >
-                <span className="flex items-center gap-2">
-                  <CheckIcon className="h-3.5 w-3.5 shrink-0 text-primary opacity-0 group-data-[selected]:opacity-100" />
-                  <BaseSelect.ItemText>{opt.label}</BaseSelect.ItemText>
-                </span>
-                {opt.hint && <span className="text-caption text-muted-foreground">{opt.hint}</span>}
-              </BaseSelect.Item>
-            ))}
+            <BaseSelect.List className="max-h-80 overflow-y-auto overscroll-contain">
+              {options.map((opt) => (
+                <BaseSelect.Item
+                  key={opt.value}
+                  value={opt.value}
+                  className="group flex cursor-pointer items-center justify-between gap-3 px-4 py-3 text-body text-foreground outline-none transition-colors hover:bg-primary/10 data-[highlighted]:bg-primary/10 data-[selected]:text-primary-deep"
+                >
+                  <span className="flex items-center gap-2">
+                    <CheckIcon className="h-3.5 w-3.5 shrink-0 text-primary opacity-0 group-data-[selected]:opacity-100" />
+                    <BaseSelect.ItemText>{opt.label}</BaseSelect.ItemText>
+                  </span>
+                  {opt.hint && <span className="text-caption text-muted-foreground">{opt.hint}</span>}
+                </BaseSelect.Item>
+              ))}
+            </BaseSelect.List>
           </BaseSelect.Popup>
         </BaseSelect.Positioner>
       </BaseSelect.Portal>

@@ -55,7 +55,7 @@ export const siteContentDefaults: Record<string, { ar: string; en: string }> = {
     en: "GABR Perfumes — a contemporary Arabian fragrance house, shaping heritage craft in a modern voice.",
   },
 
-  "settings.contactEmail": { ar: "hello@gabrperfumes.com", en: "hello@gabrperfumes.com" },
+  "settings.contactEmail": { ar: "gabrparfum@gmail.com", en: "gabrparfum@gmail.com" },
   "settings.contactPhone": { ar: "+20 100 000 0000", en: "+20 100 000 0000" },
   "settings.instapayNumber": { ar: "", en: "" },
   "settings.vodafoneCashNumber": { ar: "", en: "" },

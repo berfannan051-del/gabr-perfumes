@@ -3,13 +3,17 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const contentSecurityPolicy = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  // 'wasm-unsafe-eval' is required for the background-removal model
+  // (onnxruntime-web) to compile its WebAssembly — without it every
+  // background-removal call in the admin fails and silently falls back to
+  // the original, unprocessed image.
+  "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://staticimgly.com",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://*.r2.dev https://*.r2.cloudflarestorage.com",
   "font-src 'self' data:",
-  // Framer Motion / next/image and the client-side background-removal model
-  // download (@imgly/background-removal) need to reach external hosts; the
-  // rest of this policy already locks down script/style/object sources.
+  // Background removal also spawns a Web Worker (from a blob: URL) and
+  // fetches its model weights from staticimgly.com.
+  "worker-src 'self' blob:",
   "connect-src 'self' https:",
   "object-src 'none'",
   "base-uri 'self'",

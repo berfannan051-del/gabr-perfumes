@@ -191,9 +191,9 @@ export function CheckoutClient({
 
   useEffect(() => {
     if (!completedOrder) return;
+    // Scroll up so the invoice is visible — WhatsApp only opens when the
+    // customer taps the button below the invoice, never automatically.
     window.scrollTo({ top: 0, behavior: "smooth" });
-    if (waLink) window.open(waLink, "_blank", "noopener,noreferrer");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [completedOrder]);
 
   if (completedOrder) {
