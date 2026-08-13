@@ -17,7 +17,10 @@ const contentSecurityPolicy = [
   // Background removal also spawns a Web Worker (from a blob: URL) and
   // fetches its model weights from staticimgly.com.
   "worker-src 'self' blob:",
-  "connect-src 'self' https:",
+  // onnxruntime-web fetches its wasm loader via fetch(blobUrl) (see the
+  // browser console error: "Fetch API cannot load blob:... connect-src")
+  // — blob: has to be allowed here too, not just in script-src/worker-src.
+  "connect-src 'self' https: blob:",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
