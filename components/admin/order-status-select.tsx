@@ -3,6 +3,7 @@
 import { useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
+import { useToast } from "@/components/admin/ui/toast";
 import { updateOrderStatus } from "@/app/[locale]/admin/orders/actions";
 
 const statuses = ["PENDING", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED"] as const;
@@ -10,6 +11,7 @@ const statuses = ["PENDING", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED"] a
 export function OrderStatusSelect({ orderId, status }: { orderId: string; status: string }) {
   const t = useTranslations("Admin.orders");
   const router = useRouter();
+  const toast = useToast();
   const [pending, startTransition] = useTransition();
 
   return (
@@ -17,8 +19,17 @@ export function OrderStatusSelect({ orderId, status }: { orderId: string; status
       value={status}
       disabled={pending}
       onChange={(e) => {
+        const nextStatus = e.target.value;
         startTransition(async () => {
-          await updateOrderStatus(orderId, e.target.value);
+          const result = await updateOrderStatus(orderId, nextStatus);
+          if ("error" in result) {
+            toast.show(
+              result.error === "insufficientStock" ? t("errorInsufficientStock") : t("errorNotFound"),
+              "error"
+            );
+            return;
+          }
+          toast.show(result.restockedStock ? t("stockRestored") : t("statusUpdated"));
           router.refresh();
         });
       }}
