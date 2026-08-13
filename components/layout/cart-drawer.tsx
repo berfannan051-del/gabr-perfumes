@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Sheet, SheetClose, SheetTitle } from "@/components/ui/sheet";
@@ -47,8 +48,12 @@ export function CartDrawer() {
                   transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                   className="flex gap-4 border-b border-border py-5"
                 >
-                  <div className="h-24 w-20 shrink-0 bg-surface-muted">
-                    <BottleArt shape={item.bottleShape} liquidColor={item.heroColor} className="h-full w-full" />
+                  <div className="relative h-24 w-20 shrink-0 overflow-hidden bg-surface-muted">
+                    {item.image ? (
+                      <Image src={item.image} alt={item.name[locale]} fill sizes="80px" className="object-contain p-1" />
+                    ) : (
+                      <BottleArt shape={item.bottleShape} liquidColor={item.heroColor} className="h-full w-full" />
+                    )}
                   </div>
                   <div className="flex flex-1 flex-col justify-between">
                     <div>

@@ -22,6 +22,7 @@ export type CartItem = {
   stockQuantity: number;
   heroColor: string;
   bottleShape: "tall" | "round" | "faceted";
+  image?: string | null;
 };
 
 type CartState = {

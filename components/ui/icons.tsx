@@ -198,6 +198,34 @@ export function PhoneIcon(props: IconProps) {
   );
 }
 
+export function MailIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <rect x="2.5" y="4.5" width="19" height="15" rx="1.8" />
+      <path d="m3.5 6 8.5 6.5L20.5 6" />
+    </svg>
+  );
+}
+
+export function MapPinIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M12 21.5S5 15 5 9.8a7 7 0 0 1 14 0C19 15 12 21.5 12 21.5Z" />
+      <circle cx="12" cy="9.6" r="2.4" />
+    </svg>
+  );
+}
+
+export function NoteTextIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M6 2.5h9l4.5 4.5v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-17.5a1 1 0 0 1 1-1Z" />
+      <path d="M15 2.5V7h4.5" />
+      <path d="M8 12.5h8M8 16h5.5" />
+    </svg>
+  );
+}
+
 export function WalletIcon(props: IconProps) {
   return (
     <svg {...base} {...props}>

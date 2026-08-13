@@ -57,6 +57,7 @@ export function ProductDetail({
         stockQuantity: variant.stockQuantity,
         heroColor: product.heroColor,
         bottleShape: product.bottleShape,
+        image: product.images[0] ?? null,
       },
       quantity
     );

@@ -559,6 +559,7 @@
     "email": "Email Address",
     "phone": "Phone Number",
     "shippingHeading": "Shipping Address",
+    "shippingHint": "We'll use this to print your shipping label and get in touch",
     "address": "Address",
     "city": "City",
     "governorate": "Governorate",

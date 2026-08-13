@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ComponentType } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { useCart } from "@/lib/cart/cart-context";
 import { checkoutSchema, type CheckoutErrors } from "@/lib/validation/checkout";
@@ -11,9 +12,56 @@ import { Input, Textarea, Label } from "@/components/ui/input";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { BottleArt } from "@/components/product/bottle-art";
 import { PaymentMethodPicker, type PaymentMethod } from "@/components/checkout/payment-method-picker";
-import { WhatsAppIcon } from "@/components/ui/icons";
+import { WhatsAppIcon, UserIcon, MailIcon, PhoneIcon, MapPinIcon, NoteTextIcon } from "@/components/ui/icons";
 import { toWhatsAppNumber } from "@/lib/phone";
+import { cn } from "@/lib/cn";
 import type { Locale } from "@/types/catalog";
+
+const container = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.1 } },
+};
+
+const section = {
+  hidden: { opacity: 0, y: 22 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const } },
+};
+
+function FieldIcon({ icon: Icon }: { icon: ComponentType<{ className?: string }> }) {
+  return (
+    <Icon className="pointer-events-none absolute start-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground transition-colors peer-focus:text-primary" />
+  );
+}
+
+function SectionCard({
+  index,
+  title,
+  hint,
+  children,
+}: {
+  index: number;
+  title: string;
+  hint?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <motion.fieldset
+      variants={section}
+      className="border border-border bg-surface p-6 shadow-soft md:p-8"
+    >
+      <div className="mb-6 flex items-start gap-3">
+        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-primary/40 text-label text-primary">
+          0{index}
+        </span>
+        <div>
+          <h2 className="text-h3 text-base">{title}</h2>
+          {hint && <p className="text-caption mt-0.5 text-muted-foreground">{hint}</p>}
+        </div>
+      </div>
+      {children}
+    </motion.fieldset>
+  );
+}
 
 export function CheckoutClient({
   instapayNumber,
@@ -147,35 +195,74 @@ export function CheckoutClient({
     <div className="mx-auto max-w-7xl px-5 pt-32 pb-24 md:px-10">
       <h1 className="text-h1 mb-12 text-center">{t("title")}</h1>
 
-      <div className="grid grid-cols-1 gap-16 lg:grid-cols-[1fr_380px]">
-        <form onSubmit={handleSubmit} className="flex flex-col gap-10">
-          <fieldset className="flex flex-col gap-4">
-            <h2 className="text-h3">{t("contactHeading")}</h2>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_380px] lg:items-start lg:gap-16">
+        <motion.form
+          variants={container}
+          initial="hidden"
+          animate="show"
+          onSubmit={handleSubmit}
+          className="flex flex-col gap-6"
+        >
+          <SectionCard index={1} title={t("contactHeading")}>
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
               <div className="flex flex-col gap-2">
                 <Label htmlFor="fullName">{t("fullName")}</Label>
-                <Input id="fullName" value={form.fullName} onChange={(e) => update("fullName", e.target.value)} />
+                <div className="relative">
+                  <FieldIcon icon={UserIcon} />
+                  <Input
+                    id="fullName"
+                    className="peer ps-11"
+                    value={form.fullName}
+                    onChange={(e) => update("fullName", e.target.value)}
+                  />
+                </div>
                 {errors.fullName && <p className="text-caption text-primary-deep">{errors.fullName}</p>}
               </div>
               <div className="flex flex-col gap-2">
                 <Label htmlFor="email">{t("email")}</Label>
-                <Input id="email" type="email" value={form.email} onChange={(e) => update("email", e.target.value)} />
+                <div className="relative">
+                  <FieldIcon icon={MailIcon} />
+                  <Input
+                    id="email"
+                    type="email"
+                    className="peer ps-11"
+                    value={form.email}
+                    onChange={(e) => update("email", e.target.value)}
+                  />
+                </div>
                 {errors.email && <p className="text-caption text-primary-deep">{t("errorEmail")}</p>}
               </div>
               <div className="flex flex-col gap-2 sm:col-span-2">
                 <Label htmlFor="phone">{t("phone")}</Label>
-                <Input id="phone" type="tel" dir="ltr" value={form.phone} onChange={(e) => update("phone", e.target.value)} />
+                <div className="relative">
+                  <FieldIcon icon={PhoneIcon} />
+                  <Input
+                    id="phone"
+                    type="tel"
+                    dir="ltr"
+                    className="peer ps-11 text-start"
+                    value={form.phone}
+                    onChange={(e) => update("phone", e.target.value)}
+                  />
+                </div>
                 {errors.phone && <p className="text-caption text-primary-deep">{t("errorPhone")}</p>}
               </div>
             </div>
-          </fieldset>
+          </SectionCard>
 
-          <fieldset className="flex flex-col gap-4">
-            <h2 className="text-h3">{t("shippingHeading")}</h2>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <SectionCard index={2} title={t("shippingHeading")} hint={t("shippingHint")}>
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
               <div className="flex flex-col gap-2 sm:col-span-2">
                 <Label htmlFor="address">{t("address")}</Label>
-                <Input id="address" value={form.address} onChange={(e) => update("address", e.target.value)} />
+                <div className="relative">
+                  <FieldIcon icon={MapPinIcon} />
+                  <Input
+                    id="address"
+                    className="peer ps-11"
+                    value={form.address}
+                    onChange={(e) => update("address", e.target.value)}
+                  />
+                </div>
                 {errors.address && <p className="text-caption text-primary-deep">{errors.address}</p>}
               </div>
               <div className="flex flex-col gap-2">
@@ -185,20 +272,30 @@ export function CheckoutClient({
               </div>
               <div className="flex flex-col gap-2">
                 <Label htmlFor="governorate">{t("governorate")}</Label>
-                <Input id="governorate" value={form.governorate} onChange={(e) => update("governorate", e.target.value)} />
+                <Input
+                  id="governorate"
+                  value={form.governorate}
+                  onChange={(e) => update("governorate", e.target.value)}
+                />
                 {errors.governorate && <p className="text-caption text-primary-deep">{errors.governorate}</p>}
               </div>
               <div className="flex flex-col gap-2 sm:col-span-2">
                 <Label htmlFor="notes">{t("notes")}</Label>
-                <Textarea id="notes" rows={3} value={form.notes} onChange={(e) => update("notes", e.target.value)} />
+                <div className="relative">
+                  <NoteTextIcon className="pointer-events-none absolute start-4 top-4 h-4 w-4 text-muted-foreground" />
+                  <Textarea
+                    id="notes"
+                    rows={3}
+                    className="ps-11"
+                    value={form.notes}
+                    onChange={(e) => update("notes", e.target.value)}
+                  />
+                </div>
               </div>
             </div>
-          </fieldset>
+          </SectionCard>
 
-          <fieldset className="flex flex-col gap-4">
-            <h2 className="text-h3">{t("paymentHeading")}</h2>
-            <p className="text-caption">{t("paymentHint")}</p>
-
+          <SectionCard index={3} title={t("paymentHeading")} hint={t("paymentHint")}>
             <PaymentMethodPicker
               value={paymentMethod}
               onChange={setPaymentMethod}
@@ -207,24 +304,42 @@ export function CheckoutClient({
               proofFile={proofFile}
               onProofChange={setProofFile}
             />
+            <p className="text-caption mt-5 border-s-2 border-primary ps-3">{t("whatsappHint")}</p>
+          </SectionCard>
 
-            <p className="text-caption mt-2 border-s-2 border-primary ps-3">{t("whatsappHint")}</p>
-          </fieldset>
+          {submitError && (
+            <motion.p
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="border-s-2 border-primary-deep bg-primary-deep/5 px-3 py-2 text-caption text-primary-deep"
+            >
+              {submitError}
+            </motion.p>
+          )}
 
-          {submitError && <p className="text-caption text-primary-deep">{submitError}</p>}
+          <motion.div variants={section}>
+            <Button type="submit" size="lg" disabled={submitting} className="w-full">
+              {submitting ? t("submitting") : t("submit")}
+            </Button>
+          </motion.div>
+        </motion.form>
 
-          <Button type="submit" size="lg" disabled={submitting}>
-            {submitting ? t("submitting") : t("submit")}
-          </Button>
-        </form>
-
-        <aside className="h-fit border border-border p-6">
-          <h2 className="text-h3 mb-6">{t("orderSummary")}</h2>
+        <motion.aside
+          initial={{ opacity: 0, y: 22 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+          className="h-fit border border-border bg-surface p-6 shadow-soft lg:sticky lg:top-32"
+        >
+          <h2 className="text-h3 mb-6 text-base">{t("orderSummary")}</h2>
           <div className="flex flex-col gap-4">
             {cart.items.map((item) => (
               <div key={`${item.productId}-${item.variantId}`} className="flex gap-3">
-                <div className="h-16 w-14 shrink-0 bg-surface-muted">
-                  <BottleArt shape={item.bottleShape} liquidColor={item.heroColor} className="h-full w-full" />
+                <div className="relative h-16 w-14 shrink-0 overflow-hidden border border-border bg-surface-muted">
+                  {item.image ? (
+                    <Image src={item.image} alt={item.name[locale]} fill sizes="56px" className="object-contain p-1" />
+                  ) : (
+                    <BottleArt shape={item.bottleShape} liquidColor={item.heroColor} className="h-full w-full" />
+                  )}
                 </div>
                 <div className="flex flex-1 items-center justify-between">
                   <div>
@@ -238,13 +353,13 @@ export function CheckoutClient({
               </div>
             ))}
           </div>
-          <div className="mt-6 flex items-center justify-between border-t border-border pt-4 text-h3 text-base">
-            <span>{tc("total")}</span>
-            <span>
+          <div className="mt-6 flex items-center justify-between border-t border-border pt-4">
+            <span className="text-h3 text-base">{tc("total")}</span>
+            <span className={cn("text-h3 text-base font-medium text-primary-deep")}>
               {cart.subtotal.toLocaleString(locale)} {tc("currency")}
             </span>
           </div>
-        </aside>
+        </motion.aside>
       </div>
     </div>
   );
