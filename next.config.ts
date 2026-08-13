@@ -4,10 +4,13 @@ import createNextIntlPlugin from "next-intl/plugin";
 const contentSecurityPolicy = [
   "default-src 'self'",
   // 'wasm-unsafe-eval' is required for the background-removal model
-  // (onnxruntime-web) to compile its WebAssembly — without it every
-  // background-removal call in the admin fails and silently falls back to
-  // the original, unprocessed image.
-  "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://staticimgly.com",
+  // (onnxruntime-web) to compile its WebAssembly. onnxruntime-web also
+  // fetches its own JS loader as a blob: URL and dynamically import()s it
+  // (see ort.min.mjs) — that import is governed by script-src, not
+  // connect-src/worker-src, so blob: has to be allowed here too. Missing
+  // either of these makes every background-removal call in the admin fail
+  // and silently fall back to the original, unprocessed image.
+  "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' blob: https://staticimgly.com",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://*.r2.dev https://*.r2.cloudflarestorage.com",
   "font-src 'self' data:",
