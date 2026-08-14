@@ -7,11 +7,21 @@ import { Input, Label, Textarea } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { saveProduct } from "@/app/[locale]/admin/products/actions";
 import { processUploadImage } from "@/lib/admin/strip-background";
+import { calculateDiscountedPrice } from "@/lib/pricing";
 
 type CollectionOption = { id: string; nameAr: string };
 type BrandOption = { id: string; name: string };
 
-type VariantRow = { id?: string; sizeMl: number; price: number; stockQuantity: number; sku: string };
+type VariantRow = {
+  id?: string;
+  sizeMl: number;
+  price: number;
+  discountEnabled: boolean;
+  discountType: "PERCENTAGE" | "FIXED";
+  discountValue: number;
+  stockQuantity: number;
+  sku: string;
+};
 
 type ProductFormData = {
   id: string;
@@ -124,7 +134,10 @@ export function ProductForm({
   }
 
   function addVariant() {
-    set("variants", [...form.variants, { sizeMl: 50, price: 0, stockQuantity: 0, sku: "" }]);
+    set("variants", [
+      ...form.variants,
+      { sizeMl: 50, price: 0, discountEnabled: false, discountType: "PERCENTAGE", discountValue: 0, stockQuantity: 0, sku: "" },
+    ]);
   }
 
   function updateVariant(index: number, patch: Partial<VariantRow>) {
@@ -387,27 +400,78 @@ export function ProductForm({
           <Button type="button" variant="outline" size="sm" onClick={addVariant}>{t("addVariant")}</Button>
         </div>
         <div className="flex flex-col gap-3">
-          {form.variants.map((v, i) => (
-            <div key={i} className="grid grid-cols-2 gap-3 border border-border p-3 sm:grid-cols-5 sm:items-end">
-              <div>
-                <Label>{t("sizeMl")}</Label>
-                <Input type="number" value={v.sizeMl} onChange={(e) => updateVariant(i, { sizeMl: Number(e.target.value) })} className="mt-1" />
+          {form.variants.map((v, i) => {
+            const finalPrice = calculateDiscountedPrice(v.price, {
+              discountEnabled: v.discountEnabled,
+              discountType: v.discountType,
+              discountValue: v.discountValue,
+            });
+            return (
+              <div key={i} className="flex flex-col gap-3 border border-border p-3">
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-5 sm:items-end">
+                  <div>
+                    <Label>{t("sizeMl")}</Label>
+                    <Input type="number" value={v.sizeMl} onChange={(e) => updateVariant(i, { sizeMl: Number(e.target.value) })} className="mt-1" />
+                  </div>
+                  <div>
+                    <Label>{t("price")}</Label>
+                    <Input type="number" value={v.price} onChange={(e) => updateVariant(i, { price: Number(e.target.value) })} className="mt-1" />
+                  </div>
+                  <div>
+                    <Label>{t("stock")}</Label>
+                    <Input type="number" value={v.stockQuantity} onChange={(e) => updateVariant(i, { stockQuantity: Number(e.target.value) })} className="mt-1" />
+                  </div>
+                  <div>
+                    <Label>{t("sku")}</Label>
+                    <Input value={v.sku} onChange={(e) => updateVariant(i, { sku: e.target.value })} className="mt-1" />
+                  </div>
+                  <Button type="button" variant="ghost" size="sm" onClick={() => removeVariant(i)}>×</Button>
+                </div>
+
+                <div className="flex flex-wrap items-end gap-3 border-t border-border pt-3">
+                  <label className="flex items-center gap-2 text-caption">
+                    <input
+                      type="checkbox"
+                      checked={v.discountEnabled}
+                      onChange={(e) => updateVariant(i, { discountEnabled: e.target.checked })}
+                    />
+                    {t("discountEnabled")}
+                  </label>
+
+                  {v.discountEnabled && (
+                    <>
+                      <div>
+                        <Label>{t("discountType")}</Label>
+                        <select
+                          value={v.discountType}
+                          onChange={(e) => updateVariant(i, { discountType: e.target.value as VariantRow["discountType"] })}
+                          className="mt-1 h-10 border border-border bg-surface px-2 text-caption"
+                        >
+                          <option value="PERCENTAGE">{t("discountTypePercentage")}</option>
+                          <option value="FIXED">{t("discountTypeFixed")}</option>
+                        </select>
+                      </div>
+                      <div>
+                        <Label>{t("discountValue")}</Label>
+                        <Input
+                          type="number"
+                          value={v.discountValue}
+                          onChange={(e) => updateVariant(i, { discountValue: Number(e.target.value) })}
+                          className="mt-1 w-28"
+                        />
+                      </div>
+                      <div>
+                        <Label>{t("finalPrice")}</Label>
+                        <p className="mt-1 flex h-10 items-center text-body font-medium text-primary-deep">
+                          {finalPrice.toLocaleString()}
+                        </p>
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
-              <div>
-                <Label>{t("price")}</Label>
-                <Input type="number" value={v.price} onChange={(e) => updateVariant(i, { price: Number(e.target.value) })} className="mt-1" />
-              </div>
-              <div>
-                <Label>{t("stock")}</Label>
-                <Input type="number" value={v.stockQuantity} onChange={(e) => updateVariant(i, { stockQuantity: Number(e.target.value) })} className="mt-1" />
-              </div>
-              <div>
-                <Label>{t("sku")}</Label>
-                <Input value={v.sku} onChange={(e) => updateVariant(i, { sku: e.target.value })} className="mt-1" />
-              </div>
-              <Button type="button" variant="ghost" size="sm" onClick={() => removeVariant(i)}>×</Button>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 

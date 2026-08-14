@@ -38,6 +38,8 @@ export function ProductDetail({
   const inWishlist = wishlist.has(product.id);
   const outOfStock = variant.stockQuantity === 0;
   const lowStock = variant.stockQuantity > 0 && variant.stockQuantity <= 10;
+  const onSale = variant.finalPrice < variant.price;
+  const discountPercent = onSale ? Math.round((1 - variant.finalPrice / variant.price) * 100) : 0;
 
   function selectVariant(v: (typeof product.variants)[number]) {
     setVariantId(v.id);
@@ -53,7 +55,7 @@ export function ProductDetail({
         slug: product.slug,
         name: product.name,
         sizeMl: variant.sizeMl,
-        price: variant.price,
+        price: variant.finalPrice,
         stockQuantity: variant.stockQuantity,
         heroColor: product.heroColor,
         bottleShape: product.bottleShape,
@@ -98,10 +100,16 @@ export function ProductDetail({
           <h1 className="text-h1 mt-3 mb-4">{product.name[locale]}</h1>
           <p className="text-body mb-6 text-muted-foreground">{product.shortDescription[locale]}</p>
 
-          <div className="mb-8 flex items-center gap-3">
+          <div className="mb-8 flex flex-wrap items-center gap-3">
             <span className="text-h3">
-              {variant.price.toLocaleString(locale)} {tc("currency")}
+              {variant.finalPrice.toLocaleString(locale)} {tc("currency")}
             </span>
+            {onSale && (
+              <span className="text-body text-muted-foreground line-through">
+                {variant.price.toLocaleString(locale)} {tc("currency")}
+              </span>
+            )}
+            {onSale && <Badge variant="solid">{t("saleLabel", { percent: discountPercent })}</Badge>}
             {product.isBestseller && <Badge variant="outline">★ {t("bestsellerLabel")}</Badge>}
           </div>
 

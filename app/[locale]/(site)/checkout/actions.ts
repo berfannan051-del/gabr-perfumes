@@ -1,7 +1,6 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import type { Prisma } from "@/lib/generated/prisma/client";
 import { auth } from "@/auth";
 import { checkoutSchema } from "@/lib/validation/checkout";
 import { uploadFile } from "@/lib/storage";
@@ -11,6 +10,7 @@ import { rateLimit } from "@/lib/security/rate-limit";
 import { getClientIp } from "@/lib/security/get-client-ip";
 import { logger } from "@/lib/logger";
 import { getShippingRate } from "@/lib/data/shipping";
+import { calculateDiscountedPrice } from "@/lib/pricing";
 
 export type CheckoutItemInput = {
   variantId: string;
@@ -108,7 +108,7 @@ export async function submitOrderAction(formData: FormData): Promise<CheckoutRes
         nameAr: string;
         nameEn: string;
         sizeMl: number;
-        price: Prisma.Decimal;
+        price: number;
         quantity: number;
       }[] = [];
 
@@ -128,14 +128,20 @@ export async function submitOrderAction(formData: FormData): Promise<CheckoutRes
         });
         if (result.count === 0) throw new InsufficientStockError();
 
-        subtotal += Number(variant.price) * item.quantity;
+        const finalPrice = calculateDiscountedPrice(Number(variant.price), {
+          discountEnabled: variant.discountEnabled,
+          discountType: variant.discountType,
+          discountValue: variant.discountValue ? Number(variant.discountValue) : null,
+        });
+
+        subtotal += finalPrice * item.quantity;
         orderItemsData.push({
           productId: variant.product.id,
           variantId: variant.id,
           nameAr: variant.product.nameAr,
           nameEn: variant.product.nameEn,
           sizeMl: variant.sizeMl,
-          price: variant.price,
+          price: finalPrice,
           quantity: item.quantity,
         });
       }

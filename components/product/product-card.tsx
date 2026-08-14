@@ -16,7 +16,11 @@ export function ProductCard({ product }: { product: Product }) {
   const tc = useTranslations("Common");
   const wishlist = useWishlist();
   const inWishlist = wishlist.has(product.id);
-  const startingPrice = product.variants[0].price;
+  const startingVariant = product.variants[0];
+  const onSale = startingVariant.finalPrice < startingVariant.price;
+  const discountPercent = onSale
+    ? Math.round((1 - startingVariant.finalPrice / startingVariant.price) * 100)
+    : 0;
   const image = product.images[0];
 
   return (
@@ -61,6 +65,7 @@ export function ProductCard({ product }: { product: Product }) {
 
           <div className="absolute start-3 top-3 z-10 flex flex-col gap-2">
             {product.isNew && <Badge variant="solid">{t("newLabel")}</Badge>}
+            {onSale && <Badge variant="solid">{t("saleLabel", { percent: discountPercent })}</Badge>}
           </div>
 
           {product.brandType === "OTHER" && product.brand?.logo && (
@@ -97,8 +102,15 @@ export function ProductCard({ product }: { product: Product }) {
             {product.name[locale]}
           </p>
           <p className="text-caption mt-1 line-clamp-1">{product.shortDescription[locale]}</p>
-          <p className="text-body mt-2 font-medium text-primary-deep">
-            {startingPrice.toLocaleString(locale)} {tc("currency")}
+          <p className="mt-2 flex items-baseline gap-2">
+            <span className="text-body font-medium text-primary-deep">
+              {startingVariant.finalPrice.toLocaleString(locale)} {tc("currency")}
+            </span>
+            {onSale && (
+              <span className="text-caption text-muted-foreground line-through">
+                {startingVariant.price.toLocaleString(locale)} {tc("currency")}
+              </span>
+            )}
           </p>
         </div>
       </Link>

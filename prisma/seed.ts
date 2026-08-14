@@ -94,7 +94,6 @@ async function main() {
           productId: created.id,
           sizeMl: variant.sizeMl,
           price: variant.price,
-          compareAtPrice: variant.compareAtPrice ?? null,
           sku: variant.sku,
           stockQuantity: variant.inStock ? 50 : 0,
         },

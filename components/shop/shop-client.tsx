@@ -55,10 +55,10 @@ export function ShopClient({
 
     switch (sort) {
       case "priceAsc":
-        list = [...list].sort((a, b) => a.variants[0].price - b.variants[0].price);
+        list = [...list].sort((a, b) => a.variants[0].finalPrice - b.variants[0].finalPrice);
         break;
       case "priceDesc":
-        list = [...list].sort((a, b) => b.variants[0].price - a.variants[0].price);
+        list = [...list].sort((a, b) => b.variants[0].finalPrice - a.variants[0].finalPrice);
         break;
       case "nameAsc":
         list = [...list].sort((a, b) => a.name[locale].localeCompare(b.name[locale], locale));

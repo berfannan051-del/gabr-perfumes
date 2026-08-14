@@ -30,11 +30,17 @@ export type FragranceNote = {
   name: LocalizedText;
 };
 
+export type DiscountType = "PERCENTAGE" | "FIXED";
+
 export type ProductVariant = {
   id: string;
   sizeMl: number;
   price: number;
-  compareAtPrice?: number;
+  discountEnabled: boolean;
+  discountType: DiscountType | null;
+  discountValue: number | null;
+  /** price after the discount is applied — equals price when no discount is active */
+  finalPrice: number;
   sku: string;
   inStock: boolean;
   stockQuantity: number;

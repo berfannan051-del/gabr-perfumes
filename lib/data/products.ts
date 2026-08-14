@@ -8,6 +8,7 @@ import type {
   BottleShape,
 } from "@/types/catalog";
 import { Prisma } from "@/lib/generated/prisma/client";
+import { calculateDiscountedPrice } from "@/lib/pricing";
 
 const productInclude = {
   collection: true,
@@ -19,11 +20,20 @@ const productInclude = {
 type DbProduct = Prisma.ProductGetPayload<{ include: typeof productInclude }>;
 
 function mapVariant(v: DbProduct["variants"][number]): ProductVariant {
+  const price = Number(v.price);
+  const discountValue = v.discountValue ? Number(v.discountValue) : null;
   return {
     id: v.id,
     sizeMl: v.sizeMl,
-    price: Number(v.price),
-    compareAtPrice: v.compareAtPrice ? Number(v.compareAtPrice) : undefined,
+    price,
+    discountEnabled: v.discountEnabled,
+    discountType: v.discountType,
+    discountValue,
+    finalPrice: calculateDiscountedPrice(price, {
+      discountEnabled: v.discountEnabled,
+      discountType: v.discountType,
+      discountValue,
+    }),
     sku: v.sku,
     inStock: v.stockQuantity > 0,
     stockQuantity: v.stockQuantity,

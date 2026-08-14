@@ -98,7 +98,7 @@ export function SearchOverlay({
                           </div>
                           <p className="text-body">{p.name[locale]}</p>
                           <p className="text-caption">
-                            {p.variants[0].price.toLocaleString(locale)} {tc("currency")}
+                            {p.variants[0].finalPrice.toLocaleString(locale)} {tc("currency")}
                           </p>
                         </Link>
                       }

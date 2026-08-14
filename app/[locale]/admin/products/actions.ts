@@ -33,9 +33,21 @@ type VariantInput = {
   id?: string;
   sizeMl: number;
   price: number;
+  discountEnabled?: boolean;
+  discountType?: "PERCENTAGE" | "FIXED";
+  discountValue?: number;
   stockQuantity: number;
   sku: string;
 };
+
+/** Normalizes a variant's discount to a consistent, valid shape — disabled means no discount data is stored at all. */
+function normalizeDiscount(v: VariantInput) {
+  if (!v.discountEnabled || !v.discountType || !Number.isFinite(v.discountValue) || (v.discountValue as number) <= 0) {
+    return { discountEnabled: false, discountType: null, discountValue: null };
+  }
+  const value = v.discountType === "PERCENTAGE" ? Math.min(100, v.discountValue as number) : (v.discountValue as number);
+  return { discountEnabled: true, discountType: v.discountType, discountValue: value };
+}
 
 type NotesInput = { top: string[]; heart: string[]; base: string[] };
 
@@ -139,14 +151,15 @@ export async function saveProduct(
     where: { productId: id, id: { notIn: keepVariantIds.length ? keepVariantIds : ["__none__"] } },
   });
   for (const v of variants) {
+    const discount = normalizeDiscount(v);
     if (v.id) {
       await prisma.productVariant.update({
         where: { id: v.id },
-        data: { sizeMl: v.sizeMl, price: v.price, stockQuantity: v.stockQuantity, sku: v.sku },
+        data: { sizeMl: v.sizeMl, price: v.price, stockQuantity: v.stockQuantity, sku: v.sku, ...discount },
       });
     } else {
       await prisma.productVariant.create({
-        data: { productId: id, sizeMl: v.sizeMl, price: v.price, stockQuantity: v.stockQuantity, sku: v.sku },
+        data: { productId: id, sizeMl: v.sizeMl, price: v.price, stockQuantity: v.stockQuantity, sku: v.sku, ...discount },
       });
     }
   }
