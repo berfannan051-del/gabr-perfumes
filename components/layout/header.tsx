@@ -61,25 +61,25 @@ export function Header({
         rich ? "bg-transparent" : "border-b border-border bg-surface/95 backdrop-blur-sm"
       )}
     >
+      {rich && promoText && !promoDismissed && (
+        <div className="relative flex items-center justify-center gap-4 bg-foreground/50 px-6 py-2 text-caption text-background backdrop-blur-sm">
+          <span>{promoText}</span>
+          <button
+            type="button"
+            onClick={() => setPromoDismissed(true)}
+            aria-label={t("close")}
+            className="text-background/70 transition-colors hover:text-background"
+          >
+            <CloseIcon className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      )}
+
       {rich && (
         <div className="relative hidden text-background md:block">
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-foreground/70 via-foreground/30 to-transparent" />
 
           <div className="relative">
-            {promoText && !promoDismissed && (
-              <div className="flex items-center justify-center gap-4 px-6 py-2 text-caption">
-                <span>{promoText}</span>
-                <button
-                  type="button"
-                  onClick={() => setPromoDismissed(true)}
-                  aria-label={t("close")}
-                  className="text-background/70 transition-colors hover:text-background"
-                >
-                  <CloseIcon className="h-3.5 w-3.5" />
-                </button>
-              </div>
-            )}
-
             <div className="mx-auto grid max-w-7xl grid-cols-3 items-center px-10 py-3">
               <div className="flex justify-start">
                 <LanguageSwitcher className="text-sm font-semibold uppercase tracking-[0.22em] transition-colors hover:text-primary-highlight" />
