@@ -13,17 +13,21 @@ export function SiteShell({
   children,
   products,
   footerContent,
+  promoText,
+  headerLogo,
 }: {
   children: React.ReactNode;
   products: Product[];
   footerContent?: Partial<FooterContent>;
+  promoText?: string;
+  headerLogo?: string;
 }) {
   const [searchOpen, setSearchOpen] = useState(false);
 
   return (
     <CartProvider>
       <WishlistProvider>
-        <Header onOpenSearch={() => setSearchOpen(true)} />
+        <Header onOpenSearch={() => setSearchOpen(true)} promoText={promoText} logoUrl={headerLogo} />
         <main className="flex-1">{children}</main>
         <Footer content={footerContent} />
         <CartDrawer />

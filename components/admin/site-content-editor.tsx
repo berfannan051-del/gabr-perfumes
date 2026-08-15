@@ -10,12 +10,14 @@ import {
   saveSiteContentText,
   saveSiteContentImage,
   clearSiteContentImage,
+  saveSiteContentVideo,
+  clearSiteContentVideo,
 } from "@/app/[locale]/admin/content/actions";
 import type { SiteContentMap } from "@/lib/data/site-content";
 
 export type SiteContentField = {
   key: string;
-  type: "TEXT" | "IMAGE";
+  type: "TEXT" | "IMAGE" | "VIDEO";
   section: string;
   multiline?: boolean;
 };
@@ -69,6 +71,31 @@ export function SiteContentEditor({
     setPendingKey(field.key);
     startTransition(async () => {
       await clearSiteContentImage(field.key);
+      setValues((v) => ({ ...v, [field.key]: { ar: "", en: "" } }));
+      toast.show(t("saved"));
+      setPendingKey(null);
+    });
+  }
+
+  async function saveVideo(field: SiteContentField, file: File) {
+    setPendingKey(field.key);
+    const data = new FormData();
+    data.set("key", field.key);
+    data.set("video", file);
+    const result = await saveSiteContentVideo(data);
+    if ("url" in result) {
+      setValues((v) => ({ ...v, [field.key]: { ar: result.url, en: result.url } }));
+      toast.show(t("saved"));
+    } else {
+      toast.show(t("uploadError"), "error");
+    }
+    setPendingKey(null);
+  }
+
+  function removeVideo(field: SiteContentField) {
+    setPendingKey(field.key);
+    startTransition(async () => {
+      await clearSiteContentVideo(field.key);
       setValues((v) => ({ ...v, [field.key]: { ar: "", en: "" } }));
       toast.show(t("saved"));
       setPendingKey(null);
@@ -135,7 +162,7 @@ export function SiteContentEditor({
                     </Button>
                   </div>
                 </>
-              ) : (
+              ) : field.type === "IMAGE" ? (
                 <div className="flex items-center gap-4">
                   <div className="h-20 w-32 shrink-0 overflow-hidden bg-surface-muted">
                     {values[field.key]?.ar ? (
@@ -158,6 +185,37 @@ export function SiteContentEditor({
                       <button
                         type="button"
                         onClick={() => removeImage(field)}
+                        disabled={pendingKey === field.key}
+                        className="text-caption self-start text-primary-deep disabled:opacity-50"
+                      >
+                        {t("removeImage")}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center gap-4">
+                  <div className="h-20 w-32 shrink-0 overflow-hidden bg-surface-muted">
+                    {values[field.key]?.ar ? (
+                      <video src={values[field.key].ar} muted loop className="h-full w-full object-cover" />
+                    ) : null}
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <input
+                      type="file"
+                      accept="video/mp4,video/webm"
+                      disabled={pendingKey === field.key}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) saveVideo(field, file);
+                      }}
+                      className="text-caption file:me-4 file:border-0 file:bg-primary file:px-4 file:py-2 file:text-background"
+                    />
+                    <p className="text-caption text-muted-foreground">{t("videoHint")}</p>
+                    {values[field.key]?.ar && (
+                      <button
+                        type="button"
+                        onClick={() => removeVideo(field)}
                         disabled={pendingKey === field.key}
                         className="text-caption self-start text-primary-deep disabled:opacity-50"
                       >

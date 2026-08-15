@@ -16,6 +16,9 @@ const sharedDirectives = [
   "default-src 'self'",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://*.r2.dev https://*.r2.cloudflarestorage.com",
+  // The hero background video is served from the same R2 host as images —
+  // <video src> falls under media-src, which is NOT covered by img-src.
+  "media-src 'self' blob: https://*.r2.dev https://*.r2.cloudflarestorage.com",
   "font-src 'self' data:",
   // Background removal also spawns a Web Worker (from a blob: URL) and
   // fetches its model weights from staticimgly.com.
@@ -73,9 +76,10 @@ const nextConfig: NextConfig = {
   experimental: {
     serverActions: {
       // Admin product forms can upload several images per submit (each up to
-      // 5MB per lib/security/validate-upload.ts) — the 1MB Server Action
-      // default is too small for that.
-      bodySizeLimit: "20mb",
+      // 5MB per lib/security/validate-upload.ts), and the hero background
+      // video can be up to 50MB — the 1MB Server Action default is far too
+      // small for either.
+      bodySizeLimit: "60mb",
     },
   },
   async headers() {

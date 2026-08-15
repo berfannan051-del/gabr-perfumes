@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import type { Locale } from "@/types/catalog";
 
 export const SITE_CONTENT_FIELDS = [
+  { key: "header.image", type: "IMAGE", section: "homepage" },
+  { key: "promo.text", type: "TEXT", section: "homepage" },
   { key: "hero.eyebrow", type: "TEXT", section: "homepage" },
   { key: "hero.titleLine1", type: "TEXT", section: "homepage" },
   { key: "hero.titleLine2", type: "TEXT", section: "homepage" },
@@ -9,6 +11,7 @@ export const SITE_CONTENT_FIELDS = [
   { key: "hero.ctaPrimary", type: "TEXT", section: "homepage" },
   { key: "hero.ctaSecondary", type: "TEXT", section: "homepage" },
   { key: "hero.image", type: "IMAGE", section: "homepage" },
+  { key: "hero.video", type: "VIDEO", section: "homepage" },
   { key: "story.eyebrow", type: "TEXT", section: "homepage" },
   { key: "story.title", type: "TEXT", section: "homepage" },
   { key: "story.body", type: "TEXT", section: "homepage", multiline: true },
@@ -36,7 +39,7 @@ export const SITE_CONTENT_FIELDS = [
   { key: "settings.tiktokUrl", type: "TEXT", section: "settings" },
 ] as const satisfies ReadonlyArray<{
   key: string;
-  type: "TEXT" | "IMAGE";
+  type: "TEXT" | "IMAGE" | "VIDEO";
   section: "homepage" | "about" | "footer" | "settings";
   multiline?: boolean;
 }>;

@@ -28,6 +28,8 @@ const EXTENSIONS: Record<string, string> = {
   "image/png": "png",
   "image/jpeg": "jpg",
   "image/webp": "webp",
+  "video/mp4": "mp4",
+  "video/webm": "webm",
 };
 
 export async function uploadFile(file: File, folder: string): Promise<string> {

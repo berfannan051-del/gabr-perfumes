@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { uploadFile } from "@/lib/storage";
-import { validateUploadFile } from "@/lib/security/validate-upload";
+import { validateUploadFile, validateVideoUploadFile } from "@/lib/security/validate-upload";
 
 async function requireAdmin() {
   const session = await auth();
@@ -50,6 +50,37 @@ export async function clearSiteContentImage(key: string) {
     where: { key },
     update: { valueAr: "", valueEn: "", type: "IMAGE" },
     create: { key, valueAr: "", valueEn: "", type: "IMAGE" },
+  });
+  revalidatePath("/[locale]", "layout");
+}
+
+export async function saveSiteContentVideo(
+  formData: FormData
+): Promise<{ url: string } | { error: string }> {
+  await requireAdmin();
+  const key = String(formData.get("key") ?? "");
+  const file = formData.get("video");
+  if (!key || !(file instanceof File) || file.size === 0) return { error: "invalid" };
+
+  const validation = await validateVideoUploadFile(file);
+  if (!validation.ok) return { error: "invalid" };
+
+  const url = await uploadFile(file, "site-content");
+  await prisma.siteContent.upsert({
+    where: { key },
+    update: { valueAr: url, valueEn: url, type: "VIDEO" },
+    create: { key, valueAr: url, valueEn: url, type: "VIDEO" },
+  });
+  revalidatePath("/[locale]", "layout");
+  return { url };
+}
+
+export async function clearSiteContentVideo(key: string) {
+  await requireAdmin();
+  await prisma.siteContent.upsert({
+    where: { key },
+    update: { valueAr: "", valueEn: "", type: "VIDEO" },
+    create: { key, valueAr: "", valueEn: "", type: "VIDEO" },
   });
   revalidatePath("/[locale]", "layout");
 }

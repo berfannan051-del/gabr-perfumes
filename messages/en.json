@@ -434,7 +434,10 @@
       "saved": "Saved",
       "uploadError": "Upload failed",
       "removeImage": "Remove image",
+      "videoHint": "MP4 or WebM, up to 50MB. Must be landscape, 1920×1080 or larger — a portrait/phone-shot video will get cropped to fill the screen. If set, it plays as an animated background in place of the main image.",
       "groups": {
+        "header": "Site Logo (Header)",
+        "promo": "Top Announcement Bar",
         "hero": "Hero Banner",
         "story": "\"Our Story\" Section",
         "notesStory": "Fragrance Layers Section",
@@ -443,6 +446,8 @@
         "settings": "Contact Details"
       },
       "fields": {
+        "header_image": "Header logo (background removed automatically on upload)",
+        "promo_text": "Bar text",
         "hero_eyebrow": "Eyebrow (above headline)",
         "hero_titleLine1": "Headline — Line 1",
         "hero_titleLine2": "Headline — Line 2",
@@ -450,6 +455,7 @@
         "hero_ctaPrimary": "Primary Button",
         "hero_ctaSecondary": "Secondary Button",
         "hero_image": "Top Hero Image",
+        "hero_video": "Background Video (optional)",
         "story_eyebrow": "Eyebrow",
         "story_title": "Title",
         "story_body": "Body Text",

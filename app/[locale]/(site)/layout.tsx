@@ -27,6 +27,9 @@ export default async function SiteLayout({
     visitCount,
   };
 
+  const promoText = pick(siteContent, "promo.text", l) || undefined;
+  const headerLogo = pick(siteContent, "header.image", l) || undefined;
+
   const socialLinks = {
     instagram: pick(siteContent, "settings.instagramUrl", l) || undefined,
     facebook: pick(siteContent, "settings.facebookUrl", l) || undefined,
@@ -36,7 +39,7 @@ export default async function SiteLayout({
 
   return (
     <>
-      <SiteShell products={products} footerContent={footerContent}>
+      <SiteShell products={products} footerContent={footerContent} promoText={promoText} headerLogo={headerLogo}>
         {children}
       </SiteShell>
       <SocialFab links={socialLinks} />

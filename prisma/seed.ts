@@ -130,7 +130,11 @@ async function main() {
   });
 
   for (const [key, value] of Object.entries(siteContentDefaults)) {
-    const type = key.endsWith("Image") || key.endsWith(".image") ? "IMAGE" : "TEXT";
+    const type = key.endsWith("Image") || key.endsWith(".image")
+      ? "IMAGE"
+      : key.endsWith(".video")
+        ? "VIDEO"
+        : "TEXT";
     await prisma.siteContent.upsert({
       where: { key },
       update: {},

@@ -38,6 +38,7 @@ export default async function HomePage({
     ctaPrimary: pick(siteContent, "hero.ctaPrimary", l),
     ctaSecondary: pick(siteContent, "hero.ctaSecondary", l),
     image: pick(siteContent, "hero.image", l),
+    video: pick(siteContent, "hero.video", l),
   };
 
   const storyContent = {
