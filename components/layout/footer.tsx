@@ -65,8 +65,16 @@ export function Footer({ content }: { content?: Partial<FooterContent> }) {
           <div>
             <h4 className="text-label mb-4">{t("contactHeading")}</h4>
             <ul className="flex flex-col gap-2.5 text-body">
-              <li>{contactEmail}</li>
-              <li dir="ltr" className="text-end md:text-start">{contactPhone}</li>
+              <li>
+                <a href={`mailto:${contactEmail}`} className="hover:text-primary transition-colors">
+                  {contactEmail}
+                </a>
+              </li>
+              <li dir="ltr" className="text-end md:text-start">
+                <a href={`tel:${contactPhone.replace(/\s+/g, "")}`} className="hover:text-primary transition-colors">
+                  {contactPhone}
+                </a>
+              </li>
             </ul>
           </div>
         </div>

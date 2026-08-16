@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { InstagramIcon, FacebookIcon, TikTokIcon, WhatsAppIcon, PlusIcon } from "@/components/ui/icons";
+import { InstagramIcon, FacebookIcon, TikTokIcon, WhatsAppIcon, ShareIcon, CloseIcon } from "@/components/ui/icons";
 import { toWhatsAppNumber } from "@/lib/phone";
 
 export type SocialLinks = {
@@ -14,6 +14,18 @@ export type SocialLinks = {
 
 export function SocialFab({ links }: { links: SocialLinks }) {
   const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    function handlePointerDown(e: PointerEvent) {
+      if (rootRef.current && !rootRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, [open]);
 
   const items = (
     [
@@ -31,7 +43,7 @@ export function SocialFab({ links }: { links: SocialLinks }) {
   if (items.length === 0) return null;
 
   return (
-    <div className="fixed bottom-6 start-6 z-50 flex flex-col items-center gap-3">
+    <div ref={rootRef} className="fixed bottom-6 start-6 z-50 flex flex-col items-center gap-3">
       <AnimatePresence>
         {open &&
           items.map((item, i) => (
@@ -57,11 +69,20 @@ export function SocialFab({ links }: { links: SocialLinks }) {
         whileTap={{ scale: 0.92 }}
         aria-label="social links"
         aria-expanded={open}
-        className="grid h-14 w-14 place-items-center rounded-full bg-primary text-background shadow-lifted"
+        className="relative grid h-14 w-14 place-items-center rounded-full bg-primary text-background shadow-lifted"
       >
-        <motion.span animate={{ rotate: open ? 45 : 0 }} transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}>
-          <PlusIcon className="h-5 w-5" />
-        </motion.span>
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.span
+            key={open ? "close" : "share"}
+            initial={{ opacity: 0, rotate: -45, scale: 0.7 }}
+            animate={{ opacity: 1, rotate: 0, scale: 1 }}
+            exit={{ opacity: 0, rotate: 45, scale: 0.7 }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            className="absolute inset-0 grid place-items-center"
+          >
+            {open ? <CloseIcon className="h-5 w-5" /> : <ShareIcon className="h-5 w-5" />}
+          </motion.span>
+        </AnimatePresence>
       </motion.button>
     </div>
   );
